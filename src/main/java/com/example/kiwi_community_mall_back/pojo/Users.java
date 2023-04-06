@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("users")
-public class User {
+public class Users {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
