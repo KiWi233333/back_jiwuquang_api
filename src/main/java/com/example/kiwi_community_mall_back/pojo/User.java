@@ -1,6 +1,9 @@
 package com.example.kiwi_community_mall_back.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.example.kiwi_community_mall_back.vo.Gender;
+import com.example.kiwi_community_mall_back.vo.MemberLevel;
+import com.example.kiwi_community_mall_back.vo.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
