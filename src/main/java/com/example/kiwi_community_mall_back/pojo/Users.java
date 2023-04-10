@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.example.kiwi_community_mall_back.vo.Gender;
 import com.example.kiwi_community_mall_back.vo.MemberLevel;
 import com.example.kiwi_community_mall_back.vo.UserStatus;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +18,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @TableName("users")
 public class Users {
+
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
