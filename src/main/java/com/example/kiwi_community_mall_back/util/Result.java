@@ -49,4 +49,5 @@ public class Result {
     private static Result fail(int code,String message) {
         return new Result(code,message,null);
     }
+
 }

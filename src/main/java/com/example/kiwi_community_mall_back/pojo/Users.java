@@ -1,12 +1,8 @@
 package com.example.kiwi_community_mall_back.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.example.kiwi_community_mall_back.vo.Gender;
-import com.example.kiwi_community_mall_back.vo.MemberLevel;
-import com.example.kiwi_community_mall_back.vo.UserStatus;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import com.example.kiwi_community_mall_back.util.Gender;
+import com.example.kiwi_community_mall_back.util.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +33,12 @@ public class Users {
     @TableField("nickname")
     private String nickname;
 
+    /**
+     * 性别
+     *  男
+     *  女
+     *  保密
+     */
     @TableField("gender")
     private Gender gender;
 
@@ -52,9 +54,15 @@ public class Users {
     @TableField("last_login_time")
     private LocalDateTime lastLoginTime;
 
+    /**
+     * 登录的ip
+     */
     @TableField("last_login_ip")
     private String lastLoginIp;
 
+    /**
+     * 登录状态：on off
+     */
     @TableField("status")
     private UserStatus status;
 
@@ -64,6 +72,12 @@ public class Users {
     @TableField("is_phone_verified")
     private Boolean isPhoneVerified;
 
+    /**
+     * 会员等级
+     *  1 普通会员
+     *  2 黄金会员
+     *  3 钻石会员
+     */
     @TableField("member_level")
-    private MemberLevel memberLevel;
+    private Integer memberLevel;
 }

@@ -1,4 +1,4 @@
-package com.example.kiwi_community_mall_back.vo;
+package com.example.kiwi_community_mall_back.util;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import lombok.Getter;
