@@ -1,4 +1,4 @@
-package com.example.kiwi_community_mall_back.mapper;
+package com.example.kiwi_community_mall_back.repository;
 
 import org.apache.ibatis.annotations.Mapper;
 

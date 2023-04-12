@@ -1,4 +1,4 @@
-package com.example.kiwi_community_mall_back.util;
+package com.example.kiwi_community_mall_back.enums;
 
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ import lombok.Getter;
  */
 @Getter
 public enum UserStatus {
-    DEFAULT("on", "正常"),
+    ON("on", "正常"),
     OFF("off", "禁用");
     private final String name;
     private final String val;

@@ -1,8 +1,8 @@
 package com.example.kiwi_community_mall_back.pojo;
 
 import com.baomidou.mybatisplus.annotation.*;
-import com.example.kiwi_community_mall_back.util.Gender;
-import com.example.kiwi_community_mall_back.util.UserStatus;
+import com.example.kiwi_community_mall_back.enums.Gender;
+import com.example.kiwi_community_mall_back.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,10 +34,7 @@ public class Users {
     private String nickname;
 
     /**
-     * 性别
-     *  男
-     *  女
-     *  保密
+     * 性别 （男|女|保密）
      */
     @TableField("gender")
     private Gender gender;
@@ -61,7 +58,7 @@ public class Users {
     private String lastLoginIp;
 
     /**
-     * 登录状态：on off
+     * 登录状态：on|off
      */
     @TableField("status")
     private UserStatus status;
