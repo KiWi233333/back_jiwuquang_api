@@ -3,17 +3,19 @@ package com.example.kiwi_community_mall_back.pojo;
 import com.baomidou.mybatisplus.annotation.*;
 import com.example.kiwi_community_mall_back.enums.Gender;
 import com.example.kiwi_community_mall_back.enums.UserStatus;
+import com.example.kiwi_community_mall_back.util.interfaces.Phone;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("users")
-public class Users {
+@TableName("user")
+public class User {
 
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
@@ -77,4 +79,5 @@ public class Users {
      */
     @TableField("member_level")
     private Integer memberLevel;
+
 }

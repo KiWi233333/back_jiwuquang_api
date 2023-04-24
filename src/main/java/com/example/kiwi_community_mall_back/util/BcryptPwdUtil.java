@@ -1,0 +1,65 @@
+package com.example.kiwi_community_mall_back.util;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import java.security.SecureRandom;
+import java.util.Base64;
+
+/**
+ * 密码加密解密工具类
+ *
+ * @className: BcryptPwdUtil
+ * @author: Author作者
+ * @date: 2023/4/19 17:00
+ */
+public  class  BcryptPwdUtil {
+
+    private static final int SALT_LEN = 10;
+
+
+    /**
+     * 生成加密的密码
+     * @param password
+     * @return 加密密码
+     */
+    public String encode(String password) {
+        String salt = getRandomSalt();
+
+        return encode(password, salt);
+    }
+
+    /**
+     *  随机盐值，加密密码
+     * @param password
+     * @param salt
+     * @return
+     */
+    public String encode(String password, String salt) {
+        String saltedPassword = salt + password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(saltedPassword);// 加密
+    }
+
+    /**
+     * 验证密码是否正确
+     * @param password
+     * @param encodedPassword
+     * @param salt
+     * @return
+     */
+    public static boolean matches(String password, String encodedPassword, String salt) {
+        String saltedPassword = salt + password;// 组成盐
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(saltedPassword, encodedPassword);
+    }
+
+    /**
+     * 生成随机盐
+     * @return
+     */
+    public static String getRandomSalt() {
+        byte[] salt = new byte[SALT_LEN];
+        new SecureRandom().nextBytes(salt);
+        return Base64.getEncoder().encodeToString(salt);
+    }
+
+
+}

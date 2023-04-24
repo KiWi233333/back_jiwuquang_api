@@ -5,11 +5,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.kiwi_community_mall_back.dto.UserTokenDto;
+import com.example.kiwi_community_mall_back.dto.user.UserTokenDTO;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -24,20 +25,21 @@ import java.util.Map;
  * @date: 2023/4/13 1:17
  */
 @Slf4j
+@Component
 public class JWTUtil {
 
     static ObjectMapper objectMapper  = new ObjectMapper();
     // 私钥
-    private static final String TOKEN_SECRET = "@KIWI2333.132xx96we34Wgh286";
+    private static final String TOKEN_SECRET = "KIWigz2xc2vw";
     // 有效期
-    private static final Long TOKEN_LONG = 1000L * 60 *2 ;
+//    private static final Long TOKEN_LONG = 1000L * 60 *2 ;
 
     /**
      * 1、生成Token
      * @param userTokenDto
      * @return token
      */
-    public static String createToken(UserTokenDto userTokenDto) {
+    public static String createToken(UserTokenDTO userTokenDto) {
         try {
             // 私钥和加密算法
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
@@ -74,11 +76,11 @@ public class JWTUtil {
     /**
      * 解析token的信息
      * @param jsonParser
-     * @return UserTokenDto
+     * @return UserTokenDTO
      */
-    public static UserTokenDto getTokenInfo(JsonParser jsonParser)  {
+    public static UserTokenDTO getTokenInfo(JsonParser jsonParser)  {
         try {
-            return objectMapper.readValue(jsonParser,UserTokenDto.class);
+            return objectMapper.readValue(jsonParser,UserTokenDTO.class);
         } catch (IOException e) {
             return null;
         }

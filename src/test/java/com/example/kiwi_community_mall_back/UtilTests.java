@@ -1,8 +1,9 @@
 package com.example.kiwi_community_mall_back;
 
-import com.example.kiwi_community_mall_back.dto.UserTokenDto;
+import com.example.kiwi_community_mall_back.dto.user.UserTokenDTO;
 import com.example.kiwi_community_mall_back.enums.Gender;
-import com.example.kiwi_community_mall_back.pojo.Users;
+import com.example.kiwi_community_mall_back.pojo.User;
+import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
 import com.example.kiwi_community_mall_back.util.JWTUtil;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -20,11 +21,11 @@ class UtilTests {
 
     @Test
     void JSONTest() {
-        Users users = new Users();
-        users.setUsername("23333");
-        users.setGender(Gender.BOY);
+        User user = new User();
+        user.setUsername("23333");
+        user.setGender(Gender.男);
         try {
-            String json = new ObjectMapper().writeValueAsString(users);
+            String json = new ObjectMapper().writeValueAsString(user);
             System.out.println(json);
             System.out.println(new JsonFactory().createParser(json).toString());
         } catch (JsonProcessingException e) {
@@ -36,11 +37,9 @@ class UtilTests {
 
     @Test
     void tokenTest() {
-        UserTokenDto userTokenDto = new UserTokenDto();
-        userTokenDto.setId("2333333");
-        userTokenDto.setUsername("Kiwi2333");
-        userTokenDto.setEmail("132564@qq.com");
-        String token = JWTUtil.createToken(userTokenDto);
+        UserTokenDTO userTokenDTO = new UserTokenDTO();
+        userTokenDTO.setId("2333333");
+        String token = JWTUtil.createToken(userTokenDTO);
         System.out.println(token);
 
         // 验证
@@ -50,6 +49,15 @@ class UtilTests {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    @Test
+    void getUserEncodedPwd() {
+//        System.out.println(BcryptPwdUtil.encode("123456","4wechxge23ex21"));
+        // 验证
+        System.out.println(BcryptPwdUtil.matches("123456","$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y","4wechxge23ex21"));
+
     }
 
 

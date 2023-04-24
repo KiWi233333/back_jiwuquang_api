@@ -5,7 +5,7 @@ CREATE DATABASE kiwi_community_mall;
 USE kiwi_community_mall;
 
 CREATE TABLE
-    users (
+    user (
         id CHAR(40) NOT NULL PRIMARY KEY,
         username VARCHAR(50) NOT NULL,
         password VARCHAR(80) NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE
     );
 
 INSERT INTO
-    users (
+    user (
         id,
         username,
         password,
@@ -131,6 +131,6 @@ VALUES (
     );
 
 SELECT *
-FROM users
+FROM user
 WHERE
     id = "1e1c6a7f-3d3d-4d5f-bc64-12d47e2d15f1";

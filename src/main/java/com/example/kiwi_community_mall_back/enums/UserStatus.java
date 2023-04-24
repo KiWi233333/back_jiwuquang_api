@@ -12,13 +12,15 @@ import lombok.Getter;
  */
 @Getter
 public enum UserStatus {
-    ON("on", "正常"),
-    OFF("off", "禁用");
-    private final String name;
-    private final String val;
+    禁用,正常;
+//    ON(0, "正常"),
+//    OFF(1, "禁用");
+//    private final Integer key;
+//    private final String val;
+//
+//    private UserStatus(Integer key, String val) {
+//        this.key = key;
+//        this.val = val;
+//    }
 
-    private UserStatus(String name, String val) {
-        this.name = name;
-        this.val = val;
-    }
 }
