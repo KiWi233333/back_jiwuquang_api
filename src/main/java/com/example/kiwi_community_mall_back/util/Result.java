@@ -1,11 +1,7 @@
 package com.example.kiwi_community_mall_back.util;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.Optional;
 
 /**
  * 接口返回结果模板
@@ -16,8 +12,6 @@ import java.util.Optional;
  * @date: 2023/4/7 21:35
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class Result {
     /**
      * @code 状态码：
@@ -31,13 +25,23 @@ public class Result {
      *  20020阻塞或被占用
      */
     @ApiModelProperty("状态码：20000成功，20010添加已经存在，20011被删或不存在，20012查询不到，20013修改失败，20014不能为空，20020常规性错误")
-    private int code;
+    private Integer code;
     @ApiModelProperty("描述信息")
     private String message;
     @ApiModelProperty("返回数据")
     private Object data;
 
 
+    public Result(Integer code, String message,Object data) {
+        this.code = code;
+        this.message = message;
+        // 防止传空
+        if (data==null) {
+            this.data="";
+        } else {
+            this.data = data;
+        }
+    }
     /**
      * 成功
      **/
@@ -76,12 +80,4 @@ public class Result {
 
 
 
-    // 防止传空发送给前端
-    public void setData(Object data) {
-        if (data==null) {
-            this.data = ((Optional<?>) data).orElse(null);
-        } else {
-            this.data = data;
-        }
-    }
 }

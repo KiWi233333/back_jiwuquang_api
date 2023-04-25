@@ -2,9 +2,10 @@ package com.example.kiwi_community_mall_back.controller;
 
 import com.example.kiwi_community_mall_back.dto.user.LoginCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginDTO;
-import com.example.kiwi_community_mall_back.dto.user.UserRegister;
+import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
 import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
+import com.example.kiwi_community_mall_back.util.interfaces.Phone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -49,10 +50,10 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "登录-获取验证码", tags = "登录")
+    @ApiOperation(value = "登录-获取手机验证码", tags = "登录")
     @GetMapping(value = "/login/{phone}")
     @Valid
-    Result getLoginCode(@PathVariable String phone) {
+    Result getLoginCode( @PathVariable String phone) {
         return usersService.getLoginCodeByPhone(phone);
     }
 
@@ -62,8 +63,13 @@ public class UserController {
      */
     @ApiOperation(value = "注册")
     @PutMapping(value = "/register")
-    Result toRegister(@RequestBody UserRegister userRegister) {
-        return usersService.toRegister(userRegister);
+    Result toRegister(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult res) {
+        if (res.hasErrors()) {
+            // 处理校验错误信息
+            return Result.fail(res.getFieldError().getDefaultMessage());
+        } else {
+            return usersService.toRegister(userRegisterDTO);
+        }
     }
 
     @ApiOperation(value = "注册-获取手机验证码")
@@ -73,7 +79,7 @@ public class UserController {
         return usersService.getRegisterByPhone(phone);
     }
 
-    @ApiOperation(value = "注册-获取手机验证码")
+    @ApiOperation(value = "注册-获取邮箱验证码")
     @GetMapping(value = "/register/{email}")
     @ApiParam(name = "email", value = "邮箱")
     Result getRegisterByEmail(@PathVariable String email) {
@@ -84,7 +90,7 @@ public class UserController {
     @ApiOperation(value = "验证-用户是否存在")
     @ApiParam(name = "username", value = "用户名")
     @GetMapping("/user/exist")
-    Result checkUserExisted( @RequestParam String username) {
+    Result checkUserExisted(@RequestParam String username) {
         return usersService.checkUserIsExist(username);
     }
 }

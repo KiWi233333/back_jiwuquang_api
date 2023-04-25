@@ -40,15 +40,13 @@ class UtilTests {
         UserTokenDTO userTokenDTO = new UserTokenDTO();
         userTokenDTO.setId("2333333");
         String token = JWTUtil.createToken(userTokenDTO);
+        String token2 = JWTUtil.createToken(userTokenDTO);
         System.out.println(token);
+        System.out.println(token2);
 
         // 验证
-        try {
             JsonParser obj = JWTUtil.parseToken(token);
             System.out.println(JWTUtil.getTokenInfo(obj));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 

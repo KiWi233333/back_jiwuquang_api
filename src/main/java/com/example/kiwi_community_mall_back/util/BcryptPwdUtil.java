@@ -1,5 +1,7 @@
 package com.example.kiwi_community_mall_back.util;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.security.SecureRandom;
 import java.util.Base64;
 
@@ -10,29 +12,30 @@ import java.util.Base64;
  * @author: Author作者
  * @date: 2023/4/19 17:00
  */
-public  class  BcryptPwdUtil {
+public class BcryptPwdUtil {
 
     private static final int SALT_LEN = 10;
 
 
     /**
-     * 生成加密的密码
+     * 生成随机盐和加密的密码
+     *
      * @param password
      * @return 加密密码
      */
-    public String encode(String password) {
-        String salt = getRandomSalt();
-
-        return encode(password, salt);
+    public static String encode(String password) {
+        String salt = getRandomSalt();// 生成随机盐
+        return encodeBySalt(password, salt);// 加密密码
     }
 
     /**
-     *  随机盐值，加密密码
+     * 提供盐加密密码
+     *
      * @param password
      * @param salt
      * @return
      */
-    public String encode(String password, String salt) {
+    public static String encodeBySalt(String password, String salt) {
         String saltedPassword = salt + password;
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         return encoder.encode(saltedPassword);// 加密
@@ -40,6 +43,7 @@ public  class  BcryptPwdUtil {
 
     /**
      * 验证密码是否正确
+     *
      * @param password
      * @param encodedPassword
      * @param salt
@@ -53,6 +57,7 @@ public  class  BcryptPwdUtil {
 
     /**
      * 生成随机盐
+     *
      * @return
      */
     public static String getRandomSalt() {

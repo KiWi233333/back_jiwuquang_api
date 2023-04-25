@@ -1,6 +1,7 @@
 package com.example.kiwi_community_mall_back;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
 import com.example.kiwi_community_mall_back.pojo.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
@@ -29,20 +30,25 @@ class ServiceTest {
 
     @Test
     void getUserSalt() {
-        UserSalt userSalt = userSaltMapper.selectOne(new QueryWrapper<UserSalt>().eq("users_id","44002332322235232311"));
+        UserSalt userSalt = userSaltMapper.selectOne(new QueryWrapper<UserSalt>().eq("user_id", "44002332322235232311"));
         System.out.println(userSalt);
     }
+
     @Test
     void getUserSalt2() {
-        System.out.println(usersService.getUserSalt("alice_green"));
-        System.out.println(usersService.getUserSalt("13415000000"));
-//        System.out.println(usersService.getUserSalt("Kiwi2333"));
-//        System.out.println(redisTemplate.opsForValue().get("user_check::Kiwi2333"));// 工具盐判断
+        System.out.println(userSaltService.getUserSalt("alice_green"));
+        System.out.println(userSaltService.getUserSalt("13415000000"));
+        System.out.println(userSaltService.getUserSalt("Kiwi2333"));
     }
 
+    @Test
+    void toRegister() {
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
+        userRegisterDTO.setUsername("233333");
+        userRegisterDTO.setPassword("123456");
 
-
-
+        System.out.println(usersService.toRegister(userRegisterDTO));
+    }
 
 
 }

@@ -15,7 +15,7 @@ import javax.validation.constraints.*;
  * @date: 2023/4/21 23:49
  */
 @Data
-public class UserRegister {
+public class UserRegisterDTO {
     @ApiModelProperty(value = "用户名",required = true)
     @Size(min = 6, max = 20, message = "用户名长度在6-20个字符之间")
     @NotBlank(message = "用户名不能为空")
