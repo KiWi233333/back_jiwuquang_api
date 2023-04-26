@@ -9,14 +9,11 @@ import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
 import com.example.kiwi_community_mall_back.util.JWTUtil;
 import com.example.kiwi_community_mall_back.util.Result;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.websocket.Session;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,7 +33,8 @@ public class UserService {
     @Autowired
     RedisTemplate redisTemplate;
 
-    final String phoneCodeKey = "login:phone:code:";
+    // 手机验证码key
+    final String PHONE_CODE_KEY = "login:phone:code:";
 
     /**
      * 密码登录
@@ -68,26 +66,26 @@ public class UserService {
     }
 
     /**
-     * 验证码登录 code
+     * 手机验证码登录 code
      *
      * @param phone
      * @param code
      * @return
      */
     public Result toUserLoginByCode(String phone, String code) {
-        Object res =  redisTemplate.opsForValue().get(phoneCodeKey+phone);
-        if (Objects.equals(res, "") || !Objects.equals(res, code))
+        String res = String.valueOf(redisTemplate.opsForValue().get(PHONE_CODE_KEY + phone));
+        if (StringUtil.isNullOrEmpty(res) || !res.equals(code))
             return Result.fail("验证码错误！");
-            // 3、验证
-            UserTokenDTO userTokenDTO = new UserTokenDTO();
-            User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone));
-            // 4、生成 Token
-            if (user!=null) {
-                userTokenDTO.setId(user.getId());
-                String token = JWTUtil.createToken(userTokenDTO);
-                return Result.ok("登录成功！", token);
-            }
-
+        // 3、验证
+        UserTokenDTO userTokenDTO = new UserTokenDTO();
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone));
+        // 4、生成 Token
+        if (user != null) {
+            userTokenDTO.setId(user.getId());
+            String token = JWTUtil.createToken(userTokenDTO);
+            redisTemplate.delete(PHONE_CODE_KEY + phone);
+            return Result.ok("登录成功！", token);
+        }
         return Result.fail("登录失败！");
     }
 
@@ -98,10 +96,27 @@ public class UserService {
      * @return
      */
     public Result getLoginCodeByPhone(String phone) {
+        if (redisTemplate.opsForValue().get(PHONE_CODE_KEY + phone) != null)
+            return Result.fail("验证码已发送，请60s后再重试！");
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone));
         if (user != null) {
-            int rand = (int) ((Math.random() * 9 + 1) * 100000);
-            redisTemplate.opsForValue().set(phoneCodeKey + phone, rand, 60, TimeUnit.SECONDS);
+            // 生成随机数
+            String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
+            redisTemplate.opsForValue().set(PHONE_CODE_KEY + phone, rand, 61, TimeUnit.SECONDS);
+            return Result.ok("获取成功！", rand);
+        } else {
+            return Result.fail("该用户未注册！");
+        }
+    }
+
+    public Result getLoginCodeByEmail(String email) {
+        if (redisTemplate.opsForValue().get(PHONE_CODE_KEY + email) != null)
+            return Result.fail("验证码已发送，请60s后再重试！");
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
+        if (user != null) {
+            // 生成随机数
+            String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
+            redisTemplate.opsForValue().set(PHONE_CODE_KEY + email, rand, 61, TimeUnit.SECONDS);
             return Result.ok("获取成功！", rand);
         } else {
             return Result.fail("该用户未注册！");
@@ -115,7 +130,6 @@ public class UserService {
      * @param userRegisterDTO
      * @return
      */
-    @CachePut(cacheNames = "user:id", key = "")
     public Result toRegister(UserRegisterDTO userRegisterDTO) {
         if (userRegisterDTO.getType() == 0) {// 手机号注册
             User user = new User();
@@ -165,5 +179,10 @@ public class UserService {
             }
         }
         return Result.fail("该用户已存在");
+    }
+
+    // 退出登录
+    public Result loginOut(String phone) {
+        return Result.ok();
     }
 }

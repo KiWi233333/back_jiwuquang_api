@@ -7,6 +7,7 @@ import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
 import com.example.kiwi_community_mall_back.util.interfaces.Phone;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 
 @Slf4j
@@ -39,9 +41,9 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "登录-验证码", tags = "登录")
-    @PostMapping(value = "/login/code")
-    Result toLoginByCode(@Valid @RequestBody LoginCodeDTO loginCodeDTO, BindingResult result) {
+    @ApiOperation(value = "登录-手机", tags = "登录")
+    @PostMapping(value = "/login/phone")
+    Result toLoginPhoneByCode(@Valid @RequestBody LoginCodeDTO loginCodeDTO, BindingResult result) {
         if (result.hasErrors()) {
             // 处理校验错误信息
             return Result.fail(result.getFieldError().getDefaultMessage());
@@ -50,12 +52,36 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "登录-获取手机验证码", tags = "登录")
-    @GetMapping(value = "/login/{phone}")
-    @Valid
-    Result getLoginCode( @PathVariable String phone) {
-        return usersService.getLoginCodeByPhone(phone);
+    @ApiOperation(value = "登录-邮箱", tags = "登录")
+    @PostMapping(value = "/login/email")
+    Result toLoginEmailByCode(@Valid @RequestBody LoginCodeDTO loginCodeDTO, BindingResult result) {
+        if (result.hasErrors()) {
+            // 处理校验错误信息
+            return Result.fail(result.getFieldError().getDefaultMessage());
+        } else {
+            return usersService.toUserLoginByCode(loginCodeDTO.getPhone(), loginCodeDTO.getCode());
+        }
     }
+
+    @ApiOperation(value = "登录-获取验证码", tags = "登录")
+    @GetMapping(value = "/login/code/{key}")
+    @ApiModelProperty(name = "key",value = "手机号/邮箱")
+    @ApiParam(name = "type",value = "类型：0手机号/ 1邮箱")
+    Result getLoginCodeByPhone(@PathVariable String key,@RequestParam Integer type) {
+        if (type==0) {// 手机号
+            return usersService.getLoginCodeByPhone(key);
+        }else {// 邮箱
+            return usersService.getLoginCodeByEmail(key);
+        }
+    }
+
+    @ApiOperation(value = "登录-退出登录", tags = "登录")
+    @DeleteMapping(value = "/login/out/{phone}")
+    @ApiParam(name = "phone",value = "手机号")
+    Result getLoginCodeByPhone(@PathVariable String phone) {
+        return usersService.loginOut(phone);
+    }
+
 
 
     /**

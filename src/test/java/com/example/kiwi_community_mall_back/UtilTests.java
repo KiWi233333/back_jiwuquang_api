@@ -45,7 +45,7 @@ class UtilTests {
         System.out.println(token2);
 
         // 验证
-            JsonParser obj = JWTUtil.parseToken(token);
+            JsonParser obj = JWTUtil.checkToken(token);
             System.out.println(JWTUtil.getTokenInfo(obj));
     }
 

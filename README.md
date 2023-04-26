@@ -8,5 +8,6 @@ Kiwi商城社区
 `lombok`
 `mybatis-plus`
 `java-jwt`
+`mybatis-plus-join`
 `swagger & swagger-ui`
 `slf4j`
