@@ -1,6 +1,7 @@
 package com.example.kiwi_community_mall_back.util;
 
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
@@ -12,6 +13,7 @@ import lombok.Data;
  * @date: 2023/4/7 21:35
  */
 @Data
+@AllArgsConstructor
 public class Result {
     /**
      * @code 状态码：
@@ -32,16 +34,6 @@ public class Result {
     private Object data;
 
 
-    public Result(Integer code, String message,Object data) {
-        this.code = code;
-        this.message = message;
-        // 防止传空
-        if (data==null) {
-            this.data="";
-        } else {
-            this.data = data;
-        }
-    }
     /**
      * 成功
      **/

@@ -7,6 +7,7 @@ import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
 import com.example.kiwi_community_mall_back.util.interfaces.Phone;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 
 @Slf4j
@@ -50,13 +52,17 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "登录-获取手机验证码", tags = "登录")
-    @GetMapping(value = "/login/{phone}")
-    @Valid
-    Result getLoginCode( @PathVariable String phone) {
-        return usersService.getLoginCodeByPhone(phone);
+    @ApiOperation(value = "登录-获取验证码", tags = "登录")
+    @GetMapping(value = "/login/code/{key}")
+    @ApiModelProperty(name = "key",value = "手机号/邮箱")
+    @ApiParam(name = "type",value = "类型：0手机号/ 1邮箱")
+    Result getLoginCodeByPhone(@PathVariable String key,@RequestParam Integer type) {
+        if (type==0) {// 手机号
+            return usersService.getLoginCodeByPhone(key);
+        }else {// 邮箱
+            return usersService.getLoginCodeByEmail(key);
+        }
     }
-
 
     /**
      * 注册相关（注册、验证码）
