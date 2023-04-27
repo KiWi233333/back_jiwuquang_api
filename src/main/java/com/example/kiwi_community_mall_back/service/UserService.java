@@ -168,7 +168,7 @@ public class UserService {
      * @return
      */
     public Result checkUserIsExist(String username) {
-        if (username.trim().equals("")) return Result.fail(20014, "用户名不能为空");// 判空
+        if (StringUtil.isNullOrEmpty(username)) return Result.fail(20014, "用户名不能为空");// 判空
         Object userCheck = redisTemplate.opsForValue().get(userSaltService.USER_SALT + username);// 获取redis缓存：工具盐判断
         if (userCheck == null) {
             return Result.ok("用户名可用");

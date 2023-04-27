@@ -27,24 +27,30 @@ public class UserSaltService {
     UserMapper userMapper;
     @Autowired
     RedisTemplate redisTemplate;
-    final String USER_SALT = "user:salt";
+    final String USER_SALT = "user:salt:";
 
     /**
      * 获取用户的加密密码和专属盐 （通过用户名/邮箱/手机号 为key存储盐）
      * @param username
      * @return
      */
-    @Cacheable(cacheNames = USER_SALT, key = "#username", unless = "#result==null") // 缓存数据库密码和盐值
     public UserCheckDTO getUserSalt(String username) {
-        MPJLambdaWrapper<User> qw = new MPJLambdaWrapper<>();
-        qw.select(User::getId, User::getPassword) // 用户表
-                .select(UserSalt::getSalt)// 盐表
-                .eq("t.username", username)
-                .or().eq("t.email", username)
-                .or().eq("t.phone", username)
-                .rightJoin(UserSalt.class, UserSalt::getUserId, User::getId); // 右表
-        // 返回该用户对应的盐值
-        return userMapper.selectJoinOne(UserCheckDTO.class, qw);
+        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT+username);
+        if (userCheckDTO!=null){ // 首先回去redis
+            return userCheckDTO;
+        }else{
+            MPJLambdaWrapper<User> qw = new MPJLambdaWrapper<>();
+            qw.select(User::getId, User::getPassword) // 用户表
+                    .select(UserSalt::getSalt)// 盐表
+                    .eq("t.username", username)
+                    .or().eq("t.email", username)
+                    .or().eq("t.phone", username)
+                    .rightJoin(UserSalt.class, UserSalt::getUserId, User::getId); // 右表
+            // 返回该用户对应的盐值
+            userCheckDTO =userMapper.selectJoinOne(UserCheckDTO.class, qw);
+            return userCheckDTO;
+        }
+
     }
 
     /**

@@ -67,7 +67,7 @@ public class UserController {
     @GetMapping(value = "/login/code/{key}")
     @ApiModelProperty(name = "key",value = "手机号/邮箱")
     @ApiParam(name = "type",value = "类型：0手机号/ 1邮箱")
-    Result getLoginCodeByPhone(@PathVariable String key,@RequestParam Integer type) {
+    Result getLoginCode(@PathVariable String key,@RequestParam Integer type) {
         if (type==0) {// 手机号
             return usersService.getLoginCodeByPhone(key);
         }else {// 邮箱
@@ -98,20 +98,17 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "注册-获取手机验证码")
-    @ApiParam(name = "email", value = "手机号")
-    @GetMapping(value = "/register/{phone}")
-    Result getRegisterByPhone(@PathVariable String phone) {
-        return usersService.getRegisterByPhone(phone);
+    @ApiOperation(value = "注册-获取验证码", tags = "登录")
+    @GetMapping(value = "/register/code/{key}")
+    @ApiModelProperty(name = "key",value = "手机号/邮箱")
+    @ApiParam(name = "type",value = "类型：0手机号/ 1邮箱")
+    Result getRegisterCode(@PathVariable String key,@RequestParam Integer type) {
+        if (type==0) {// 手机号
+            return usersService.getRegisterByPhone(key);
+        }else {// 邮箱
+            return usersService.getRegisterByEmail(key);
+        }
     }
-
-    @ApiOperation(value = "注册-获取邮箱验证码")
-    @GetMapping(value = "/register/{email}")
-    @ApiParam(name = "email", value = "邮箱")
-    Result getRegisterByEmail(@PathVariable String email) {
-        return usersService.getRegisterByEmail(email);
-    }
-
 
     @ApiOperation(value = "验证-用户是否存在")
     @ApiParam(name = "username", value = "用户名")
