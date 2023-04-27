@@ -168,12 +168,12 @@ public class UserService {
                     .setNickname("新用户")
                     .setAvatar("default.png");
         }
-        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId())) {
+        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId())==false) {
             return Result.fail("注册失败!");
         } else {
             if (u.getType() == 0) redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());
             if (u.getType() == 1) redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + user.getEmail(), user.getEmail());
-            return Result.ok("注册成功!");
+            return Result.ok("注册成功!",null);
         }
     }
 
@@ -198,11 +198,11 @@ public class UserService {
         if (StringUtil.isNullOrEmpty(username)) return Result.fail( "用户名不能为空");// 判空
         Object userCheck = redisTemplate.opsForValue().get(USER_SALT_KEY + username);// 获取redis缓存：工具盐判断
         if (userCheck == null) {
-            return Result.ok("用户名可用");
+            return Result.ok("用户名可用",null);
         } else {
             User user = userMapper.selectOne(new QueryWrapper<User>().select("username").eq("username", username));
             if (user == null) {
-                return Result.ok("用户名可用");
+                return Result.ok("用户名可用",null);
             }
         }
         return Result.fail("该用户已存在");
