@@ -7,11 +7,13 @@ import com.example.kiwi_community_mall_back.util.interfaces.Phone;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
 
 @Data
+@Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("user")
@@ -66,10 +68,10 @@ public class User {
     private UserStatus status;
 
     @TableField("is_email_verified")
-    private Boolean isEmailVerified;
+    private Integer isEmailVerified;
 
     @TableField("is_phone_verified")
-    private Boolean isPhoneVerified;
+    private Integer isPhoneVerified;
 
     /**
      * 会员等级

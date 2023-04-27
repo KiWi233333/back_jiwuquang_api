@@ -4,6 +4,7 @@ import com.example.kiwi_community_mall_back.dto.user.UserTokenDTO;
 import com.example.kiwi_community_mall_back.enums.Gender;
 import com.example.kiwi_community_mall_back.pojo.User;
 import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
+import com.example.kiwi_community_mall_back.util.CheckValidUtil;
 import com.example.kiwi_community_mall_back.util.JWTUtil;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -49,13 +50,30 @@ class UtilTests {
             System.out.println(JWTUtil.getTokenInfo(obj));
     }
 
+    // 测试密码加密
+    @Test
+    void BcyTest () {
+        String rand = BcryptPwdUtil.getRandomSalt();
+
+        System.out.println(rand);
+        System.out.println(BcryptPwdUtil.encodeBySalt("13131313131",rand));
+    }
 
     @Test
     void getUserEncodedPwd() {
 //        System.out.println(BcryptPwdUtil.encode("123456","4wechxge23ex21"));
         // 验证
         System.out.println(BcryptPwdUtil.matches("123456","$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y","4wechxge23ex21"));
+    }
 
+    @Test
+    void checkValidUtil() {
+        System.out.println(CheckValidUtil.checkEmail("13232sca@qq;,cox"));
+        System.out.println(CheckValidUtil.checkEmail("13232@qq.com"));
+        System.out.println(CheckValidUtil.checkEmail("13232@qqcom"));
+        System.out.println(CheckValidUtil.checkPhone("134150389237223"));
+        System.out.println(CheckValidUtil.checkPhone("13415237223"));
+        System.out.println(CheckValidUtil.checkPhone("13415037223"));
     }
 
 

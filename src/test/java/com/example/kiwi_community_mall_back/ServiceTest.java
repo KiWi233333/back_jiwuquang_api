@@ -44,9 +44,11 @@ class ServiceTest {
     @Test
     void toRegister() {
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO();
-        userRegisterDTO.setUsername("233333");
+        userRegisterDTO.setPhone("13415000001");
+        userRegisterDTO.setUsername("lulu233333");
         userRegisterDTO.setPassword("123456");
-
+        userRegisterDTO.setCode("123456");
+        userRegisterDTO.setType(0);
         System.out.println(usersService.toRegister(userRegisterDTO));
     }
 

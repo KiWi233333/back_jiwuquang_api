@@ -1,11 +1,11 @@
 package com.example.kiwi_community_mall_back.controller;
 
-import com.example.kiwi_community_mall_back.dto.user.LoginCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginDTO;
+import com.example.kiwi_community_mall_back.dto.user.LoginEmailCodeDTO;
+import com.example.kiwi_community_mall_back.dto.user.LoginPhoneCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
 import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
-import com.example.kiwi_community_mall_back.util.interfaces.Phone;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
@@ -16,7 +16,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 
 
 @Slf4j
@@ -43,23 +42,23 @@ public class UserController {
 
     @ApiOperation(value = "登录-手机", tags = "登录")
     @PostMapping(value = "/login/phone")
-    Result toLoginPhoneByCode(@Valid @RequestBody LoginCodeDTO loginCodeDTO, BindingResult result) {
+    Result toLoginPhoneByCode(@Valid @RequestBody LoginPhoneCodeDTO loginPhoneCodeDTO, BindingResult result) {
         if (result.hasErrors()) {
             // 处理校验错误信息
             return Result.fail(result.getFieldError().getDefaultMessage());
         } else {
-            return usersService.toUserLoginByCode(loginCodeDTO.getPhone(), loginCodeDTO.getCode());
+            return usersService.toUserLoginByPhoneCode(loginPhoneCodeDTO.getPhone(), loginPhoneCodeDTO.getCode());
         }
     }
 
     @ApiOperation(value = "登录-邮箱", tags = "登录")
     @PostMapping(value = "/login/email")
-    Result toLoginEmailByCode(@Valid @RequestBody LoginCodeDTO loginCodeDTO, BindingResult result) {
+    Result toLoginEmailByCode(@Valid @RequestBody LoginEmailCodeDTO loginEmailCodeDTO, BindingResult result) {
         if (result.hasErrors()) {
             // 处理校验错误信息
             return Result.fail(result.getFieldError().getDefaultMessage());
         } else {
-            return usersService.toUserLoginByCode(loginCodeDTO.getPhone(), loginCodeDTO.getCode());
+            return usersService.toUserLoginByEmailCode(loginEmailCodeDTO.getEmail(), loginEmailCodeDTO.getCode());
         }
     }
 
