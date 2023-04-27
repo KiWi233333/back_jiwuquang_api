@@ -168,7 +168,7 @@ public class UserService {
                     .setNickname("新用户")
                     .setAvatar("default.png");
         }
-        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId())==false) {
+        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId(),user.getPassword(),randSalt)==false) {
             return Result.fail("注册失败!");
         } else {
             if (u.getType() == 0) redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());

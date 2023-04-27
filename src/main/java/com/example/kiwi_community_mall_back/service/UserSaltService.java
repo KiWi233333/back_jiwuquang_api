@@ -8,12 +8,11 @@ import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
 import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_SALT_KEY;
-import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_SALT_MAPS_KEY;
+import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_SALT_DTO_KEY;
+
 
 /**
  * 用户登录个人盐值
@@ -37,7 +36,7 @@ public class UserSaltService {
      * @return
      */
     public UserCheckDTO getUserSalt(String username) {
-        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_KEY+username);
+        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_DTO_KEY+username);
         if (userCheckDTO!=null){ // 首先回去redis
             return userCheckDTO;
         }else{
@@ -60,13 +59,12 @@ public class UserSaltService {
      * @param userId
      * @return
      */
-    Boolean addUserSalt(String userId) {
-        UserSalt userSalt = new UserSalt();
-        userSalt.setUserId(userId);
-        userSalt.setSalt(BcryptPwdUtil.getRandomSalt());
+    Boolean addUserSalt(String userId,String password,String salt) {
+        UserSalt userSalt = new UserSalt(userId,salt);
+        UserCheckDTO userCheckDTO = new UserCheckDTO(userId,password, userSalt.getSalt());
         // 2、添加用户盐操作
         if (userSaltMapper.insert(userSalt) > 0) {
-            redisTemplate.opsForValue().set(USER_SALT_MAPS_KEY,userSalt);
+            redisTemplate.opsForValue().set(USER_SALT_DTO_KEY,userCheckDTO);
             return true;
         } else {
             return false;

@@ -1,4 +1,5 @@
 package com.example.kiwi_community_mall_back.dto.user;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 /**
  * 校验密码登录参数类
@@ -9,6 +10,7 @@ import lombok.Data;
  * @date: 2023/4/13 1:22
  */
 @Data
+@AllArgsConstructor
 public class UserCheckDTO {
     private String id;
     private String password;

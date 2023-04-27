@@ -11,7 +11,7 @@ package com.example.kiwi_community_mall_back.constant;
 public class UserConstant {
     /** 盐表 **/
     public static final String USER_SALT_KEY = "user:salt:";// 用户盐值
-    public static final String USER_SALT_MAPS_KEY = "user:salts:";// 用户全部盐表
+    public static final String USER_SALT_DTO_KEY = "user:salts:";// 用户全部盐表
 
     /** 验证码 **/
     public static final String PHONE_CODE_KEY = "login:phone:code:";// 登录临时手机号验证码

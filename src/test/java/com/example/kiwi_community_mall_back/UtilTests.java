@@ -52,18 +52,23 @@ class UtilTests {
 
     // 测试密码加密
     @Test
-    void BcyTest () {
+    void BcyTest() {
         String rand = BcryptPwdUtil.getRandomSalt();
 
         System.out.println(rand);
-        System.out.println(BcryptPwdUtil.encodeBySalt("13131313131",rand));
+        System.out.println(BcryptPwdUtil.encodeBySalt("13131313131", rand));
+        System.out.println("_________________________");
+        System.out.println(
+                BcryptPwdUtil.matches("1234567", "$2a$10$QwT5Eok/05MRIyQIQhrC5eLb6GZ8O631X20ewjnlSL0m7Jfb2k5IC", "H6qu2h8nPfPifQ==")
+        );
+
     }
 
     @Test
     void getUserEncodedPwd() {
 //        System.out.println(BcryptPwdUtil.encode("123456","4wechxge23ex21"));
         // 验证
-        System.out.println(BcryptPwdUtil.matches("123456","$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y","4wechxge23ex21"));
+        System.out.println(BcryptPwdUtil.matches("123456", "$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y", "4wechxge23ex21"));
     }
 
     @Test
