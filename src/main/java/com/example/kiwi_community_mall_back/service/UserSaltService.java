@@ -12,6 +12,9 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_SALT_KEY;
+import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_SALT_MAPS_KEY;
+
 /**
  * 用户登录个人盐值
  *
@@ -27,7 +30,6 @@ public class UserSaltService {
     UserMapper userMapper;
     @Autowired
     RedisTemplate redisTemplate;
-    final String USER_SALT = "user:salt:";
 
     /**
      * 获取用户的加密密码和专属盐 （通过用户名/邮箱/手机号 为key存储盐）
@@ -35,7 +37,7 @@ public class UserSaltService {
      * @return
      */
     public UserCheckDTO getUserSalt(String username) {
-        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT+username);
+        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_KEY+username);
         if (userCheckDTO!=null){ // 首先回去redis
             return userCheckDTO;
         }else{
@@ -54,24 +56,21 @@ public class UserSaltService {
     }
 
     /**
-     * 生成并添加盐
+     * 添加
      * @param userId
-     * @param password
+     * @param salt
      * @return
      */
-    String addUserSalt(String userId, String password) {
-        // 1、生成用户随机盐
-        String salt = BcryptPwdUtil.getRandomSalt();
-        String encodedPwd = BcryptPwdUtil.encodeBySalt(password, salt);// 加密密码
+    Boolean addUserSalt(String userId) {
         UserSalt userSalt = new UserSalt();
         userSalt.setUserId(userId);
-        userSalt.setSalt(salt);
+        userSalt.setSalt(BcryptPwdUtil.getRandomSalt());
         // 2、添加用户盐操作
         if (userSaltMapper.insert(userSalt) > 0) {
-            redisTemplate.opsForValue();
-            return encodedPwd;
+            redisTemplate.opsForValue().set(USER_SALT_MAPS_KEY,userSalt);
+            return true;
         } else {
-            return "";
+            return false;
         }
     }
 }

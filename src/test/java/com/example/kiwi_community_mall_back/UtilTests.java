@@ -46,8 +46,8 @@ class UtilTests {
         System.out.println(token2);
 
         // 验证
-            JsonParser obj = JWTUtil.checkToken(token);
-            System.out.println(JWTUtil.getTokenInfo(obj));
+        JsonParser obj = JWTUtil.checkToken(token);
+        System.out.println(JWTUtil.getTokenInfo(obj));
     }
 
     // 测试密码加密

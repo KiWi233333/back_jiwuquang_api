@@ -43,6 +43,6 @@ CREATE TABLE role (
 );
 -- 用户-角色关联表
 CREATE TABLE user_role (
-                           user_id BIGINT NOT NULL PRIMARY KEY,
-                           role_id BIGINT NOT NULL
+                           user_id CHAR(20) NOT NULL PRIMARY KEY,
+                           role_id CHAR(20) NOT NULL
 );

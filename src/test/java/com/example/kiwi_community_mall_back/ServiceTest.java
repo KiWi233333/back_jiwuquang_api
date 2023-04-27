@@ -51,6 +51,13 @@ class ServiceTest {
         userRegisterDTO.setType(0);
         System.out.println(usersService.toRegister(userRegisterDTO));
     }
+    @Test
+    void toRegister2() {
+        System.out.println(usersService.getLoginCodeByPhone("13415000000"));
+        System.out.println(usersService.getRegisterCodeByPhone("13415000001"));
+        System.out.println(usersService.getLoginCodeByEmail("1329634@qq.com"));
+        System.out.println(usersService.getRegisterCodeByEmail("1329634233@qq.com"));
+    }
 
 
 }

@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
@@ -48,6 +49,7 @@ public class UserService {
      * @param password
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     public Result toUserLoginByPwd(String username, String password) {
         // 1、获取用户的盐值
         UserCheckDTO userCheckDTO = userSaltService.getUserSalt(username);
@@ -94,6 +96,7 @@ public class UserService {
         }
         return Result.fail("登录失败！");
     }
+
     public Result toUserLoginByEmailCode(String email, String code) {
         // 获取缓存验证码
         String res = String.valueOf(redisTemplate.opsForValue().get(EMAIL_CODE_KEY + email));
@@ -114,40 +117,27 @@ public class UserService {
 
     // 1) 获取登录手机验证码
     public Result getLoginCodeByPhone(String phone) {
-        if (!CheckValidUtil.checkPhone(phone))
-            return Result.fail("手机号不合法！");
-        // 1、获取缓存
-        if (redisTemplate.opsForValue().get(PHONE_CODE_KEY + phone) != null)
-            return Result.fail("验证码已发送，请60s后再重试！");
-        // 2、验证手机号是否已经被使用
-        if (redisTemplate.opsForValue().get(PHONE_MAPS_KEY + phone) == null && userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) == null) {
-            return Result.fail("该手机号未注册！");
-        } else {
-            redisTemplate.opsForValue().set(PHONE_MAPS_KEY + phone, phone);// 对数据库缓存
-        }
-        // 3、生成随机数
-        String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
-        redisTemplate.opsForValue().set(PHONE_CODE_KEY + phone, rand, 61, TimeUnit.SECONDS);
-        return Result.ok("获取成功！", rand);
+        return getCodeByPhone(phone, PHONE_CODE_KEY, 0);
     }
 
     // 2) 获取登录邮箱验证码
     public Result getLoginCodeByEmail(String email) {
-        if (!CheckValidUtil.checkEmail(email))
-            return Result.fail("邮箱不合法！");
-        // 1、获取缓存
-        if (redisTemplate.opsForValue().get(EMAIL_CODE_KEY + email) != null)
-            return Result.fail("验证码已发送，请60s后再重试！");
-        // 2、验证邮箱是否已经被使用
-        if (redisTemplate.opsForValue().get(EMAIL_MAPS_KEY + email) == null && userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) == null) {
-            return Result.fail("该邮箱未注册！");
-        } else {
-            redisTemplate.opsForValue().set(PHONE_MAPS_KEY + email, email);// 对数据库缓存
-        }
-        // 3、生成随机数
-        String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
-        redisTemplate.opsForValue().set(EMAIL_CODE_KEY + email, rand, 61, TimeUnit.SECONDS);
-        return Result.ok("获取成功！", rand);
+        return getCodeByEmail(email,EMAIL_CODE_KEY,0);
+//        if (!CheckValidUtil.checkEmail(email))
+//            return Result.fail("邮箱不合法！");
+//        // 1、获取缓存
+//        if (redisTemplate.opsForValue().get(EMAIL_CODE_KEY + email) != null)
+//            return Result.fail("验证码已发送，请60s后再重试！");
+//        // 2、验证邮箱是否已经被使用
+//        if (redisTemplate.opsForValue().get(EMAIL_MAPS_KEY + email) == null && userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) == null) {
+//            return Result.fail("该邮箱未注册！");
+//        } else {
+//            redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存
+//        }
+//        // 3、生成随机数
+//        String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
+//        redisTemplate.opsForValue().set(EMAIL_CODE_KEY + email, rand, 61, TimeUnit.SECONDS);
+//        return Result.ok("获取成功！", rand);
     }
 
 
@@ -157,18 +147,21 @@ public class UserService {
      * @param u
      * @return
      */
+    @Transactional // 开启事务
     public Result toRegister(UserRegisterDTO u) {
         int flag = 0;
         User user = new User();
         LocalDateTime date = LocalDateTime.now();
-        // 1、验证 验证码真伪
+        // 1、生成盐和密码加密
+        String randSalt = BcryptPwdUtil.getRandomSalt();
+        u.setPassword(BcryptPwdUtil.encodeBySalt(u.getPassword(), randSalt));
+        // 2、判断注册类型（手机|邮箱） 和 验证 验证码真伪
         String rCode;
         if (u.getType() == 0) {// 手机号注册
             rCode = (String) redisTemplate.opsForValue().get(PHONE_CHECK_CODE_KEY + u.getPhone());
             if (StringUtil.isNullOrEmpty(rCode) || !rCode.equals(u.getCode())) {// 判断是否一致
                 return Result.fail("短信未发送!");
             }
-            // 2、判断类型
             user.setUsername(u.getUsername())
                     .setPhone(u.getPhone())
                     .setPassword(u.getPassword())
@@ -177,13 +170,13 @@ public class UserService {
                     .setNickname("新用户")
                     .setIsPhoneVerified(1)
                     .setAvatar("default.png");
-        } else {// 邮箱注册
+        } else {// 1)邮箱注册
             rCode = (String) redisTemplate.opsForValue().get(EMAIL_CHECK_CODE_KEY + u.getEmail());
             if (StringUtil.isNullOrEmpty(rCode) || !rCode.equals(u.getCode())) {// 判断是否一致
                 return Result.fail("短信未发送!");
             }
             user.setUsername(u.getUsername())
-                    .setEmail(u.getUsername())
+                    .setEmail(u.getEmail())
                     .setPassword(u.getPassword())
                     .setCreateTime(date)
                     .setUpdateTime(date)
@@ -191,30 +184,25 @@ public class UserService {
                     .setNickname("新用户")
                     .setAvatar("default.png");
         }
-        flag = userMapper.insert(user);
-        if (flag > 0) {
-            redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());
-            return Result.ok("注册成功!");
-        } else {
-            redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + user.getPhone(), user.getPhone());
+        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId())) {
             return Result.fail("注册失败!");
+        } else {
+            if (u.getType() == 0) redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());
+            if (u.getType() == 1) redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + user.getEmail(), user.getEmail());
+            return Result.ok("注册成功!");
         }
     }
 
     // 1) 手机号注册-获取验证码
-    public Result getRegisterByPhone(String phone) {
-        if (!CheckValidUtil.checkPhone(phone))
-            return Result.fail("手机号不合法！");
-        String rCode = (String) redisTemplate.opsForValue().get(PHONE_CHECK_CODE_KEY + phone);
-        if (StringUtil.isNullOrEmpty(rCode)) return Result.fail("验证码已发送，请60s后再重试！");
-
-        return Result.fail("手机验证码，获取失败！");
+    public Result getRegisterCodeByPhone(String phone) {
+        return getCodeByPhone(phone, PHONE_CHECK_CODE_KEY, 1);// 1注册验证码
     }
 
     // 2) 邮箱注册-获取验证码
-    public Result getRegisterByEmail(String email) {
-        return Result.fail("邮箱验证码，获取失败！");
+    public Result getRegisterCodeByEmail(String email) {
+        return getCodeByEmail(email, EMAIL_CHECK_CODE_KEY, 1);// 1注册验证码
     }
+
 
     /**
      * 验证-用户是否存在
@@ -224,7 +212,7 @@ public class UserService {
      */
     public Result checkUserIsExist(String username) {
         if (StringUtil.isNullOrEmpty(username)) return Result.fail(20014, "用户名不能为空");// 判空
-        Object userCheck = redisTemplate.opsForValue().get(userSaltService.USER_SALT + username);// 获取redis缓存：工具盐判断
+        Object userCheck = redisTemplate.opsForValue().get(USER_SALT_KEY + username);// 获取redis缓存：工具盐判断
         if (userCheck == null) {
             return Result.ok("用户名可用");
         } else {
@@ -241,11 +229,55 @@ public class UserService {
         return Result.ok();
     }
 
+    // 获取手机号验证码，存储至不同的key
+    private Result getCodeByPhone(String phone, String KEY, Integer type) {// type 登录0 注册1
+        if (!CheckValidUtil.checkPhone(phone))
+            return Result.fail("手机号不合法！");
+        // 1、获取缓存
+        if (redisTemplate.opsForValue().get(KEY + phone) != null)
+            return Result.fail("验证码已发送，请60s后再重试！");
+        // 2、验证手机号是否已经被使用
+        if (type == 0) {// 登录0
+            if ( userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) == null) {
+                return Result.fail("该手机号未注册！");
+            }else {
+                redisTemplate.opsForValue().set(PHONE_MAPS_KEY + phone, phone);// 对数据库缓存
+            }
+        } else {// 注册1
+            if ( userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) != null) {
+                redisTemplate.opsForValue().set(PHONE_MAPS_KEY + phone, phone);// 对数据库缓存
+                return Result.fail("该手机号已经被使用！");
+            }
+        }
+        // 3、生成随机数
+        String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
+        redisTemplate.opsForValue().set(KEY + phone, rand, 61, TimeUnit.SECONDS);
+        return Result.ok("获取成功！", rand);
+    }
 
-//    // 获取缓存的验证码
-//    Result getRedisCode(String key) {
-//        String rCode = (String) redisTemplate.opsForValue().get(key);
-//        if (StringUtil.isNullOrEmpty(rCode)) return Result.fail("验证码已发送，请60s后再重试！");
-//        else return null;
-//    }
+    // 获取邮箱验证码，存储至不同的key
+    private Result getCodeByEmail(String email, String KEY, Integer type) {// type 登录0 注册1
+        if (!CheckValidUtil.checkEmail(email))
+            return Result.fail("邮箱不合法！");
+        // 1、获取缓存
+        if (redisTemplate.opsForValue().get(KEY + email) != null)
+            return Result.fail("验证码已发送，请60s后再重试！");
+        // 2、验证邮箱是否已经被使用
+        if (type==0){// 登录
+            if ( userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) == null) {
+                return Result.fail("该邮箱未注册！");
+            }else {
+                redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存邮箱号
+            }
+        }else {// 注册
+            if ( userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) != null) {
+                redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存邮箱号
+                return Result.fail("该邮箱已经被使用！");
+            }
+        }
+        // 3、生成随机数 并存储在redis设置有效期61s
+        String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
+        redisTemplate.opsForValue().set(KEY + email, rand, 61, TimeUnit.SECONDS);
+        return Result.ok("获取成功！", rand);
+    }
 }

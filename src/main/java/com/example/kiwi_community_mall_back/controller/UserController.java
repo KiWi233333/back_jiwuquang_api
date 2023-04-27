@@ -103,9 +103,9 @@ public class UserController {
     @ApiParam(name = "type",value = "类型：0手机号/ 1邮箱")
     Result getRegisterCode(@PathVariable String key,@RequestParam Integer type) {
         if (type==0) {// 手机号
-            return usersService.getRegisterByPhone(key);
+            return usersService.getRegisterCodeByPhone(key);
         }else {// 邮箱
-            return usersService.getRegisterByEmail(key);
+            return usersService.getRegisterCodeByEmail(key);
         }
     }
 
