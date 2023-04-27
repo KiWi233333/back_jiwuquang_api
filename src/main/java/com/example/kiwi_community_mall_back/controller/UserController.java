@@ -4,6 +4,7 @@ import com.example.kiwi_community_mall_back.dto.user.LoginDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginEmailCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginPhoneCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
+import com.example.kiwi_community_mall_back.service.UserSaltService;
 import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
 import io.swagger.annotations.Api;

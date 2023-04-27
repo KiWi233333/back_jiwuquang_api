@@ -58,7 +58,6 @@ public class UserSaltService {
     /**
      * 添加
      * @param userId
-     * @param salt
      * @return
      */
     Boolean addUserSalt(String userId) {

@@ -49,7 +49,6 @@ public class UserService {
      * @param password
      * @return
      */
-    @Transactional(rollbackFor = Exception.class)
     public Result toUserLoginByPwd(String username, String password) {
         // 1、获取用户的盐值
         UserCheckDTO userCheckDTO = userSaltService.getUserSalt(username);
@@ -66,7 +65,7 @@ public class UserService {
                 String token = JWTUtil.createToken(userTokenDTO);
                 return Result.ok("登录成功！", token);
             } else {
-                return Result.fail(20011, "密码错误！");
+                return Result.fail( "密码错误！");
             }
         }
         return Result.fail("无该用户！");
@@ -123,21 +122,6 @@ public class UserService {
     // 2) 获取登录邮箱验证码
     public Result getLoginCodeByEmail(String email) {
         return getCodeByEmail(email,EMAIL_CODE_KEY,0);
-//        if (!CheckValidUtil.checkEmail(email))
-//            return Result.fail("邮箱不合法！");
-//        // 1、获取缓存
-//        if (redisTemplate.opsForValue().get(EMAIL_CODE_KEY + email) != null)
-//            return Result.fail("验证码已发送，请60s后再重试！");
-//        // 2、验证邮箱是否已经被使用
-//        if (redisTemplate.opsForValue().get(EMAIL_MAPS_KEY + email) == null && userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) == null) {
-//            return Result.fail("该邮箱未注册！");
-//        } else {
-//            redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存
-//        }
-//        // 3、生成随机数
-//        String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
-//        redisTemplate.opsForValue().set(EMAIL_CODE_KEY + email, rand, 61, TimeUnit.SECONDS);
-//        return Result.ok("获取成功！", rand);
     }
 
 
@@ -211,7 +195,7 @@ public class UserService {
      * @return
      */
     public Result checkUserIsExist(String username) {
-        if (StringUtil.isNullOrEmpty(username)) return Result.fail(20014, "用户名不能为空");// 判空
+        if (StringUtil.isNullOrEmpty(username)) return Result.fail( "用户名不能为空");// 判空
         Object userCheck = redisTemplate.opsForValue().get(USER_SALT_KEY + username);// 获取redis缓存：工具盐判断
         if (userCheck == null) {
             return Result.ok("用户名可用");
