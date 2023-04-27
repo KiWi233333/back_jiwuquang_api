@@ -7,7 +7,7 @@ CREATE TABLE user (
                       username VARCHAR(50) UNIQUE ,
                       password CHAR(60) NOT NULL,
                       email VARCHAR(50) UNIQUE,
-                      phone VARCHAR(15) UNIQUE NOT NULL,
+                      phone VARCHAR(15) UNIQUE,
                       nickname VARCHAR(50) NOT NULL,
                       gender ENUM('男', '女', '保密') DEFAULT '保密',
                       avatar VARCHAR(128) DEFAULT 'default.png',
@@ -34,7 +34,7 @@ CREATE TABLE user_salt (
                            salt VARCHAR(100) NOT NULL
 );
 
-INSERT INTO user_salt VALUES("44002332322235232311", "4wechxge23ex21");
+INSERT INTO user_salt VALUES("2163652592439853323", "4wechxge23ex21");
 
 -- 角色表
 CREATE TABLE role (
@@ -46,3 +46,5 @@ CREATE TABLE user_role (
                            user_id CHAR(20) NOT NULL PRIMARY KEY,
                            role_id CHAR(20) NOT NULL
 );
+
+SELECT t.id,t.password,t1.salt FROM user t left JOIN user_salt t1 ON (t1.user_id = t.id) WHERE (t.username = "Kiwi2333" OR t.email ="Kiwi2333"  OR t.phone ="Kiwi2333" )
