@@ -3,14 +3,15 @@ package com.example.kiwi_community_mall_back.pojo;
 import com.baomidou.mybatisplus.annotation.*;
 import com.example.kiwi_community_mall_back.enums.Gender;
 import com.example.kiwi_community_mall_back.enums.UserStatus;
-import com.example.kiwi_community_mall_back.util.interfaces.Phone;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @Accessors(chain = true)
@@ -46,14 +47,17 @@ public class User {
     @TableField("avatar")
     private String avatar;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Shanghai")
     @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
+    private Date createTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Shanghai")
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
+    private Date updateTime;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "Asia/Shanghai")
     @TableField("last_login_time")
-    private LocalDateTime lastLoginTime;
+    private Date lastLoginTime;
 
     /**
      * 登录的ip
@@ -81,5 +85,7 @@ public class User {
      */
     @TableField("member_level")
     private Integer memberLevel;
+
+
 
 }

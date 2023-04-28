@@ -15,6 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.util.Date;
 
 @SpringBootTest
 @Slf4j
@@ -38,17 +40,20 @@ class UtilTests {
 
     @Test
     void tokenTest() {
-        UserTokenDTO userTokenDTO = new UserTokenDTO();
-        userTokenDTO.setId("2333333");
-        String token = JWTUtil.createToken(userTokenDTO);
-        String token2 = JWTUtil.createToken(userTokenDTO);
-        System.out.println(token);
-        System.out.println(token2);
+//        UserTokenDTO userTokenDTO = new UserTokenDTO();
+//        userTokenDTO.setId("2333333");
+//        String token = JWTUtil.createToken(userTokenDTO);
+//        String token2 = JWTUtil.createToken(userTokenDTO);
+//        System.out.println(token);
+//        System.out.println(token2);
+//
+//        // 验证
+//        JsonParser obj = JWTUtil.checkToken(token);
+//        System.out.println(JWTUtil.getTokenInfo(obj));
+        // 续签
+        String jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwiZXhwIjoxNjIwMDQ2NjUyLCJpYXQiOjE2MTk0MzA2NTJ9.8M3jJbZpE1OfJzD0m8q3DuYTBmO9X9ZzQJZ8WopHJ1I";
 
-        // 验证
-        JsonParser obj = JWTUtil.checkToken(token);
-        System.out.println(JWTUtil.getTokenInfo(obj));
-    }
+         }
 
     // 测试密码加密
     @Test

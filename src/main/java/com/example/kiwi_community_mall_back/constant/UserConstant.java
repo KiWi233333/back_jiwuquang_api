@@ -22,4 +22,7 @@ public class UserConstant {
     public static final String USERNAME_MAPS_KEY = "user:usernames:";// 用户名
     public static final String PHONE_MAPS_KEY = "user:phones:";// 手机号
     public static final String EMAIL_MAPS_KEY = "user:emails:";// 邮箱
+
+    public static final String USER_KEY = "user:id:";// 用户详细信息
+    public static final String USER_LIST_KEY = "user:list:";// 用户列表
 }

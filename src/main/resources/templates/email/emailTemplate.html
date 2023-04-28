@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>title</title>
+    <style>
+        body, html, div, ul, li, button, p, img, h1, h2, h3, h4, h5, h6 {
+            margin: 0;
+            padding: 0;
+        }
+
+        body, html {
+            background: #fff;
+            line-height: 1.8;
+            width: 100%;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            line-height: 1.8;
+        }
+
+        .email_warp {
+            height: 100vh;
+            min-height: 500px;
+            font-size: 14px;
+            color: #212121;
+            display: flex;
+            /* align-items: center; */
+            justify-content: center;
+        }
+
+        .logo {
+            width: 300px;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            backdrop-filter: blur(30px);
+            object-fit: cover;
+        }
+
+        .code {
+            display: block;
+            font-family: Bahnschrift;
+            box-sizing: border-box;
+            color: #ffffff;
+            margin-bottom: 30px;
+            background-color: #5d33f6;
+            border-radius: 10px;
+            box-shadow: 2px 2px 5px #4c69a9;
+            backdrop-filter: blur(30px);
+            font-weight: bold;
+            font-size: 40px;
+            word-spacing: 20px;
+            text-align: center;
+            letter-spacing: 20px;
+            text-indent: 20px;
+        }
+
+        h1.email-title {
+            font-size: 26px;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #252525;
+        }
+
+        links_btn {
+            text-align: center;
+            width: 100%;
+            margin: auto;
+        }
+
+        .warm_tips {
+            color: #757575;
+            background: #eee;
+            padding: 20px;
+            backdrop-filter: blur(30px);
+            border-radius: 10px;
+        }
+
+        .warm_tips .desc {
+            margin-bottom: 10px;
+        }
+
+
+        .qr_warp img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .email-footer {
+            margin-top: 2em;
+        }
+
+        #reset-password-email {
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #reset-password-email .accout_email {
+            color: #4C84FF;
+            display: block;
+            margin: 10px;
+        }
+    </style>
+</head>
+<!--主体-->
+<body>
+<section class="email_warp">
+    <div id="reset-password-email">
+        <img class="logo" src="https://img1.imgtp.com/2023/04/28/gtK9d9sl.png">
+
+        <h1 class="email-title">
+            尊敬的<span>用户，</span>您好：
+        </h1>
+        <div>
+            您正在为登录如下用户邮箱发送验证码：
+        </div>
+        <h4 class="accout_email" th:text="${EmailParams.get('email')}"></h4>
+        <span class="code" th:text="${EmailParams.get('code')}"></span>
+        <div class="warm_tips">
+            <div class="desc">
+                为安全起见，以上验证码为一次性，且仅在5分钟内有效，请您尽快完成操作。
+            </div>
+            <p>如有任何疑问或无法完成，请通过如下方式与我们联系：</p>
+            <p>邮箱：qq1329634286@163.com</p>
+            <p>本邮件由系统自动发送，请勿回复。</p>
+        </div>
+
+        <div class="email-footer">
+            <p>@Kiwi2333</p>
+        </div>
+    </div>
+</section>
+</body>
+
+</html>
+

@@ -1,5 +1,6 @@
 package com.example.kiwi_community_mall_back.service;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
@@ -17,8 +18,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import javax.validation.constraints.Email;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.kiwi_community_mall_back.constant.UserConstant.*;
@@ -40,6 +43,8 @@ public class UserService {
     UserSaltService userSaltService;
     @Autowired
     RedisTemplate redisTemplate;
+    @Autowired
+    MailService mailService;
 
 
     /**
@@ -65,7 +70,7 @@ public class UserService {
                 String token = JWTUtil.createToken(userTokenDTO);
                 return Result.ok("登录成功！", token);
             } else {
-                return Result.fail( "密码错误！");
+                return Result.fail("密码错误！");
             }
         }
         return Result.fail("无该用户！");
@@ -121,7 +126,7 @@ public class UserService {
 
     // 2) 获取登录邮箱验证码
     public Result getLoginCodeByEmail(String email) {
-        return getCodeByEmail(email,EMAIL_CODE_KEY,0);
+        return getCodeByEmail(email, EMAIL_CODE_KEY, 0);
     }
 
 
@@ -135,7 +140,7 @@ public class UserService {
     public Result toRegister(UserRegisterDTO u) {
         int flag = 0;
         User user = new User();
-        LocalDateTime date = LocalDateTime.now();
+        Date date = new Date();
         // 1、生成盐和密码加密
         String randSalt = BcryptPwdUtil.getRandomSalt();
         u.setPassword(BcryptPwdUtil.encodeBySalt(u.getPassword(), randSalt));
@@ -168,13 +173,13 @@ public class UserService {
                     .setNickname("新用户")
                     .setAvatar("default.png");
         }
-        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId(),user.getPassword(),randSalt)==false) {
+        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt) == false) {
             return Result.fail("注册失败!");
         } else {
             if (u.getType() == 0) redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());
             if (u.getType() == 1) redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + user.getEmail(), user.getEmail());
             redisTemplate.opsForValue().set(USERNAME_MAPS_KEY + user.getUsername(), user.getUsername());
-            return Result.ok("注册成功!",null);
+            return Result.ok("注册成功!", null);
         }
     }
 
@@ -196,25 +201,31 @@ public class UserService {
      * @return
      */
     public Result checkUserIsExist(String username) {
-        if (StringUtil.isNullOrEmpty(username)) return Result.fail( "用户名不能为空");// 判空
-       User user;
-       // 缓存是否存在
-        if ( redisTemplate.opsForValue().get(USERNAME_MAPS_KEY + username)!=null) {
+        if (StringUtil.isNullOrEmpty(username)) return Result.fail("用户名不能为空！");// 判空
+        if (!CheckValidUtil.checkUsername(username)) return Result.fail("用户名不合法！");// 用户名不合法
+        User user;
+        // 缓存是否存在
+        if (redisTemplate.opsForValue().get(USERNAME_MAPS_KEY + username) != null) {
             log.info("该用户已存在，用户名Redis");
             return Result.fail("该用户已存在");
         } else {
             user = userMapper.selectOne(new QueryWrapper<User>().select("username").eq("username", username));
         }
         // 数据库查询为不为空并保存redis
-        if (user!=null){
+        if (user != null) {
             redisTemplate.opsForValue().set(USERNAME_MAPS_KEY + user.getUsername(), user.getUsername());
-            return Result.fail("该用户已存在");
+            return Result.fail("该用户已存在！");
         }
 
-        return Result.ok("用户名可用",null);
+        return Result.ok("用户名可用！", null);
     }
 
-    // 退出登录
+    /**
+     * 退出登录
+     *
+     * @param phone
+     * @return
+     */
     public Result loginOut(String phone) {
         return Result.ok();
     }
@@ -228,13 +239,13 @@ public class UserService {
             return Result.fail("验证码已发送，请60s后再重试！");
         // 2、验证手机号是否已经被使用
         if (type == 0) {// 登录0
-            if ( userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) == null) {
+            if (userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) == null) {
                 return Result.fail("该手机号未注册！");
-            }else {
+            } else {
                 redisTemplate.opsForValue().set(PHONE_MAPS_KEY + phone, phone);// 对数据库缓存
             }
         } else {// 注册1
-            if ( userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) != null) {
+            if (userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) != null) {
                 redisTemplate.opsForValue().set(PHONE_MAPS_KEY + phone, phone);// 对数据库缓存
                 return Result.fail("该手机号已经被使用！");
             }
@@ -250,24 +261,60 @@ public class UserService {
         if (!CheckValidUtil.checkEmail(email))
             return Result.fail("邮箱不合法！");
         // 1、获取缓存
-        if (redisTemplate.opsForValue().get(KEY + email) != null)
+        if (redisTemplate.opsForValue().get(KEY + email) != null && redisTemplate.getExpire(KEY + email) > 240)
             return Result.fail("验证码已发送，请60s后再重试！");
         // 2、验证邮箱是否已经被使用
-        if (type==0){// 登录
-            if ( userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) == null) {
+        if (type == 0) {// 登录
+            if (userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) == null) {
                 return Result.fail("该邮箱未注册！");
-            }else {
+            } else {
                 redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存邮箱号
             }
-        }else {// 注册
-            if ( userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) != null) {
+        } else {// 注册
+            if (userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) != null) {
                 redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存邮箱号
                 return Result.fail("该邮箱已经被使用！");
             }
         }
         // 3、生成随机数 并存储在redis设置有效期61s
         String rand = String.valueOf((int) ((Math.random() * 9 + 1) * Math.pow(10, 5)));
-        redisTemplate.opsForValue().set(KEY + email, rand, 61, TimeUnit.SECONDS);
-        return Result.ok("获取成功！", rand);
+        try {
+            mailService.sendCodeMail(email, "验证码", type == 0 ? "登录" : "注册", rand);
+            redisTemplate.opsForValue().set(KEY + email, rand, 300, TimeUnit.SECONDS);// 缓存
+            return Result.ok("发送成功，请查看邮箱，5分钟有效！", null);// success成功
+        } catch (MessagingException e1) {
+            log.error(e1.getMessage());
+            return Result.fail("邮件发送失败！");
+        }
+
+    }
+
+
+    /**
+     * 用户信息相关
+     */
+    // 1、获取用户所有信息
+    public Result getUserInfoByToken(String token) {
+        // 用户token
+        UserTokenDTO userTokenDTO;
+        try {
+            userTokenDTO = JWTUtil.getTokenInfoByToken(token);
+        } catch (TokenExpiredException e){
+            return Result.fail("用户过期，请重新登录！");
+        }catch (Exception e2){
+            return Result.fail("用户token错误！");
+        }
+        // 拿缓存
+        User user = (User) redisTemplate.opsForValue().get(USER_KEY + userTokenDTO.getId());
+        log.info("用户查询");
+        // 拿数据库
+        if (user == null) {
+            user = userMapper.selectById(userTokenDTO.getId());
+            if (user==null){
+                return Result.fail("无该用户！");
+            }
+            redisTemplate.opsForValue().set(USER_KEY + userTokenDTO.getId(),user);
+        }
+        return Result.ok(user);
     }
 }

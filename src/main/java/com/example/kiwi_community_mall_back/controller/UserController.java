@@ -1,5 +1,6 @@
 package com.example.kiwi_community_mall_back.controller;
 
+import com.example.kiwi_community_mall_back.constant.JwtConstant;
 import com.example.kiwi_community_mall_back.dto.user.LoginDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginEmailCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginPhoneCodeDTO;
@@ -7,15 +8,14 @@ import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
 import com.example.kiwi_community_mall_back.service.UserSaltService;
 import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.netty.util.internal.StringUtil;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 
@@ -120,10 +120,19 @@ public class UserController {
     /**
      * 用户基本信息（增删查改）
      */
-    @ApiOperation(value = "验证-用户名是否存在", tags = "登录注册模块")
+    @ApiOperation(value = "验证-用户名是否存在", tags = "用户基本信息模块")
     @ApiParam(name = "username", value = "用户名")
     @GetMapping("/user/exist")
     Result checkUserExisted(@RequestParam String username) {
         return usersService.checkUserIsExist(username);
+    }
+
+
+    @ApiOperation(value = "获取用户信息", tags = "用户基本信息模块")
+    @ApiImplicitParam(name = "token", value = "用户token",required = true)
+    @GetMapping("/user/info")
+    Result getUserInfo( @RequestHeader("Authorization") String token) {
+        if (StringUtil.isNullOrEmpty(token)) return Result.fail("未携带用户token！");
+        return usersService.getUserInfoByToken(token);
     }
 }

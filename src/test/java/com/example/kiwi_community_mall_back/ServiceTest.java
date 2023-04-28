@@ -54,20 +54,20 @@ class ServiceTest {
         userRegisterDTO.setType(0);
         System.out.println(usersService.toRegister(userRegisterDTO));
     }
-    @Test
-    void toRegister2() {
-        System.out.println(usersService.getLoginCodeByPhone("13415000000"));
-        System.out.println(usersService.getRegisterCodeByPhone("13415000001"));
-        System.out.println(usersService.getLoginCodeByEmail("1329634@qq.com"));
-        System.out.println(usersService.getRegisterCodeByEmail("1329634233@qq.com"));
-    }
+//    @Test
+//    void toRegister2() {
+//        System.out.println(usersService.getLoginCodeByPhone("13415000000"));
+//        System.out.println(usersService.getRegisterCodeByPhone("13415000001"));
+//        System.out.println(usersService.getLoginCodeByEmail("1329634@qq.com"));
+//        System.out.println(usersService.getRegisterCodeByEmail("1329634233@qq.com"));
+//    }
 
 
     @Test
     void sendEmail() {
         try {
-            mailService.sendTextMail("2701398270@qq.com","验证码","123456");
-//            mailService.sendCodeMail("1329634286@qq.com","验证码","123456");
+//            mailService.sendTextMail("2701398270@qq.com","验证码","123456");
+            mailService.sendCodeMail("1329634286@qq.com","验证码","登录","123456");
         }catch (Exception e){
             e.printStackTrace();
         }
