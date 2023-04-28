@@ -173,6 +173,7 @@ public class UserService {
         } else {
             if (u.getType() == 0) redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());
             if (u.getType() == 1) redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + user.getEmail(), user.getEmail());
+            redisTemplate.opsForValue().set(USERNAME_MAPS_KEY + user.getUsername(), user.getUsername());
             return Result.ok("注册成功!",null);
         }
     }
@@ -196,16 +197,21 @@ public class UserService {
      */
     public Result checkUserIsExist(String username) {
         if (StringUtil.isNullOrEmpty(username)) return Result.fail( "用户名不能为空");// 判空
-        Object userCheck = redisTemplate.opsForValue().get(USER_SALT_KEY + username);// 获取redis缓存：工具盐判断
-        if (userCheck == null) {
-            return Result.ok("用户名可用",null);
+       User user;
+       // 缓存是否存在
+        if ( redisTemplate.opsForValue().get(USERNAME_MAPS_KEY + username)!=null) {
+            log.info("该用户已存在，用户名Redis");
+            return Result.fail("该用户已存在");
         } else {
-            User user = userMapper.selectOne(new QueryWrapper<User>().select("username").eq("username", username));
-            if (user == null) {
-                return Result.ok("用户名可用",null);
-            }
+            user = userMapper.selectOne(new QueryWrapper<User>().select("username").eq("username", username));
         }
-        return Result.fail("该用户已存在");
+        // 数据库查询为不为空并保存redis
+        if (user!=null){
+            redisTemplate.opsForValue().set(USERNAME_MAPS_KEY + user.getUsername(), user.getUsername());
+            return Result.fail("该用户已存在");
+        }
+
+        return Result.ok("用户名可用",null);
     }
 
     // 退出登录

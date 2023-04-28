@@ -43,6 +43,7 @@ CREATE TABLE role (
 );
 -- 用户-角色关联表
 CREATE TABLE user_role (
+                           id CHAR(20) NOT NULL PRIMARY KEY,
                            user_id CHAR(20) NOT NULL PRIMARY KEY,
                            role_id CHAR(20) NOT NULL
 );
