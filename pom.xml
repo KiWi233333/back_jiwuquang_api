@@ -44,6 +44,12 @@
             <optional>true</optional>
         </dependency>
 
+        <!--  email  -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!--    #####################开发框架####################       -->
         <!--  mysql  -->
         <dependency>
@@ -104,6 +110,11 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.adrianlange</groupId>
+            <artifactId>mailserver-configuration-discovery</artifactId>
+            <version>0.0.3</version>
         </dependency>
 
     </dependencies>

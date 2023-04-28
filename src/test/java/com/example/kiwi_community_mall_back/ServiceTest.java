@@ -5,6 +5,7 @@ import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
 import com.example.kiwi_community_mall_back.pojo.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
+import com.example.kiwi_community_mall_back.service.MailService;
 import com.example.kiwi_community_mall_back.service.UserSaltService;
 import com.example.kiwi_community_mall_back.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,8 @@ class ServiceTest {
     UserSaltService userSaltService;
     @Autowired
     RedisTemplate redisTemplate;
+    @Autowired
+    MailService mailService;
 
 
     @Test
@@ -60,4 +63,13 @@ class ServiceTest {
     }
 
 
+    @Test
+    void sendEmail() {
+        try {
+            mailService.sendTextMail("2701398270@qq.com","验证码","123456");
+//            mailService.sendCodeMail("1329634286@qq.com","验证码","123456");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

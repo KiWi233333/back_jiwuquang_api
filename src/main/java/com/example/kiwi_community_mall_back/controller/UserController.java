@@ -117,6 +117,9 @@ public class UserController {
         }
     }
 
+    /**
+     * 用户基本信息（增删查改）
+     */
     @ApiOperation(value = "验证-用户名是否存在", tags = "登录注册模块")
     @ApiParam(name = "username", value = "用户名")
     @GetMapping("/user/exist")
