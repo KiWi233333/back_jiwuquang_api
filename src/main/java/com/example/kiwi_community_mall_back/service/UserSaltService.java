@@ -5,7 +5,6 @@ import com.example.kiwi_community_mall_back.pojo.User;
 import com.example.kiwi_community_mall_back.pojo.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
-import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,39 +31,39 @@ public class UserSaltService {
 
     /**
      * 获取用户的加密密码和专属盐 （通过用户名/邮箱/手机号 为key存储盐）
-     * @param username
-     * @return
+     *
+     * @param username 用户名/邮箱/手机号
+     * @return UserCheckDTO
      */
     public UserCheckDTO getUserSalt(String username) {
-        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_DTO_KEY+username);
-        if (userCheckDTO!=null){ // 首先回去redis
-            return userCheckDTO;
-        }else{
+        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_DTO_KEY + username);
+        if (userCheckDTO == null) {// 空则从数据库取
             MPJLambdaWrapper<User> qw = new MPJLambdaWrapper<>();
             qw.select(User::getId, User::getPassword) // 用户表
                     .select(UserSalt::getSalt)// 盐表
-                    .eq("t.username", username)
-                    .or().eq("t.email", username)
-                    .or().eq("t.phone", username)
-                    .rightJoin(UserSalt.class, UserSalt::getUserId, User::getId); // 右表
+                    .eq("t.username", username).or().eq("t.email", username).or().eq("t.phone", username).rightJoin(UserSalt.class, UserSalt::getUserId, User::getId); // 右表
             // 返回该用户对应的盐值
-            userCheckDTO =userMapper.selectJoinOne(UserCheckDTO.class, qw);
-            return userCheckDTO;
+            userCheckDTO = userMapper.selectJoinOne(UserCheckDTO.class, qw);
         }
+        return userCheckDTO;
+
 
     }
 
     /**
-     * 添加
-     * @param userId
-     * @return
+     * 添加用户盐
+     *
+     * @param userId 用户id
+     * @param password 加密后密码
+     * @param salt 盐值
+     * @return Boolean 是否成功
      */
-    Boolean addUserSalt(String userId,String password,String salt) {
-        UserSalt userSalt = new UserSalt(userId,salt);
-        UserCheckDTO userCheckDTO = new UserCheckDTO(userId,password, userSalt.getSalt());
+     public Boolean addUserSalt(String userId, String password, String salt) {
+        UserSalt userSalt = new UserSalt(userId, salt);
+        UserCheckDTO userCheckDTO = new UserCheckDTO(userId, password, userSalt.getSalt());
         // 2、添加用户盐操作
         if (userSaltMapper.insert(userSalt) > 0) {
-            redisTemplate.opsForValue().set(USER_SALT_DTO_KEY,userCheckDTO);
+            redisTemplate.opsForValue().set(USER_SALT_DTO_KEY, userCheckDTO);
             return true;
         } else {
             return false;

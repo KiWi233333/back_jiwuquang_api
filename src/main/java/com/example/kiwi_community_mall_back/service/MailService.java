@@ -32,10 +32,10 @@ public class MailService {
     /**
      * 发送验证码文件
      * @param to 收件人
-     * @param theme
+     * @param theme 主题
      * @param type 注册、修改和 登录
      * @param code 验证码
-     * @throws MessagingException
+     * @throws MessagingException 发送失败
      */
     public void sendCodeMail(String to,String theme, String type, String code) throws MessagingException {
         MimeMessage mimeMessage =mailSender.createMimeMessage();
@@ -63,7 +63,7 @@ public class MailService {
      * @param to  收件人
      * @param title 标题
      * @param content 正文
-     * @throws Exception
+     * @throws Exception 失败
      */
     public void sendTextMail(String to, String title, String content)throws Exception{
         SimpleMailMessage message = new SimpleMailMessage();

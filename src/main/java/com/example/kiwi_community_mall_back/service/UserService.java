@@ -19,19 +19,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
-import javax.validation.constraints.Email;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.kiwi_community_mall_back.constant.UserConstant.*;
 
 /**
- * 描述
+ * 用户业务
  *
- * @className: UsersSercive
- * @author: Author作者
- * @description: TODO描述
+ * @className: UserService
+ * @author: Kiwi23333
+ * @description: 用户业务
  * @date: 2023/4/13 14:54
  */
 @Service
@@ -50,9 +48,9 @@ public class UserService {
     /**
      * 密码登录
      *
-     * @param username
-     * @param password
-     * @return
+     * @param username 用户名
+     * @param password 密码
+     * @return Result
      */
     public Result toUserLoginByPwd(String username, String password) {
         // 1、获取用户的盐值
@@ -79,9 +77,9 @@ public class UserService {
     /**
      * 手机验证码登录 code
      *
-     * @param phone
-     * @param code
-     * @return
+     * @param phone 手机号
+     * @param code 验证码
+     * @return Result
      */
     public Result toUserLoginByPhoneCode(String phone, String code) {
         // 获取缓存验证码
@@ -133,12 +131,11 @@ public class UserService {
     /**
      * 用户注册
      *
-     * @param u
-     * @return
+     * @param u UserRegisterDTO对象
+     * @return Result
      */
     @Transactional // 开启事务
     public Result toRegister(UserRegisterDTO u) {
-        int flag = 0;
         User user = new User();
         Date date = new Date();
         // 1、生成盐和密码加密
@@ -147,9 +144,9 @@ public class UserService {
         // 2、判断注册类型（手机|邮箱） 和 验证 验证码真伪
         String rCode;
         if (u.getType() == 0) {// 手机号注册
-            rCode = (String) redisTemplate.opsForValue().get(PHONE_CHECK_CODE_KEY + u.getPhone());
+            rCode = String.valueOf(redisTemplate.opsForValue().get(PHONE_CHECK_CODE_KEY + u.getPhone()));
             if (StringUtil.isNullOrEmpty(rCode) || !rCode.equals(u.getCode())) {// 判断是否一致
-                return Result.fail("短信未发送!");
+                return Result.fail("验证码错误!");
             }
             user.setUsername(u.getUsername())
                     .setPhone(u.getPhone())
@@ -160,9 +157,9 @@ public class UserService {
                     .setIsPhoneVerified(1)
                     .setAvatar("default.png");
         } else {// 1)邮箱注册
-            rCode = (String) redisTemplate.opsForValue().get(EMAIL_CHECK_CODE_KEY + u.getEmail());
+            rCode = String.valueOf(redisTemplate.opsForValue().get(EMAIL_CHECK_CODE_KEY + u.getEmail()));
             if (StringUtil.isNullOrEmpty(rCode) || !rCode.equals(u.getCode())) {// 判断是否一致
-                return Result.fail("短信未发送!");
+                return Result.fail("验证码错误!");
             }
             user.setUsername(u.getUsername())
                     .setEmail(u.getEmail())
@@ -173,7 +170,7 @@ public class UserService {
                     .setNickname("新用户")
                     .setAvatar("default.png");
         }
-        if (userMapper.insert(user) <= 0 || userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt) == false) {
+        if (userMapper.insert(user) <= 0 || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt))) {
             return Result.fail("注册失败!");
         } else {
             if (u.getType() == 0) redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());
@@ -197,8 +194,8 @@ public class UserService {
     /**
      * 验证-用户是否存在
      *
-     * @param username
-     * @return
+     * @param username 用户名
+     * @return Result
      */
     public Result checkUserIsExist(String username) {
         if (StringUtil.isNullOrEmpty(username)) return Result.fail("用户名不能为空！");// 判空
@@ -218,16 +215,6 @@ public class UserService {
         }
 
         return Result.ok("用户名可用！", null);
-    }
-
-    /**
-     * 退出登录
-     *
-     * @param phone
-     * @return
-     */
-    public Result loginOut(String phone) {
-        return Result.ok();
     }
 
     // 获取手机号验证码，存储至不同的key
@@ -255,6 +242,7 @@ public class UserService {
         redisTemplate.opsForValue().set(KEY + phone, rand, 61, TimeUnit.SECONDS);
         return Result.ok("获取成功！", rand);
     }
+
 
     // 获取邮箱验证码，存储至不同的key
     private Result getCodeByEmail(String email, String KEY, Integer type) {// type 登录0 注册1
@@ -289,6 +277,15 @@ public class UserService {
 
     }
 
+    /**
+     * 退出登录
+     *
+     * @param phone 手机号
+     * @return Result
+     */
+    public Result loginOut(String phone) {
+        return Result.ok();
+    }
 
     /**
      * 用户信息相关

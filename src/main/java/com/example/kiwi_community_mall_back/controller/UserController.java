@@ -1,11 +1,9 @@
 package com.example.kiwi_community_mall_back.controller;
 
-import com.example.kiwi_community_mall_back.constant.JwtConstant;
 import com.example.kiwi_community_mall_back.dto.user.LoginDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginEmailCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.LoginPhoneCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
-import com.example.kiwi_community_mall_back.service.UserSaltService;
 import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
 import io.netty.util.internal.StringUtil;
@@ -15,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 

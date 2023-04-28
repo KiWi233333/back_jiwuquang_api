@@ -1,6 +1,5 @@
 package com.example.kiwi_community_mall_back.config;
 
-import com.example.kiwi_community_mall_back.interceptor.TokenInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

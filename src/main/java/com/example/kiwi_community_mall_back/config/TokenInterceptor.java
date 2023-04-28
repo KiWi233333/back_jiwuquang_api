@@ -1,4 +1,4 @@
-package com.example.kiwi_community_mall_back.interceptor;
+package com.example.kiwi_community_mall_back.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.example.kiwi_community_mall_back.constant.JwtConstant;
