@@ -1,22 +1,20 @@
 package com.example.kiwi_community_mall_back;
 
-import com.example.kiwi_community_mall_back.dto.user.UserTokenDTO;
 import com.example.kiwi_community_mall_back.enums.Gender;
 import com.example.kiwi_community_mall_back.pojo.User;
 import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
 import com.example.kiwi_community_mall_back.util.CheckValidUtil;
-import com.example.kiwi_community_mall_back.util.JWTUtil;
+import com.example.kiwi_community_mall_back.util.RedisUtil;
 import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.util.Date;
 
 @SpringBootTest
 @Slf4j
@@ -53,7 +51,7 @@ class UtilTests {
         // 续签
         String jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyMTIzIiwiZXhwIjoxNjIwMDQ2NjUyLCJpYXQiOjE2MTk0MzA2NTJ9.8M3jJbZpE1OfJzD0m8q3DuYTBmO9X9ZzQJZ8WopHJ1I";
 
-         }
+    }
 
     // 测试密码加密
     @Test
@@ -86,5 +84,11 @@ class UtilTests {
         System.out.println(CheckValidUtil.checkPhone("13415037223"));
     }
 
+    @Autowired
+    RedisUtil redisUtil;
 
+    @Test
+    void redisUtil() {
+        redisUtil.set("23333", "23333");
+    }
 }

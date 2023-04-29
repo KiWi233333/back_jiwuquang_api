@@ -15,9 +15,19 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
+import static com.example.kiwi_community_mall_back.constant.JwtConstant.HEADER_NAME;
 
+
+/**
+ * 用户模块
+ *
+ * @className: TokenInterceptor
+ * @author: Kiwi23333
+ * @description: token验证拦截器
+ * @date: 2023/4/29 1:47
+ */
 @Slf4j
-@Api(value = "用户模块")
+@Api(value = "用户模块",tags = {"登录注册模块"})
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -67,25 +77,22 @@ public class UserController {
 
     @ApiOperation(value = "登录-获取验证码", tags = "登录注册模块")
     @GetMapping(value = "/login/code/{key}")
-    @ApiModelProperty(name = "key",value = "手机号/邮箱")
-    @ApiParam(name = "type",value = "类型：0手机号/ 1邮箱")
-    Result getLoginCode(@PathVariable String key,@RequestParam Integer type) {
-        if (type==0) {// 手机号
+    @ApiModelProperty(name = "key", value = "手机号/邮箱")
+    @ApiParam(name = "type", value = "类型：0手机号/ 1邮箱")
+    Result getLoginCode(@PathVariable String key, @RequestParam Integer type) {
+        if (type == 0) {// 手机号
             return usersService.getLoginCodeByPhone(key);
-        }else {// 邮箱
+        } else {// 邮箱
             return usersService.getLoginCodeByEmail(key);
         }
     }
 
-
     @ApiOperation(value = "登录-退出登录", tags = "登录注册模块")
-    @DeleteMapping(value = "/login/out/{phone}")
-    @ApiParam(name = "phone",value = "手机号")
-    Result getLoginCodeByPhone(@PathVariable String phone) {
-        return usersService.loginOut(phone);
+    @ApiImplicitParam(name = "token", value = "用户 token", required = true)
+    @DeleteMapping(value = "/exit")
+    Result getLoginCodeByPhone(@RequestHeader(name = HEADER_NAME) String token) {
+        return usersService.loginOut(token);
     }
-
-
 
     /**
      * 注册相关（注册、验证码）
@@ -105,12 +112,12 @@ public class UserController {
 
     @ApiOperation(value = "注册-获取验证码", tags = "登录注册模块")
     @GetMapping(value = "/register/code/{key}")
-    @ApiModelProperty(name = "key",value = "手机号/邮箱")
-    @ApiParam(name = "type",value = "类型：0手机号/ 1邮箱")
-    Result getRegisterCode(@PathVariable String key,@RequestParam Integer type) {
-        if (type==0) {// 手机号
+    @ApiModelProperty(name = "key", value = "手机号/邮箱")
+    @ApiParam(name = "type", value = "类型：0手机号/ 1邮箱")
+    Result getRegisterCode(@PathVariable String key, @RequestParam Integer type) {
+        if (type == 0) {// 手机号
             return usersService.getRegisterCodeByPhone(key);
-        }else {// 邮箱
+        } else {// 邮箱
             return usersService.getRegisterCodeByEmail(key);
         }
     }
@@ -120,16 +127,16 @@ public class UserController {
      */
     @ApiOperation(value = "验证-用户名是否存在", tags = "用户基本信息模块")
     @ApiParam(name = "username", value = "用户名")
-    @GetMapping("/user/exist")
+    @GetMapping("/exist")
     Result checkUserExisted(@RequestParam String username) {
         return usersService.checkUserIsExist(username);
     }
 
 
     @ApiOperation(value = "获取用户信息", tags = "用户基本信息模块")
-    @ApiImplicitParam(name = "token", value = "用户token",required = true)
-    @GetMapping("/user/info")
-    Result getUserInfo( @RequestHeader("Authorization") String token) {
+    @ApiImplicitParam(name = "token", value = "用户token", required = true)
+    @GetMapping("/info")
+    Result getUserInfo(@RequestHeader("Authorization") String token) {
         if (StringUtil.isNullOrEmpty(token)) return Result.fail("未携带用户token！");
         return usersService.getUserInfoByToken(token);
     }

@@ -2,6 +2,8 @@ package com.example.kiwi_community_mall_back.dto.user;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * 用户token内部存储信息类
  *

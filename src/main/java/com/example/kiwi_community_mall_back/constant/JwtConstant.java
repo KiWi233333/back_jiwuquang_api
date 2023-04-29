@@ -8,6 +8,6 @@ public class JwtConstant {//该类的常量值要根据具体的项目进行设�
     public static final String SUBJECT_OBJ = "kiwi2333";
     public static final String SECRET_KEY = "kihida23@wae3x"; // Secret密钥
     public static final String SAVE_OBJ_KEY = "user";
-    public static final long TOKEN_TIME = 1; // token过期时间(分钟)
+    public static final Integer TOKEN_TIME = 30; // token过期时间(分钟)
 }
 

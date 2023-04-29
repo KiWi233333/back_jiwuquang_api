@@ -109,13 +109,14 @@
 <body>
 <section class="email_warp">
     <div id="reset-password-email">
-        <img class="logo" src="https://img1.imgtp.com/2023/04/28/gtK9d9sl.png">
+        <img class="logo" src="https://img1.imgtp.com/2023/04/29/A5sHhliU.png">
 
         <h1 class="email-title">
             尊敬的<span>用户，</span>您好：
         </h1>
         <div>
-            您正在为登录如下用户邮箱发送验证码：
+            您正在<strong><th:block th:text="${EmailParams.get('type')}"></th:block></strong>
+                ，为如下用户邮箱发送验证码：
         </div>
         <h4 class="accout_email" th:text="${EmailParams.get('email')}"></h4>
         <span class="code" th:text="${EmailParams.get('code')}"></span>

@@ -81,7 +81,12 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(tokenInterceptor) // 注册拦截器
                 .addPathPatterns("/**") // 拦截所有请求
-                .excludePathPatterns("/user/login/**","/user/register/**")
+                .excludePathPatterns(
+                        "/res/**",
+                        "/user/login",
+                        "/user/login/**",
+                        "/user/register",
+                        "/user/register/**")
         ; // 排除登录请求
     }
 }
