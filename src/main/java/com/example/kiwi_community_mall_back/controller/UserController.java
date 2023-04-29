@@ -18,7 +18,8 @@ import javax.validation.Valid;
 
 @Slf4j
 @Api(value = "用户模块")
-@RestController("/user")
+@RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired

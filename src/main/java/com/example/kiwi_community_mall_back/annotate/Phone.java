@@ -1,4 +1,4 @@
-package com.example.kiwi_community_mall_back.util.interfaces;
+package com.example.kiwi_community_mall_back.annotate;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

@@ -1,6 +1,5 @@
 package com.example.kiwi_community_mall_back.dto.user;
 
-import com.example.kiwi_community_mall_back.util.interfaces.Phone;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

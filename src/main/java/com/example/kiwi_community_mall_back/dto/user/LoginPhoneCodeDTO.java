@@ -1,12 +1,10 @@
 package com.example.kiwi_community_mall_back.dto.user;
 
-import com.example.kiwi_community_mall_back.util.interfaces.Phone;
+import com.example.kiwi_community_mall_back.annotate.Phone;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**

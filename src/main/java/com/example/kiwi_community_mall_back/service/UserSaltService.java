@@ -1,11 +1,9 @@
 package com.example.kiwi_community_mall_back.service;
 
 import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
-import com.example.kiwi_community_mall_back.pojo.User;
 import com.example.kiwi_community_mall_back.pojo.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -38,12 +36,7 @@ public class UserSaltService {
     public UserCheckDTO getUserSalt(String username) {
         UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_DTO_KEY + username);
         if (userCheckDTO == null) {// 空则从数据库取
-            MPJLambdaWrapper<User> qw = new MPJLambdaWrapper<>();
-            qw.select(User::getId, User::getPassword) // 用户表
-                    .select(UserSalt::getSalt)// 盐表
-                    .eq("t.username", username).or().eq("t.email", username).or().eq("t.phone", username).rightJoin(UserSalt.class, UserSalt::getUserId, User::getId); // 右表
-            // 返回该用户对应的盐值
-            userCheckDTO = userMapper.selectJoinOne(UserCheckDTO.class, qw);
+            return userMapper.selectUserRJoinSaltByUsername(username);
         }
         return userCheckDTO;
 

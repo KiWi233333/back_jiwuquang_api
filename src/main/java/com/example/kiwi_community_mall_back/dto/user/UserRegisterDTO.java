@@ -1,9 +1,8 @@
 package com.example.kiwi_community_mall_back.dto.user;
 
-import com.example.kiwi_community_mall_back.util.interfaces.Phone;
+import com.example.kiwi_community_mall_back.annotate.Phone;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.constraints.*;
 
