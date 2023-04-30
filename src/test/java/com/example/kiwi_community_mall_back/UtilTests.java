@@ -1,7 +1,7 @@
 package com.example.kiwi_community_mall_back;
 
 import com.example.kiwi_community_mall_back.enums.Gender;
-import com.example.kiwi_community_mall_back.pojo.User;
+import com.example.kiwi_community_mall_back.pojo.user.User;
 import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
 import com.example.kiwi_community_mall_back.util.CheckValidUtil;
 import com.example.kiwi_community_mall_back.util.RedisUtil;
@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
 

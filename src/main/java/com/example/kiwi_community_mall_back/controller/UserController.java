@@ -6,7 +6,6 @@ import com.example.kiwi_community_mall_back.dto.user.LoginPhoneCodeDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
 import com.example.kiwi_community_mall_back.service.UserService;
 import com.example.kiwi_community_mall_back.util.Result;
-import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +20,9 @@ import static com.example.kiwi_community_mall_back.constant.JwtConstant.HEADER_N
 /**
  * 用户模块
  *
- * @className: TokenInterceptor
- * @author: Kiwi23333
- * @description: token验证拦截器
- * @date: 2023/4/29 1:47
  */
 @Slf4j
-@Api(value = "用户模块",tags = {"登录注册模块"})
+@Api(value = "用户模块",tags = {"用户模块"})
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -36,9 +31,8 @@ public class UserController {
     UserService usersService;
 
     /**
-     * 登录相关（登录、验证码）
+     * 登陆注册模块
      */
-
     @ApiOperation(value = "登录-密码", tags = "登录注册模块")
     @PostMapping(value = "/login/pwd")
     Result toLoginByPwd(@Valid @RequestBody LoginDTO loginDTO, BindingResult result) {
@@ -122,22 +116,6 @@ public class UserController {
         }
     }
 
-    /**
-     * 用户基本信息（增删查改）
-     */
-    @ApiOperation(value = "验证-用户名是否存在", tags = "用户基本信息模块")
-    @ApiParam(name = "username", value = "用户名")
-    @GetMapping("/exist")
-    Result checkUserExisted(@RequestParam String username) {
-        return usersService.checkUserIsExist(username);
-    }
 
 
-    @ApiOperation(value = "获取用户信息", tags = "用户基本信息模块")
-    @ApiImplicitParam(name = "token", value = "用户token", required = true)
-    @GetMapping("/info")
-    Result getUserInfo(@RequestHeader("Authorization") String token) {
-        if (StringUtil.isNullOrEmpty(token)) return Result.fail("未携带用户token！");
-        return usersService.getUserInfoByToken(token);
-    }
 }

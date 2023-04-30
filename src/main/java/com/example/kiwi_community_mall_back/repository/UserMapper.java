@@ -1,8 +1,8 @@
 package com.example.kiwi_community_mall_back.repository;
 
 import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
-import com.example.kiwi_community_mall_back.pojo.User;
-import com.example.kiwi_community_mall_back.pojo.UserSalt;
+import com.example.kiwi_community_mall_back.pojo.user.User;
+import com.example.kiwi_community_mall_back.pojo.user.UserSalt;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -19,4 +19,5 @@ public interface UserMapper extends MPJBaseMapper<User> {
         // 返回该用户对应的盐值
         return this.selectJoinOne(UserCheckDTO.class, qw);
     }
+
 }

@@ -59,6 +59,8 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
                     log.info("续签 剩余{}s", seconds);
                     redisTemplate.expireAt(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), new Date(System.currentTimeMillis() + (seconds + TOKEN_TIME * 60) * 1000));
                 }
+                // 将用户id放入
+                request.setAttribute("userId", userTokenDTO.getId());
                 return true;
             } catch (TokenExpiredException e1) {
                 log.info("身份已过期 {}", e1.getMessage());
@@ -72,7 +74,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
             }
         }else {
             response.sendError(400, "token不能为空!");
-            return true; // Token验证失败，请求中止
+            return false; // Token验证失败，请求中止
         }
     }
 }

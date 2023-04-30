@@ -2,12 +2,14 @@ package com.example.kiwi_community_mall_back;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
-import com.example.kiwi_community_mall_back.pojo.UserSalt;
+import com.example.kiwi_community_mall_back.pojo.user.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
+import com.example.kiwi_community_mall_back.repository.UserWalletMapper;
 import com.example.kiwi_community_mall_back.service.MailService;
 import com.example.kiwi_community_mall_back.service.UserSaltService;
 import com.example.kiwi_community_mall_back.service.UserService;
+import com.example.kiwi_community_mall_back.service.UserWalletService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,4 +74,22 @@ class ServiceTest {
             e.printStackTrace();
         }
     }
+
+
+    @Autowired
+    UserWalletService userWalletService;
+    @Autowired
+    UserWalletMapper userWalletMapper;
+    @Test
+    void addWallet(){
+        System.out.println(userWalletService.initUserWallet("123456"));
+//        System.out.println(userWalletMapper.updateById(new UserWallet().setUserId("123456").setBalance(12.30)));
+    }
+
+    @Test
+    void getRechargeCombo() {
+        System.out.println(userWalletService.getAllRechargeCombo());
+    }
+
+
 }

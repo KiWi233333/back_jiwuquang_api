@@ -28,4 +28,8 @@ public class UserConstant {
 
     public static final String USER_REFRESH_TOKEN_KEY = "user:refresh:token:";// 用户refresh_token
     public static final String USER_ACCESS_TOKEN_KEY = "user:access:token:";// 用户Token
+
+    /** 用户钱包 **/
+    public static final String USER_WALLET_KEY = "user:wallet:";// 钱包信息
+    public static final String USER_RECHARGE_COMBO_KEY = "user:wallet:combo";// 钱包信息
 }

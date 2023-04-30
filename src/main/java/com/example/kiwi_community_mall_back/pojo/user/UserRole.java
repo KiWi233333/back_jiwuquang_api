@@ -1,4 +1,4 @@
-package com.example.kiwi_community_mall_back.pojo;
+package com.example.kiwi_community_mall_back.pojo.user;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

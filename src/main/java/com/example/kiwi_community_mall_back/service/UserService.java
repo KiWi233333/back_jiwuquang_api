@@ -1,24 +1,22 @@
 package com.example.kiwi_community_mall_back.service;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.kiwi_community_mall_back.constant.JwtConstant;
 import com.example.kiwi_community_mall_back.constant.UserConstant;
 import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserTokenDTO;
-import com.example.kiwi_community_mall_back.pojo.User;
+import com.example.kiwi_community_mall_back.pojo.user.User;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.util.*;
+import com.example.kiwi_community_mall_back.vo.UserVO;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.thymeleaf.util.DateUtils;
 
-import javax.mail.MessagingException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -38,11 +36,14 @@ public class UserService {
     @Autowired
     UserMapper userMapper;
     @Autowired
+    RedisTemplate redisTemplate;
+    // 注入服务
+    @Autowired
     UserSaltService userSaltService;
     @Autowired
-    RedisTemplate redisTemplate;
-    @Autowired
     MailService mailService;
+    @Autowired
+    UserWalletService userWalletService;
 
 
     /**
@@ -89,8 +90,7 @@ public class UserService {
     public Result toUserLoginByPhoneCode(String phone, String code) {
         // 获取缓存验证码
         String res = String.valueOf(redisTemplate.opsForValue().get(PHONE_CODE_KEY + phone));
-        if (StringUtil.isNullOrEmpty(res) || !res.equals(code))
-            return Result.fail("验证码错误！");
+        if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
         // 3、验证
         UserTokenDTO userTokenDTO = new UserTokenDTO();
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone));
@@ -109,8 +109,7 @@ public class UserService {
     public Result toUserLoginByEmailCode(String email, String code) {
         // 获取缓存验证码
         String res = String.valueOf(redisTemplate.opsForValue().get(EMAIL_CODE_KEY + email));
-        if (StringUtil.isNullOrEmpty(res) || !res.equals(code))
-            return Result.fail("验证码错误！");
+        if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
         // 3、验证
         UserTokenDTO userTokenDTO = new UserTokenDTO();
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
@@ -140,11 +139,9 @@ public class UserService {
     // 3) 记录登录时间
     private boolean saveLoginTime(String id) {
         // 更新最后登录时间
-        User user = new User()
-                .setId(id)
-                .setLastLoginTime(new Date());
+        User user = new User().setId(id).setLastLoginTime(new Date());
         int flag = userMapper.updateById(user);
-        return flag ==1;
+        return flag == 1;
     }
 
     /**
@@ -162,36 +159,28 @@ public class UserService {
         u.setPassword(BcryptPwdUtil.encodeBySalt(u.getPassword(), randSalt));
         // 2、判断注册类型（手机|邮箱） 和 验证 验证码真伪
         String rCode;
+        // 用户基本信息
+        user.setUsername(u.getUsername()).setPassword(u.getPassword()).setCreateTime(date).setUpdateTime(date).setNickname("新用户").setAvatar("default.png");
         if (u.getType() == 0) {// 手机号注册
             rCode = String.valueOf(redisTemplate.opsForValue().get(PHONE_CHECK_CODE_KEY + u.getPhone()));
             if (StringUtil.isNullOrEmpty(rCode) || !rCode.equals(u.getCode())) {// 判断是否一致
                 return Result.fail("验证码错误!");
             }
-            user.setUsername(u.getUsername())
-                    .setPhone(u.getPhone())
-                    .setPassword(u.getPassword())
-                    .setCreateTime(date)
-                    .setUpdateTime(date)
-                    .setNickname("新用户")
-                    .setIsPhoneVerified(1)
-                    .setAvatar("default.png");
+            // 手机信息
+            user.setPhone(u.getPhone()).setIsPhoneVerified(1);
         } else {// 1)邮箱注册
             rCode = String.valueOf(redisTemplate.opsForValue().get(EMAIL_CHECK_CODE_KEY + u.getEmail()));
             if (StringUtil.isNullOrEmpty(rCode) || !rCode.equals(u.getCode())) {// 判断是否一致
                 return Result.fail("验证码错误!");
             }
-            user.setUsername(u.getUsername())
-                    .setEmail(u.getEmail())
-                    .setPassword(u.getPassword())
-                    .setCreateTime(date)
-                    .setUpdateTime(date)
-                    .setIsEmailVerified(1)
-                    .setNickname("新用户")
-                    .setAvatar("default.png");
+            // 邮箱信息
+            user.setEmail(u.getEmail()).setIsEmailVerified(1);
         }
-        if (userMapper.insert(user) <= 0 || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt))) {
+        // 插入用户、盐值、钱包信息 （3）
+        if (userMapper.insert(user) <= 0 || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt)) || userWalletService.initUserWallet(user.getId()) <= 0) {
             return Result.fail("注册失败!");
         } else {
+            // 缓存数据
             if (u.getType() == 0) redisTemplate.opsForValue().set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());
             if (u.getType() == 1) redisTemplate.opsForValue().set(EMAIL_MAPS_KEY + user.getEmail(), user.getEmail());
             redisTemplate.opsForValue().set(USERNAME_MAPS_KEY + user.getUsername(), user.getUsername());
@@ -238,11 +227,9 @@ public class UserService {
 
     // 1) 获取手机号验证码，存储至不同的key
     private Result getCodeByPhone(String phone, String KEY, Integer type) {// type 登录0 注册1
-        if (!CheckValidUtil.checkPhone(phone))
-            return Result.fail("手机号不合法！");
+        if (!CheckValidUtil.checkPhone(phone)) return Result.fail("手机号不合法！");
         // 1、获取缓存
-        if (redisTemplate.opsForValue().get(KEY + phone) != null)
-            return Result.fail("验证码已发送，请60s后再重试！");
+        if (redisTemplate.opsForValue().get(KEY + phone) != null) return Result.fail("验证码已发送，请60s后再重试！");
         // 2、验证手机号是否已经被使用
         if (type == 0) {// 登录0
             if (userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) == null) {
@@ -265,8 +252,7 @@ public class UserService {
 
     // 2) 获取邮箱验证码，存储至不同的key
     private Result getCodeByEmail(String email, String KEY, Integer type) {// type 登录0 注册1
-        if (!CheckValidUtil.checkEmail(email))
-            return Result.fail("邮箱不合法！");
+        if (!CheckValidUtil.checkEmail(email)) return Result.fail("邮箱不合法！");
         // 1、获取缓存
         if (redisTemplate.opsForValue().get(KEY + email) != null && redisTemplate.getExpire(KEY + email) > 240)
             return Result.fail("验证码已发送，请60s后再重试！");
@@ -308,8 +294,8 @@ public class UserService {
             // 删除缓存
             redisTemplate.delete(UserConstant.USER_REFRESH_TOKEN_KEY + userTokenDTO.getId());
             // 更新最后登录时间
-            if (saveLoginTime(userTokenDTO.getId())) return Result.ok("退出成功！",null);
-            log.info("login out user {}",userTokenDTO.getId());
+            if (saveLoginTime(userTokenDTO.getId())) return Result.ok("退出成功！", null);
+            log.info("login out user {}", userTokenDTO.getId());
         } catch (Exception e) {
             return Result.fail("退出失败！");
         }
@@ -320,30 +306,20 @@ public class UserService {
      * 用户信息相关
      */
     // 1、获取用户所有信息
-    public Result getUserInfoByToken(String token) {
-        // 用户token
-        UserTokenDTO userTokenDTO;
-        try {
-            userTokenDTO = JWTUtil.getTokenInfoByToken(token);
-        } catch (TokenExpiredException e) {
-            return Result.fail("用户过期，请重新登录！");
-        } catch (Exception e2) {
-            return Result.fail("用户token错误！");
-        }
+    public Result getUserInfoById(String userId) {
         // 拿缓存
-        User user = (User) redisTemplate.opsForValue().get(USER_KEY + userTokenDTO.getId());
+        User user = (User) redisTemplate.opsForValue().get(USER_KEY + userId);
         log.info("用户查询");
         // 拿数据库
         if (user == null) {
-            user = userMapper.selectById(userTokenDTO.getId());
+            user = userMapper.selectById(userId);
             if (user == null) {
                 return Result.fail("无该用户！");
             }
-            redisTemplate.opsForValue().set(USER_KEY + userTokenDTO.getId(), user);
+            redisTemplate.opsForValue().set(USER_KEY + userId, user);
         }
-        return Result.ok(user);
+        // 修改为用户的数据(排除部分数据)
+        return Result.ok(UserVO.formUser(user));
     }
-
-
 
 }

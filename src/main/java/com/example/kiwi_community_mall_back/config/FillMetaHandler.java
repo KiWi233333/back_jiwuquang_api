@@ -18,7 +18,10 @@ import java.util.Date;
 public class FillMetaHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
-        // 插入操作时不需要自动填充
+        // 插入操作时候自动填充
+        Date date = new Date();
+        this.setFieldValByName("updateTime", date, metaObject);
+        this.setFieldValByName("createTime", date, metaObject);
     }
 
     @Override

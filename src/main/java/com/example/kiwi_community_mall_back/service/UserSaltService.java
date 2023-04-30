@@ -1,7 +1,7 @@
 package com.example.kiwi_community_mall_back.service;
 
 import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
-import com.example.kiwi_community_mall_back.pojo.UserSalt;
+import com.example.kiwi_community_mall_back.pojo.user.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +12,9 @@ import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_SA
 
 
 /**
- * 用户登录个人盐值
+ * 个人盐值业务层
  *
- * @className: UsersSaltSercive
+ * @className: UserSaltService
  * @author: Kiwi2333
  * @date: 2023/4/13 14:54
  */
