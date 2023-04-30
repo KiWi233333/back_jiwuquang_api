@@ -9,4 +9,6 @@ package com.example.kiwi_community_mall_back.vo;
  * @date: 2023/5/1 2:13
  */
 public class UserInfoVO {
+
+
 }
