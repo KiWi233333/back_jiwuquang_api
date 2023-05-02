@@ -1,7 +1,7 @@
 package com.example.kiwi_community_mall_back;
 
 import com.example.kiwi_community_mall_back.enums.Gender;
-import com.example.kiwi_community_mall_back.pojo.user.User;
+import com.example.kiwi_community_mall_back.pojo.sys.User;
 import com.example.kiwi_community_mall_back.util.BcryptPwdUtil;
 import com.example.kiwi_community_mall_back.util.CheckValidUtil;
 import com.example.kiwi_community_mall_back.util.RedisUtil;

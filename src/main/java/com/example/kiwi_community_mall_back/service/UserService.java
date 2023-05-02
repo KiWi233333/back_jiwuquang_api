@@ -1,12 +1,13 @@
 package com.example.kiwi_community_mall_back.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.kiwi_community_mall_back.constant.JwtConstant;
-import com.example.kiwi_community_mall_back.constant.UserConstant;
+import com.example.kiwi_community_mall_back.core.constant.JwtConstant;
+import com.example.kiwi_community_mall_back.core.constant.UserConstant;
 import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
+import com.example.kiwi_community_mall_back.dto.user.UserRolePermissionDTO;
 import com.example.kiwi_community_mall_back.dto.user.UserTokenDTO;
-import com.example.kiwi_community_mall_back.pojo.user.User;
+import com.example.kiwi_community_mall_back.pojo.sys.User;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.util.*;
 import com.example.kiwi_community_mall_back.vo.UserVO;
@@ -20,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static com.example.kiwi_community_mall_back.constant.UserConstant.*;
+import static com.example.kiwi_community_mall_back.core.constant.UserConstant.*;
 
 /**
  * 用户业务
@@ -53,26 +54,39 @@ public class UserService {
      * @param password 密码
      * @return Result
      */
-    public Result toUserLoginByPwd(String username, String password) {
+    public Result toUserLoginByPwd(String username, String password,Integer userType) {
         // 1、获取用户的盐值
-        UserCheckDTO userCheckDTO = userSaltService.getUserSalt(username);
+        UserCheckDTO userCheckDTO = userSaltService.getUserSalt(username,userType);
         if (userCheckDTO != null) {// 存在该用户
+            UserTokenDTO userTokenDTO;
+            // 获取角色和权限
+            userTokenDTO = (UserTokenDTO) redisTemplate.opsForValue().get(USER_ROLE_KEY + userCheckDTO.getId());
+            if (userTokenDTO == null) {
+                // 查询角色权限信息
+                userTokenDTO = userMapper.selectUserRoleAndPermissionByUserId((userCheckDTO.getId()));
+                if (userTokenDTO != null) {
+                    redisTemplate.opsForValue().set(USER_ROLE_KEY + userCheckDTO.getId(), userTokenDTO);
+                }
+            }
             // 2、用户验证密码(密码验证)
             boolean flag = BcryptPwdUtil.matches(password, // 密码和数据库密码比对校验
                     userCheckDTO.getPassword(),// 数据库
                     userCheckDTO.getSalt());
+
             // 验证通过
             if (flag) {
+                // 多端登录
+                String token = (String) redisTemplate.opsForValue().get(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId());
                 // 3、生成 Token
-                UserTokenDTO userTokenDTO = new UserTokenDTO();
-                userTokenDTO.setId(userCheckDTO.getId());
-                String token = JWTUtil.createToken(userTokenDTO);
+                if (StringUtil.isNullOrEmpty(token)) {
+                    token = JWTUtil.createToken(userTokenDTO);
+                }
                 // 4、缓存token
-                // 发送两个token
                 if (token != null) {
                     redisTemplate.opsForValue().set(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), token, JwtConstant.TOKEN_TIME * 2, TimeUnit.MINUTES);// 30分钟
-                    return Result.ok("登录成功！", token);
                 }
+                saveLoginTime(userTokenDTO.getId());
+                return Result.ok("登录成功！", token);
             } else {
                 return Result.fail("密码错误！");
             }
@@ -92,15 +106,15 @@ public class UserService {
         String res = String.valueOf(redisTemplate.opsForValue().get(PHONE_CODE_KEY + phone));
         if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
         // 3、验证
-        UserTokenDTO userTokenDTO = new UserTokenDTO();
+        UserRolePermissionDTO userRolePermissionDTO = new UserRolePermissionDTO();
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone));
         // 4、生成 Token
         if (user != null) {
-            userTokenDTO.setId(user.getId());
-            String token = JWTUtil.createToken(userTokenDTO);
+            userRolePermissionDTO.setId(user.getId());
+            String token = JWTUtil.createToken(userRolePermissionDTO);
             redisTemplate.delete(PHONE_CODE_KEY + phone);
             // 更新最后登录时间
-            saveLoginTime(userTokenDTO.getId());
+            saveLoginTime(userRolePermissionDTO.getId());
             return Result.ok("登录成功！", token);
         }
         return Result.fail("登录失败！");
@@ -111,16 +125,16 @@ public class UserService {
         String res = String.valueOf(redisTemplate.opsForValue().get(EMAIL_CODE_KEY + email));
         if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
         // 3、验证
-        UserTokenDTO userTokenDTO = new UserTokenDTO();
+        UserRolePermissionDTO userRolePermissionDTO = new UserRolePermissionDTO();
         User user = userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
         // 4、生成 Token
         if (user != null) {
-            userTokenDTO.setId(user.getId());
-            String token = JWTUtil.createToken(userTokenDTO);
+            userRolePermissionDTO.setId(user.getId());
+            String token = JWTUtil.createToken(userRolePermissionDTO);
             redisTemplate.delete(EMAIL_CODE_KEY + email);
 
             // 5、修改登录时间
-            saveLoginTime(userTokenDTO.getId());
+            saveLoginTime(userRolePermissionDTO.getId());
             return Result.ok("登录成功！", token);
         }
         return Result.fail("登录失败！");
@@ -150,7 +164,7 @@ public class UserService {
      * @param u UserRegisterDTO对象
      * @return Result
      */
-    @Transactional // 开启事务
+    @Transactional(rollbackFor = Exception.class) // 开启事务
     public Result toRegister(UserRegisterDTO u) {
         User user = new User();
         Date date = new Date();
@@ -177,7 +191,9 @@ public class UserService {
             user.setEmail(u.getEmail()).setIsEmailVerified(1);
         }
         // 插入用户、盐值、钱包信息 （3）
-        if (userMapper.insert(user) <= 0 || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt)) || userWalletService.initUserWallet(user.getId()) <= 0) {
+        if (userMapper.insert(user) <= 0
+                || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt))
+                || userWalletService.initUserWallet(user.getId()) <= 0) {
             return Result.fail("注册失败!");
         } else {
             // 缓存数据
@@ -290,12 +306,12 @@ public class UserService {
      */
     public Result loginOut(String token) {
         try {
-            UserTokenDTO userTokenDTO = JWTUtil.getTokenInfoByToken(token);
+            UserRolePermissionDTO userRolePermissionDTO = JWTUtil.getTokenInfoByToken(token);
             // 删除缓存
-            redisTemplate.delete(UserConstant.USER_REFRESH_TOKEN_KEY + userTokenDTO.getId());
+            redisTemplate.delete(UserConstant.USER_REFRESH_TOKEN_KEY + userRolePermissionDTO.getId());
             // 更新最后登录时间
-            if (saveLoginTime(userTokenDTO.getId())) return Result.ok("退出成功！", null);
-            log.info("login out user {}", userTokenDTO.getId());
+            if (saveLoginTime(userRolePermissionDTO.getId())) return Result.ok("退出成功！", null);
+            log.info("login out user {}", userRolePermissionDTO.getId());
         } catch (Exception e) {
             return Result.fail("退出失败！");
         }

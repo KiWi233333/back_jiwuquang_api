@@ -17,8 +17,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_RECHARGE_COMBO_KEY;
-import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_WALLET_KEY;
+import static com.example.kiwi_community_mall_back.core.constant.UserConstant.USER_RECHARGE_COMBO_KEY;
+import static com.example.kiwi_community_mall_back.core.constant.UserConstant.USER_WALLET_KEY;
 
 /**
  * 钱包业务层

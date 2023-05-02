@@ -1,18 +1,40 @@
 package com.example.kiwi_community_mall_back.dto.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.util.List;
 
 /**
- * 用户token内部存储信息类
+ * UserTokenDTO
  *
- * @className: UserTokenDto
- * @author: Author作者
- * @description: 用于token加入用户id
- * @date: 2023/4/13 1:22
+ * @className: UserTokenDTO
+ * @author: Kiwi23333
+ * @description: UserTokenDTO
+ * @date: 2023/5/3 1:38
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class UserTokenDTO {
+
+    /**
+     * 用户id
+     */
     private String id;
+
+    /**
+     * 角色集合
+     */
+    private String[] roleCodeList;
+    private Integer[] roleTypeList;
+    /**
+     * 权限集合
+     */
+    private String[] permissionUrlList;
+    private Integer[] permissionTypeList;
+
 }

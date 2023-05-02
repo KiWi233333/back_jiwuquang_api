@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>title</title>
+    <title th:text="${EmailParams.get('title')}"></title>
     <style>
         body, html, div, ul, li, button, p, img, h1, h2, h3, h4, h5, h6 {
             margin: 0;
@@ -111,9 +111,9 @@
     <div id="reset-password-email">
         <img class="logo" src="https://img1.imgtp.com/2023/04/29/A5sHhliU.png">
 
-        <h1 class="email-title">
-            尊敬的<span>用户，</span>您好：
-        </h1>
+            <h1 class="email-title">
+                尊敬的<span>用户，</span>您好：
+            </h1>
         <div>
             您正在<strong><th:block th:text="${EmailParams.get('type')}"></th:block></strong>
                 ，为如下用户邮箱发送验证码：

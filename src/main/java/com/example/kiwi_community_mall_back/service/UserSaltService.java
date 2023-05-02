@@ -1,14 +1,14 @@
 package com.example.kiwi_community_mall_back.service;
 
 import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
-import com.example.kiwi_community_mall_back.pojo.user.UserSalt;
+import com.example.kiwi_community_mall_back.pojo.sys.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import static com.example.kiwi_community_mall_back.constant.UserConstant.USER_SALT_DTO_KEY;
+import static com.example.kiwi_community_mall_back.core.constant.UserConstant.USER_SALT_DTO_KEY;
 
 
 /**
@@ -33,14 +33,12 @@ public class UserSaltService {
      * @param username 用户名/邮箱/手机号
      * @return UserCheckDTO
      */
-    public UserCheckDTO getUserSalt(String username) {
+    public UserCheckDTO getUserSalt(String username,Integer userType) {
         UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_DTO_KEY + username);
         if (userCheckDTO == null) {// 空则从数据库取
-            return userMapper.selectUserRJoinSaltByUsername(username);
+            return userMapper.selectUserRJoinSaltByUsername(username,userType);
         }
         return userCheckDTO;
-
-
     }
 
     /**

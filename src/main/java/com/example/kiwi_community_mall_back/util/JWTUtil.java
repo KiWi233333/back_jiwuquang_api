@@ -5,17 +5,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.kiwi_community_mall_back.constant.JwtConstant;
-import com.example.kiwi_community_mall_back.dto.user.UserTokenDTO;
+import com.example.kiwi_community_mall_back.core.constant.JwtConstant;
+import com.example.kiwi_community_mall_back.dto.user.UserRolePermissionDTO;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.io.IOException;
-import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,17 +35,17 @@ public class JWTUtil {
     /**
      * 1、生成Token
      *
-     * @param userTokenDto
+     * @param obj
      * @return token
      */
-    public static String createToken(UserTokenDTO userTokenDto) {
+    public static String createToken(Object obj) {
         try {
             // 设置头部信息
             Map<String, Object> header = new HashMap<>(2);
             header.put("alg", "HS256");
             header.put("Type", "Jwt");
             Date now = new Date();
-            String userJson = objectMapper.writeValueAsString(userTokenDto);
+            String userJson = objectMapper.writeValueAsString(obj);
             return JWT.create().withHeader(header).withNotBefore(now) // 生效时间
                     .withIssuedAt(now) // 签发时间
                     .withIssuer(JwtConstant.ISSUER) // 用于说明该JWT是由谁签发的
@@ -91,8 +88,8 @@ public class JWTUtil {
      * @param jsonParser
      * @return UserTokenDTO
      */
-    public static UserTokenDTO getTokenInfo(JsonParser jsonParser) throws IOException {
-        return objectMapper.readValue(jsonParser, UserTokenDTO.class);
+    public static UserRolePermissionDTO getTokenInfo(JsonParser jsonParser) throws IOException {
+        return objectMapper.readValue(jsonParser, UserRolePermissionDTO.class);
     }
 
 
@@ -102,7 +99,7 @@ public class JWTUtil {
      * @param token
      * @return UserTokenDTO
      */
-    public static UserTokenDTO getTokenInfoByToken(String token) throws IOException {
+    public static UserRolePermissionDTO getTokenInfoByToken(String token) throws IOException {
         Algorithm algorithm = Algorithm.HMAC256(JwtConstant.SECRET_KEY);
         JWTVerifier verifier = JWT.require(algorithm).withIssuer(JwtConstant.ISSUER) // 用于说明该JWT是由谁签发的
                 .withSubject(JwtConstant.SUBJECT_OBJ) // 用于说明该JWT面向的对象
@@ -110,7 +107,7 @@ public class JWTUtil {
                 .build();
         DecodedJWT jwt = verifier.verify(token);
         String tokenInfo = jwt.getClaim(JwtConstant.SAVE_OBJ_KEY).asString();// 存入user
-        return objectMapper.readValue(new JsonFactory().createParser(tokenInfo), UserTokenDTO.class);
+        return objectMapper.readValue(new JsonFactory().createParser(tokenInfo), UserRolePermissionDTO.class);
     }
 
 

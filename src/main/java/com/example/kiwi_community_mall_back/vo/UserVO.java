@@ -2,7 +2,7 @@ package com.example.kiwi_community_mall_back.vo;
 
 import com.example.kiwi_community_mall_back.enums.Gender;
 import com.example.kiwi_community_mall_back.enums.UserStatus;
-import com.example.kiwi_community_mall_back.pojo.user.User;
+import com.example.kiwi_community_mall_back.pojo.sys.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -62,6 +62,11 @@ public class UserVO {
     private String avatar;
 
     /**
+     * 生日
+     */
+    private Date birthday;
+
+    /**
      * 账号创建时间
      */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -93,10 +98,6 @@ public class UserVO {
      */
     private Integer isPhoneVerified;
 
-    /**
-     * 会员等级
-     */
-    private Integer memberLevel;
 
 
     public static UserVO formUser(User user) {
@@ -107,14 +108,14 @@ public class UserVO {
                 .setPhone(user.getPhone())
                 .setNickname(user.getNickname())
                 .setAvatar(user.getAvatar())
+                .setBirthday(user.getBirthday())
                 .setUpdateTime(user.getUpdateTime())
                 .setGender(user.getGender())
                 .setCreateTime(user.getCreateTime())
                 .setLastLoginTime(user.getLastLoginTime())
                 .setIsEmailVerified(user.getIsEmailVerified())
                 .setIsPhoneVerified(user.getIsPhoneVerified())
-                .setStatus(user.getStatus())
-                .setMemberLevel(user.getMemberLevel());
+                .setStatus(user.getStatus());
     }
 
 }

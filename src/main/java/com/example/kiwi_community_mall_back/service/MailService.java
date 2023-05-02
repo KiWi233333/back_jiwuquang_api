@@ -26,6 +26,8 @@ public class MailService {
     private String from;
     @Value("${emailTemplate}")
     private String emailTemplatePath;
+    @Value("${emailCodeTemplate}")
+    private String emailCodeTemplate;
 
 
 
@@ -46,7 +48,8 @@ public class MailService {
         // 利用 Thymeleaf 模板构建 html 文本
         Context ctx = new Context();
         Map<String, String> map = new HashMap<>();
-        map.put("title",type);
+        map.put("title",theme);
+        map.put("type",type);
         map.put("email",to);
         map.put("code",code);
         // 给模板的参数的上下文

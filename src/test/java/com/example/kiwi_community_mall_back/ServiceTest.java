@@ -2,14 +2,11 @@ package com.example.kiwi_community_mall_back;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.kiwi_community_mall_back.dto.user.UserRegisterDTO;
-import com.example.kiwi_community_mall_back.pojo.user.UserSalt;
+import com.example.kiwi_community_mall_back.pojo.sys.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
 import com.example.kiwi_community_mall_back.repository.UserWalletMapper;
-import com.example.kiwi_community_mall_back.service.MailService;
-import com.example.kiwi_community_mall_back.service.UserSaltService;
-import com.example.kiwi_community_mall_back.service.UserService;
-import com.example.kiwi_community_mall_back.service.UserWalletService;
+import com.example.kiwi_community_mall_back.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +38,9 @@ class ServiceTest {
 
     @Test
     void getUserSalt2() {
-        System.out.println(userSaltService.getUserSalt("alice_green"));
-        System.out.println(userSaltService.getUserSalt("13415000000"));
-        System.out.println(userSaltService.getUserSalt("Kiwi2333"));
+//        System.out.println(userSaltService.getUserSalt("alice_green"));
+//        System.out.println(userSaltService.getUserSalt("13415000000"));
+//        System.out.println(userSaltService.getUserSalt("Kiwi2333"));
     }
 
     @Test
@@ -91,5 +88,20 @@ class ServiceTest {
         System.out.println(userWalletService.getAllRechargeCombo());
     }
 
+
+    @Autowired
+    GoodsCategoryService goodsCategoryService;
+    @Test
+    void getGoodsCategoryAll() {
+        goodsCategoryService.getAllCategoryTree();
+    }
+
+
+    @Test
+    void selectUserRoleAndPermissionById() {
+        System.out.println(userMapper.selectUserRoleAndPermissionByUserId("2163652592439853323"));
+//        System.out.println(userMapper.selectAllRole());
+//        System.out.println(userMapper.selectAllPermission());
+    }
 
 }

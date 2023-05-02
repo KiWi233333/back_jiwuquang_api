@@ -1,15 +1,12 @@
 package com.example.kiwi_community_mall_back.dto.user;
 
-import com.example.kiwi_community_mall_back.annotate.Phone;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 
 /**
