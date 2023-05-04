@@ -5,6 +5,7 @@ import com.example.kiwi_community_mall_back.pojo.wallet.RechargeCombo;
 import com.example.kiwi_community_mall_back.pojo.wallet.UserWallet;
 import com.example.kiwi_community_mall_back.repository.RechargeComboMapper;
 import com.example.kiwi_community_mall_back.repository.UserWalletMapper;
+import com.example.kiwi_community_mall_back.util.RedisUtil;
 import com.example.kiwi_community_mall_back.util.Result;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +33,7 @@ import static com.example.kiwi_community_mall_back.core.constant.UserConstant.US
 @Slf4j
 public class UserWalletService {
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisUtil redisUtil;
 
     @Autowired
     UserWalletMapper userWalletMapper;
@@ -52,7 +53,7 @@ public class UserWalletService {
             UserWallet userWallet = new UserWallet().setUserId(userId);
             flag = userWalletMapper.insert(userWallet);
             if (flag > 0) {
-                redisTemplate.opsForValue().set(USER_WALLET_KEY + userId, userWallet);
+                redisUtil.set(USER_WALLET_KEY + userId, userWallet);
             }
             return flag;
         } catch (Exception e) {
@@ -92,14 +93,14 @@ public class UserWalletService {
     public Result getAllRechargeCombo() {
         List<RechargeCombo> list = new ArrayList<>();
         try {
-            list = (ArrayList<RechargeCombo>) redisTemplate.opsForValue().get(USER_RECHARGE_COMBO_KEY);
+            list = (ArrayList<RechargeCombo>) redisUtil.get(USER_RECHARGE_COMBO_KEY);
         } catch (Exception e) {
             log.error("RechargeCombo error: {}", e.getMessage());
         }
         if (list == null) {
             list = rechargeComboMapper.selectList(null);
             if (!list.isEmpty()) {
-                redisTemplate.opsForValue().set(USER_RECHARGE_COMBO_KEY, list);
+                redisUtil.set(USER_RECHARGE_COMBO_KEY, list);
             }
         }
 
@@ -145,19 +146,19 @@ public class UserWalletService {
         }
 
         UserWallet userWallet = userWalletMapper.selectById(userId);// 数据库获取
-        redisTemplate.opsForValue().set(USER_WALLET_KEY + userId, userWallet);
+        redisUtil.set(USER_WALLET_KEY + userId, userWallet);
         return Result.ok("充值成功！", null);
     }
 
 
     // 1）获取用户钱包
     private UserWallet getWalletById(String id) {
-        UserWallet userWallet = (UserWallet) redisTemplate.opsForValue().get(USER_WALLET_KEY + id);
+        UserWallet userWallet = (UserWallet) redisUtil.get(USER_WALLET_KEY + id);
         if (userWallet == null) {
             userWallet = userWalletMapper.selectById(id);// 数据库获取
         }
         if (userWallet != null) {
-            redisTemplate.opsForValue().set(USER_WALLET_KEY + id, userWallet);
+            redisUtil.set(USER_WALLET_KEY + id, userWallet);
             return userWallet;
         } else {
             return null;

@@ -4,8 +4,8 @@ import com.example.kiwi_community_mall_back.dto.user.UserCheckDTO;
 import com.example.kiwi_community_mall_back.pojo.sys.UserSalt;
 import com.example.kiwi_community_mall_back.repository.UserMapper;
 import com.example.kiwi_community_mall_back.repository.UserSaltMapper;
+import com.example.kiwi_community_mall_back.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import static com.example.kiwi_community_mall_back.core.constant.UserConstant.USER_SALT_DTO_KEY;
@@ -25,7 +25,7 @@ public class UserSaltService {
     @Autowired
     UserMapper userMapper;
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisUtil redisUtil;
 
     /**
      * 获取用户的加密密码和专属盐 （通过用户名/邮箱/手机号 为key存储盐）
@@ -34,7 +34,7 @@ public class UserSaltService {
      * @return UserCheckDTO
      */
     public UserCheckDTO getUserSalt(String username,Integer userType) {
-        UserCheckDTO userCheckDTO = (UserCheckDTO) redisTemplate.opsForValue().get(USER_SALT_DTO_KEY + username);
+        UserCheckDTO userCheckDTO = (UserCheckDTO) redisUtil.get(USER_SALT_DTO_KEY + username);
         if (userCheckDTO == null) {// 空则从数据库取
             return userMapper.selectUserRJoinSaltByUsername(username,userType);
         }
@@ -54,7 +54,7 @@ public class UserSaltService {
         UserCheckDTO userCheckDTO = new UserCheckDTO(userId, password, userSalt.getSalt());
         // 2、添加用户盐操作
         if (userSaltMapper.insert(userSalt) > 0) {
-            redisTemplate.opsForValue().set(USER_SALT_DTO_KEY, userCheckDTO);
+            redisUtil.set(USER_SALT_DTO_KEY, userCheckDTO);
             return true;
         } else {
             return false;

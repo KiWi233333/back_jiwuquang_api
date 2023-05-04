@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.kiwi_community_mall_back.dto.goods.GoodsPageDTO;
 import com.example.kiwi_community_mall_back.pojo.goods.Goods;
 import com.example.kiwi_community_mall_back.repository.GoodsMapper;
+import com.example.kiwi_community_mall_back.util.RedisUtil;
 import com.example.kiwi_community_mall_back.util.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,8 @@ public class GoodsService {
 
     @Autowired
     GoodsMapper goodsMapper;
+    @Autowired
+    RedisUtil redisUtil;
 
     /**
      * 分页查询商品（）
@@ -63,6 +66,7 @@ public class GoodsService {
             qw.orderBy(true, goodsPageDTO.getViewsSort() == 0, "views");
         }
         IPage<Goods> userPage = goodsMapper.selectPage(pages, qw); // 调用Mapper接口方法进行分页查询
+
         return Result.ok(userPage);
     }
 
