@@ -1,6 +1,6 @@
 package com.example.back_jiwuquang_api.core.controller.front;
 
-import com.example.back_jiwuquang_api.service.UserService;
+import com.example.back_jiwuquang_api.service.sys.UserService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;

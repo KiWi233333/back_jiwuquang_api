@@ -1,5 +1,6 @@
 package com.example.back_jiwuquang_api.util;
 
+import com.example.back_jiwuquang_api.pojo.goods.GoodsCategory;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;

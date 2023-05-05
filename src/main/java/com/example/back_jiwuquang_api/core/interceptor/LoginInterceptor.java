@@ -3,7 +3,8 @@ package com.example.back_jiwuquang_api.core.interceptor;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.back_jiwuquang_api.core.constant.JwtConstant;
-import com.example.back_jiwuquang_api.dto.user.UserRolePermissionDTO;
+import com.example.back_jiwuquang_api.dto.sys.UserRolePermissionDTO;
+import com.example.back_jiwuquang_api.dto.sys.UserTokenDTO;
 import com.example.back_jiwuquang_api.util.JWTUtil;
 import com.example.back_jiwuquang_api.util.JacksonUtil;
 import com.example.back_jiwuquang_api.util.Result;
@@ -43,12 +44,12 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         String token = request.getHeader(JwtConstant.HEADER_NAME);
         response.setContentType("application/json;charset=UTF-8");
         // 2、获取token
-        UserRolePermissionDTO userRolePermissionDTO;
+        UserTokenDTO userTokenDTO;
         if (StringUtils.isNotBlank(token)) {
             try {
-                userRolePermissionDTO = JWTUtil.getTokenInfoByToken(token);
+                userTokenDTO = JWTUtil.getTokenInfoByToken(token);
                 // 查看有效期
-                Long seconds = redisTemplate.getExpire(USER_REFRESH_TOKEN_KEY + userRolePermissionDTO.getId());
+                Long seconds = redisTemplate.getExpire(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId());
                 if (seconds <= 0) { // token失效
                     log.info("身份已过期 {}", seconds);
                     response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
@@ -56,16 +57,10 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 } else if (seconds > 0 && seconds <= TOKEN_TIME*60) {
                     // 续签 小于 TOKEN_TIME 30分钟
                     log.info("续签 剩余{}s", seconds);
-                    redisTemplate.expireAt(USER_REFRESH_TOKEN_KEY + userRolePermissionDTO.getId(), new Date(System.currentTimeMillis() + (seconds + TOKEN_TIME * 60) * 1000));
+                    redisTemplate.expireAt(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), new Date(System.currentTimeMillis() + (seconds + TOKEN_TIME * 60) * 1000));
                 }
                 // 将用户id放入
-                request.setAttribute("userId", userRolePermissionDTO.getId());
-
-//                if (userRolePermissionDTO.getType()== RoleConstant.ROLE_USER){
-//
-//                }else {
-//
-//                }
+                request.setAttribute("userId", userTokenDTO.getId());
                 return true;
             } catch (TokenExpiredException e1) {
                 log.info("身份已过期 {}", e1.getMessage());

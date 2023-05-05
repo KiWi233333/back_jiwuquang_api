@@ -1,8 +1,8 @@
 package com.example.back_jiwuquang_api.core.controller.admin;
 
-import com.example.back_jiwuquang_api.dto.goods.GoodsCategoryVO;
+import com.example.back_jiwuquang_api.dto.goods.GoodsCategoryDTO;
 import com.example.back_jiwuquang_api.dto.other.IdsList;
-import com.example.back_jiwuquang_api.service.GoodsCategoryService;
+import com.example.back_jiwuquang_api.service.goods.GoodsCategoryService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
@@ -31,21 +31,27 @@ import java.util.List;
 public class AdminGoodsCategoryController {
     @Autowired
     GoodsCategoryService goodsCategoryService;
+
     @ApiOperation(value = "添加分类", tags = "商品分类管理")
     @ApiImplicitParam(name = "Authorization", value = "管理员token", required = true)
     @PutMapping("/one")
-    Result addCategoryByGoodsCategoryVO(@Valid @RequestBody GoodsCategoryVO goodsCategoryVO, BindingResult result) {
+    Result addCategoryByGoodsCategoryVO(@RequestHeader(name="Authorization") String token,
+                                        @Valid @RequestBody GoodsCategoryDTO goodsCategoryDTO,
+                                        BindingResult result) {
         if (result.hasErrors()) {
             // 处理校验错误信息
             return Result.fail(result.getFieldError().getDefaultMessage());
         } else {
-            return goodsCategoryService.addCategoryByOne(goodsCategoryVO);
+            return goodsCategoryService.addCategoryByOne(goodsCategoryDTO);
         }
     }
+
     @ApiOperation(value = "批量添加分类", tags = "商品分类管理")
     @ApiImplicitParam(name = "Authorization", value = "管理员token", required = true)
     @PutMapping("/some")
-    Result addCategoryByList(@Valid @RequestBody List<GoodsCategoryVO> categoryVOList, BindingResult result) {
+    Result addCategoryByList(@RequestHeader(name="Authorization") String token,
+                             @Valid @RequestBody List<GoodsCategoryDTO> categoryVOList,
+                             BindingResult result) {
         if (result.hasErrors()) {
             // 处理校验错误信息
             return Result.fail(result.getFieldError().getDefaultMessage());
@@ -61,7 +67,6 @@ public class AdminGoodsCategoryController {
         if (StringUtil.isNullOrEmpty(id)) return Result.fail("id不能为空！");
         return goodsCategoryService.deleteOneByCategoryId(id);
     }
-
 
     @ApiOperation(value = "批量删除分类" ,notes = "可跨级删除", tags = "商品分类管理")
     @ApiImplicitParam(name = "Authorization", value = "管理员token", required = true)

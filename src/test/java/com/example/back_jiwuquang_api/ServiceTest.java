@@ -1,12 +1,16 @@
 package com.example.back_jiwuquang_api;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.back_jiwuquang_api.dto.user.UserRegisterDTO;
+import com.example.back_jiwuquang_api.dto.sys.UserRegisterDTO;
 import com.example.back_jiwuquang_api.pojo.sys.UserSalt;
-import com.example.back_jiwuquang_api.repository.UserMapper;
-import com.example.back_jiwuquang_api.repository.UserSaltMapper;
-import com.example.back_jiwuquang_api.repository.UserWalletMapper;
+import com.example.back_jiwuquang_api.repository.sys.UserMapper;
+import com.example.back_jiwuquang_api.repository.sys.UserSaltMapper;
+import com.example.back_jiwuquang_api.repository.pay.UserWalletMapper;
 import com.example.back_jiwuquang_api.service.*;
+import com.example.back_jiwuquang_api.service.goods.GoodsCategoryService;
+import com.example.back_jiwuquang_api.service.sys.UserSaltService;
+import com.example.back_jiwuquang_api.service.sys.UserService;
+import com.example.back_jiwuquang_api.service.sys.UserWalletService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

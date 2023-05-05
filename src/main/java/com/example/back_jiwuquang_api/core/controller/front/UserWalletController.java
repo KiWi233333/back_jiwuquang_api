@@ -1,7 +1,7 @@
 package com.example.back_jiwuquang_api.core.controller.front;
 
-import com.example.back_jiwuquang_api.dto.user.WalletRechargeDTO;
-import com.example.back_jiwuquang_api.service.UserWalletService;
+import com.example.back_jiwuquang_api.dto.sys.WalletRechargeDTO;
+import com.example.back_jiwuquang_api.service.sys.UserWalletService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -39,6 +39,7 @@ public class UserWalletController {
     Result getAllRechargeCombo() {
         return userWalletService.getAllRechargeCombo();
     }
+
 
     @ApiOperation(value = "获取钱包信息", tags = "钱包模块")
     @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)

@@ -1,7 +1,7 @@
 package com.example.back_jiwuquang_api.core.controller.front;
 
 import com.example.back_jiwuquang_api.dto.goods.GoodsPageDTO;
-import com.example.back_jiwuquang_api.service.GoodsService;
+import com.example.back_jiwuquang_api.service.goods.GoodsService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -26,13 +26,17 @@ public class GoodsController {
     GoodsService goodsService;
 
     @ApiOperation(value = "分页获取商品", tags = "商品信息模块")
-
-
     @GetMapping("/{page}/{size}")
     Result getGoodsListByPage(@ApiParam("页码") @PathVariable int page,
                               @ApiParam("每页个数") @PathVariable int size,
                               @RequestBody GoodsPageDTO goodsPageDTO) {
         return goodsService.getGoodsListByPageSize(goodsPageDTO, page, size);
+    }
+
+    @ApiOperation(value = "查询商品信息", tags = "商品信息模块")
+    @GetMapping("/{id}")
+    Result getGoodsInfo(@ApiParam("商品id") @PathVariable String id) {
+        return goodsService.getGoodsInfoById(id);
     }
 
 }

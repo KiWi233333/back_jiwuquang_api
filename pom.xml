@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.example</groupId>
-    <artifactId>kiwi_community_mall_back</artifactId>
+    <artifactId>back_jiwuquang_api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>kiwi_community_mall_back</name>
     <description>kiwi_community_mall_back</description>

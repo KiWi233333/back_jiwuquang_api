@@ -1,10 +1,10 @@
 package com.example.back_jiwuquang_api.core.controller.front;
 
-import com.example.back_jiwuquang_api.dto.user.LoginDTO;
-import com.example.back_jiwuquang_api.dto.user.LoginEmailCodeDTO;
-import com.example.back_jiwuquang_api.dto.user.LoginPhoneCodeDTO;
-import com.example.back_jiwuquang_api.dto.user.UserRegisterDTO;
-import com.example.back_jiwuquang_api.service.UserService;
+import com.example.back_jiwuquang_api.dto.sys.LoginDTO;
+import com.example.back_jiwuquang_api.dto.sys.LoginEmailCodeDTO;
+import com.example.back_jiwuquang_api.dto.sys.LoginPhoneCodeDTO;
+import com.example.back_jiwuquang_api.dto.sys.UserRegisterDTO;
+import com.example.back_jiwuquang_api.service.sys.UserService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;

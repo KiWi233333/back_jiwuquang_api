@@ -88,7 +88,8 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         "/user/wallet/combo",// 充值套餐
                         "/category/**",
                         "/category",
-                        "/goods/**"
+                        "/goods/**",
+                        "/admin/**"
                 )
         ; // 排除登录请求
     }

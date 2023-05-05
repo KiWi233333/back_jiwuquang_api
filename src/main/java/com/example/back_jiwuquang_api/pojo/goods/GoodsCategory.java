@@ -1,8 +1,11 @@
 package com.example.back_jiwuquang_api.pojo.goods;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.example.back_jiwuquang_api.dto.goods.GoodsCategoryDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 
@@ -17,6 +20,8 @@ import java.util.*;
 
 @Data
 @TableName("goods_category")
+@AllArgsConstructor
+@NoArgsConstructor
 public class GoodsCategory {
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
@@ -66,6 +71,7 @@ public class GoodsCategory {
      * @param parentId 父id
      * @return 树形集合
      */
+
     public static List<GoodsCategory> buildNestedCategories(List<GoodsCategory> categories, String parentId) {
         // 下一级目录
         List<GoodsCategory> nestedCategories = new ArrayList<>();
@@ -81,4 +87,8 @@ public class GoodsCategory {
     }
 
 
+    // vo 转换为 po
+    public static GoodsCategory toGoodsCategory(GoodsCategoryDTO g) {
+        return new GoodsCategory(null, g.getName(), g.getParentId(), g.getIcon(), g.getSortOrder(), g.getIsShow(),null,null,null);
+    }
 }

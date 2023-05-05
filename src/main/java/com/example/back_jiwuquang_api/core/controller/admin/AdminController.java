@@ -1,7 +1,7 @@
 package com.example.back_jiwuquang_api.core.controller.admin;
 
-import com.example.back_jiwuquang_api.dto.user.LoginDTO;
-import com.example.back_jiwuquang_api.service.UserService;
+import com.example.back_jiwuquang_api.dto.sys.LoginDTO;
+import com.example.back_jiwuquang_api.service.sys.UserService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +37,7 @@ public class AdminController {
             // 处理校验错误信息
             return Result.fail(result.getFieldError().getDefaultMessage());
         } else {
+            // 后台类用户
             return usersService.toUserLoginByPwd(loginDTO.getUsername(), loginDTO.getPassword(),1);
         }
     }
