@@ -1,5 +1,5 @@
-# kiwi_community_mall_back
-Kiwi商城社区
+# back_jiwuquang_api
+极物圈
 
 ## 依赖库
 `spring-boot-devtools`
