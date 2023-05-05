@@ -152,7 +152,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.example.kiwi_community_mall_back.KiwiCommunityMallBackApplication</mainClass>
+                    <mainClass>com.example.back_jiwuquang_api.BackJiWuQuangApiApplication</mainClass>
                     <skip>true</skip>
                 </configuration>
                 <executions>

@@ -1,0 +1,632 @@
+package com.example.back_jiwuquang_api.util;
+
+import lombok.experimental.Accessors;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.stereotype.Component;
+import springfox.documentation.schema.Entry;
+
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Redis工具类
+ *
+ * @className: RedisUtil
+ * @author: Kiwi23333
+ * @description: TODO描述
+ * @date: 2023/4/30 1:30
+ */
+@Component
+@SuppressWarnings("all")
+@Accessors(chain = true)
+public class RedisUtil {
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+
+    public RedisTemplate getRedisTemplate() {
+        return this.redisTemplate;
+    }
+
+    /** -------------------key相关操作--------------------- */
+
+    /**
+     * 删除key
+     *
+     * @param key
+     */
+    public void delete(String key) {
+        redisTemplate.delete(key);
+    }
+
+    /**
+     * 批量删除key
+     *
+     * @param keys
+     */
+    public void delete(Collection<String> keys) {
+        redisTemplate.delete(keys);
+    }
+
+    /**
+     * 序列化key
+     *
+     * @param key
+     * @return
+     */
+    public byte[] dump(String key) {
+        return redisTemplate.dump(key);
+    }
+
+    /**
+     * 是否存在key
+     *
+     * @param key
+     * @return
+     */
+    public Boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
+
+    /**
+     * 设置过期时间
+     *
+     * @param key
+     * @param timeout
+     * @param unit
+     * @return
+     */
+
+    public Boolean expire(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.expire(key, timeout, unit);
+    }
+    public Boolean expireByS(String key, long timeout) {
+        return redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
+    }
+
+
+    /**
+     * 设置过期时间
+     *
+     * @param key
+     * @param date
+     * @return
+     */
+    public Boolean expireAt(String key, Date date) {
+        return redisTemplate.expireAt(key, date);
+    }
+
+    /**
+     * 查找匹配的key
+     *
+     * @param pattern
+     * @return
+     */
+    public Set<String> keys(String pattern) {
+        return redisTemplate.keys(pattern);
+    }
+
+    /**
+     * 将当前数据库的 key 移动到给定的数据库 db 当中
+     *
+     * @param key
+     * @param dbIndex
+     * @return
+     */
+    public Boolean move(String key, int dbIndex) {
+        return redisTemplate.move(key, dbIndex);
+    }
+
+    /**
+     * 移除 key 的过期时间，key 将持久保持
+     *
+     * @param key
+     * @return
+     */
+    public Boolean persist(String key) {
+        return redisTemplate.persist(key);
+    }
+
+    /**
+     * 返回 key 的剩余的过期时间
+     *
+     * @param key
+     * @param unit
+     * @return
+     */
+    public Long getExpire(String key, TimeUnit unit) {
+        return redisTemplate.getExpire(key, unit);
+    }
+
+    /**
+     * 返回 key 的剩余的过期时间
+     *
+     * @param key
+     * @return
+     */
+    public Long getExpire(String key) {
+        return redisTemplate.getExpire(key);
+    }
+
+
+    /**
+     * 修改 key 的名称
+     *
+     * @param oldKey
+     * @param newKey
+     */
+    public void rename(String oldKey, String newKey) {
+        redisTemplate.rename(oldKey, newKey);
+    }
+
+    /**
+     * 仅当 newkey 不存在时，将 oldKey 改名为 newkey
+     *
+     * @param oldKey
+     * @param newKey
+     * @return
+     */
+    public Boolean renameIfAbsent(String oldKey, String newKey) {
+        return redisTemplate.renameIfAbsent(oldKey, newKey);
+    }
+
+    /**
+     * 返回 key 所储存的值的类型
+     *
+     * @param key
+     * @return
+     */
+    public DataType type(String key) {
+        return redisTemplate.type(key);
+    }
+
+
+
+
+    /** -------------------string相关操作--------------------- */
+
+    /**
+     * 设置指定 key 的值
+     * @param key
+     * @param value
+     */
+    public void set(String key, Object value) {
+        redisTemplate.opsForValue().set(key, value);
+    }
+    public void set(String key, String value,Integer seconds) {
+        redisTemplate.opsForValue().set(key, value,seconds,TimeUnit.SECONDS);
+    }
+
+    /**
+     * 获取指定 key 的值
+     * @param key
+     * @return
+     */
+    public <T> Object get(String key) {
+        return  (T) redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * 批量添加
+     *
+     * @param maps
+     */
+    public void multiSet(Map<String, String> maps) {
+        redisTemplate.opsForValue().multiSet(maps);
+    }
+
+    /**
+     * 同时设置一个或多个 key-value 对，当且仅当所有给定 key 都不存在
+     *
+     * @param maps
+     * @return 之前已经存在返回false,不存在返回true
+     */
+    public boolean multiSetIfAbsent(Map<String, String> maps) {
+        return redisTemplate.opsForValue().multiSetIfAbsent(maps);
+    }
+
+
+
+    /** -------------------hash相关操作------------------------- */
+
+    /**
+     * 获取存储在哈希表中指定字段的值
+     *
+     * @param key
+     * @param field
+     * @return
+     */
+    public Object hGet(String key, String field) {
+        return redisTemplate.opsForHash().get(key, field);
+    }
+
+    /**
+     * 获取所有给定字段的值
+     *
+     * @param key
+     * @return
+     */
+    public Map<Object, Object> hGetAll(String key) {
+        return redisTemplate.opsForHash().entries(key);
+    }
+
+    /**
+     * 获取所有给定字段的值
+     *
+     * @param key
+     * @param fields
+     * @return
+     */
+    public List<Object> hMultiGet(String key, Collection<Object> fields) {
+        return redisTemplate.opsForHash().multiGet(key, fields);
+    }
+
+    public void hPut(String key, String hashKey, String value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+    }
+
+    public void hPutAll(String key, Map<String, String> maps) {
+        redisTemplate.opsForHash().putAll(key, maps);
+    }
+
+    /**
+     * 仅当hashKey不存在时才设置
+     *
+     * @param key
+     * @param hashKey
+     * @param value
+     * @return
+     */
+    public Boolean hPutIfAbsent(String key, String hashKey, String value) {
+        return redisTemplate.opsForHash().putIfAbsent(key, hashKey, value);
+    }
+
+    /**
+     * 删除一个或多个哈希表字段
+     *
+     * @param key
+     * @param fields
+     * @return
+     */
+    public Long hDelete(String key, Object... fields) {
+        return redisTemplate.opsForHash().delete(key, fields);
+    }
+
+    /**
+     * 查看哈希表 key 中，指定的字段是否存在
+     *
+     * @param key
+     * @param field
+     * @return
+     */
+    public boolean hExists(String key, String field) {
+        return redisTemplate.opsForHash().hasKey(key, field);
+    }
+
+    /**
+     * 为哈希表 key 中的指定字段的整数值加上增量 increment
+     *
+     * @param key
+     * @param field
+     * @param increment
+     * @return
+     */
+    public Long hIncrBy(String key, Object field, long increment) {
+        return redisTemplate.opsForHash().increment(key, field, increment);
+    }
+
+    /**
+     * 为哈希表 key 中的指定字段的整数值加上增量 increment
+     *
+     * @param key
+     * @param field
+     * @param delta
+     * @return
+     */
+    public Double hIncrByFloat(String key, Object field, double delta) {
+        return redisTemplate.opsForHash().increment(key, field, delta);
+    }
+
+    /**
+     * 获取所有哈希表中的字段
+     *
+     * @param key
+     * @return
+     */
+    public Set<Object> hKeys(String key) {
+        return redisTemplate.opsForHash().keys(key);
+    }
+
+    /**
+     * 获取哈希表中字段的数量
+     *
+     * @param key
+     * @return
+     */
+    public Long hSize(String key) {
+        return redisTemplate.opsForHash().size(key);
+    }
+
+    /**
+     * 获取哈希表中所有值
+     *
+     * @param key
+     * @return
+     */
+    public List<Object> hValues(String key) {
+        return redisTemplate.opsForHash().values(key);
+    }
+
+    /**
+     * 迭代哈希表中的键值对
+     *
+     * @param key
+     * @param options
+     * @return
+     */
+    public Cursor<Entry<Object, Object>> hScan(String key, ScanOptions options) {
+        return redisTemplate.opsForHash().scan(key, options);
+    }
+
+    /** ------------------------list相关操作---------------------------- */
+
+    /**
+     * 通过索引获取列表中的元素
+     *
+     * @param key
+     * @param index
+     * @return
+     */
+    public Object lIndex(String key, long index) {
+        return redisTemplate.opsForList().index(key, index);
+    }
+
+    /**
+     * 获取列表指定范围内的元素
+     *
+     * @param key
+     * @param start
+     *            开始位置, 0是开始位置
+     * @param end
+     *            结束位置, -1返回所有
+     * @return
+     */
+    public List<String> lRange(String key, long start, long end) {
+        return redisTemplate.opsForList().range(key, start, end);
+    }
+
+    /**
+     * 存储在list头部
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lLeftPush(String key, String value) {
+        return redisTemplate.opsForList().leftPush(key, value);
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lLeftPushAll(String key, String... value) {
+        return redisTemplate.opsForList().leftPushAll(key, value);
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lLeftPushAll(String key, Collection<String> value) {
+        return redisTemplate.opsForList().leftPushAll(key, value);
+    }
+
+    /**
+     * 当list存在的时候才加入
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lLeftPushIfPresent(String key, String value) {
+        return redisTemplate.opsForList().leftPushIfPresent(key, value);
+    }
+
+    /**
+     * 如果pivot存在,再pivot前面添加
+     *
+     * @param key
+     * @param pivot
+     * @param value
+     * @return
+     */
+    public Long lLeftPush(String key, String pivot, String value) {
+        return redisTemplate.opsForList().leftPush(key, pivot, value);
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lRightPush(String key, String value) {
+        return redisTemplate.opsForList().rightPush(key, value);
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lRightPushAll(String key, String... value) {
+        return redisTemplate.opsForList().rightPushAll(key, value);
+    }
+
+    /**
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lRightPushAll(String key, Collection<String> value) {
+        return redisTemplate.opsForList().rightPushAll(key, value);
+    }
+
+    /**
+     * 为已存在的列表添加值
+     *
+     * @param key
+     * @param value
+     * @return
+     */
+    public Long lRightPushIfPresent(String key, String value) {
+        return redisTemplate.opsForList().rightPushIfPresent(key, value);
+    }
+
+    /**
+     * 在pivot元素的右边添加值
+     *
+     * @param key
+     * @param pivot
+     * @param value
+     * @return
+     */
+    public Long lRightPush(String key, String pivot, String value) {
+        return redisTemplate.opsForList().rightPush(key, pivot, value);
+    }
+
+    /**
+     * 通过索引设置列表元素的值
+     *
+     * @param key
+     * @param index
+     *            位置
+     * @param value
+     */
+    public void lSet(String key, long index, String value) {
+        redisTemplate.opsForList().set(key, index, value);
+    }
+
+    /**
+     * 移出并获取列表的第一个元素
+     *
+     * @param key
+     * @return 删除的元素
+     */
+    public Object lLeftPop(String key) {
+        return redisTemplate.opsForList().leftPop(key);
+    }
+
+    /**
+     * 移出并获取列表的第一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
+     *
+     * @param key
+     * @param timeout
+     *            等待时间
+     * @param unit
+     *            时间单位
+     * @return
+     */
+    public Object lBLeftPop(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.opsForList().leftPop(key, timeout, unit);
+    }
+
+    /**
+     * 移除并获取列表最后一个元素
+     *
+     * @param key
+     * @return 删除的元素
+     */
+    public Object lRightPop(String key) {
+        return redisTemplate.opsForList().rightPop(key);
+    }
+
+    /**
+     * 移出并获取列表的最后一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
+     *
+     * @param key
+     * @param timeout
+     *            等待时间
+     * @param unit
+     *            时间单位
+     * @return
+     */
+    public Object lBRightPop(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.opsForList().rightPop(key, timeout, unit);
+    }
+
+    /**
+     * 移除列表的最后一个元素，并将该元素添加到另一个列表并返回
+     *
+     * @param sourceKey
+     * @param destinationKey
+     * @return
+     */
+    public Object lRightPopAndLeftPush(String sourceKey, String destinationKey) {
+        return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey,
+                destinationKey);
+    }
+
+    /**
+     * 从列表中弹出一个值，将弹出的元素插入到另外一个列表中并返回它； 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
+     *
+     * @param sourceKey
+     * @param destinationKey
+     * @param timeout
+     * @param unit
+     * @return
+     */
+    public Object lBRightPopAndLeftPush(String sourceKey, String destinationKey,
+                                        long timeout, TimeUnit unit) {
+        return redisTemplate.opsForList().rightPopAndLeftPush(sourceKey,
+                destinationKey, timeout, unit);
+    }
+
+    /**
+     * 删除集合中值等于value得元素
+     *
+     * @param key
+     * @param index
+     *            index=0, 删除所有值等于value的元素; index>0, 从头部开始删除第一个值等于value的元素;
+     *            index<0, 从尾部开始删除第一个值等于value的元素;
+     * @param value
+     * @return
+     */
+    public Long lRemove(String key, long index, String value) {
+        return redisTemplate.opsForList().remove(key, index, value);
+    }
+
+    /**
+     * 裁剪list
+     *
+     * @param key
+     * @param start
+     * @param end
+     */
+    public void lTrim(String key, long start, long end) {
+        redisTemplate.opsForList().trim(key, start, end);
+    }
+
+    /**
+     * 获取列表长度
+     *
+     * @param key
+     * @return
+     */
+    public Long lLen(String key) {
+        return redisTemplate.opsForList().size(key);
+    }
+
+}
