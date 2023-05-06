@@ -22,23 +22,15 @@ import javax.servlet.http.HttpServletRequest;
  * @date: 2023/5/1 2:09
  */
 @Slf4j
-@Api(value = "用户模块",tags = {"用户模块"})
+@Api(value = "用户模块", tags = {"用户模块"})
 @RestController
 @RequestMapping("/user")
 public class UserInfoController {
 
     @Autowired
     UserService usersService;
-    /**
-     * 用户基本信息（增删查改）
-     */
-    @ApiOperation(value = "验证-用户名是否存在", tags = "用户基本信息模块")
-    @ApiParam(name = "username", value = "用户名")
-    @GetMapping("/exist")
-    Result checkUserExisted(@RequestParam String username) {
-        return usersService.checkUserIsExist(username);
-    }
 
+    /************** 用户基本信息（增删查改）*************/
 
     @ApiOperation(value = "获取用户信息", tags = "用户基本信息模块")
     @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
@@ -48,4 +40,13 @@ public class UserInfoController {
         // 获取拦截请求后获取的id
         return usersService.getUserInfoById(String.valueOf(request.getAttribute("userId")));
     }
+
+
+    @ApiOperation(value = "验证-用户名是否存在", tags = "用户基本信息模块")
+    @ApiParam(name = "username", value = "用户名")
+    @GetMapping("/exist")
+    Result checkUserExisted(@RequestParam String username) {
+        return usersService.checkUserIsExist(username);
+    }
+
 }

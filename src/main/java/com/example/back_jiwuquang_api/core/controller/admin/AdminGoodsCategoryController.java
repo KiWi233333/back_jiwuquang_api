@@ -1,5 +1,6 @@
 package com.example.back_jiwuquang_api.core.controller.admin;
 
+import com.example.back_jiwuquang_api.core.constant.JwtConstant;
 import com.example.back_jiwuquang_api.dto.goods.GoodsCategoryDTO;
 import com.example.back_jiwuquang_api.dto.other.IdsList;
 import com.example.back_jiwuquang_api.service.goods.GoodsCategoryService;
@@ -33,9 +34,9 @@ public class AdminGoodsCategoryController {
     GoodsCategoryService goodsCategoryService;
 
     @ApiOperation(value = "添加分类", tags = "商品分类管理")
-    @ApiImplicitParam(name = "Authorization", value = "管理员token", required = true)
+    @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
     @PutMapping("/one")
-    Result addCategoryByGoodsCategoryVO(@RequestHeader(name="Authorization") String token,
+    Result addCategoryByGoodsCategoryVO(@RequestHeader(name=JwtConstant.HEADER_NAME) String token,
                                         @Valid @RequestBody GoodsCategoryDTO goodsCategoryDTO,
                                         BindingResult result) {
         if (result.hasErrors()) {
@@ -47,9 +48,9 @@ public class AdminGoodsCategoryController {
     }
 
     @ApiOperation(value = "批量添加分类", tags = "商品分类管理")
-    @ApiImplicitParam(name = "Authorization", value = "管理员token", required = true)
+    @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
     @PutMapping("/some")
-    Result addCategoryByList(@RequestHeader(name="Authorization") String token,
+    Result addCategoryByList(@RequestHeader(name=JwtConstant.HEADER_NAME) String token,
                              @Valid @RequestBody List<GoodsCategoryDTO> categoryVOList,
                              BindingResult result) {
         if (result.hasErrors()) {
@@ -61,17 +62,17 @@ public class AdminGoodsCategoryController {
     }
 
     @ApiOperation(value = "删除分类", tags = "商品分类管理")
-    @ApiImplicitParam(name = "Authorization", value = "管理员token", required = true)
+    @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
     @DeleteMapping("/one/{id}")
-    Result deleteOneByCategoryId(@RequestHeader(name="Authorization") String token, @PathVariable String id) {
+    Result deleteOneByCategoryId(@RequestHeader(name=JwtConstant.HEADER_NAME) String token, @PathVariable String id) {
         if (StringUtil.isNullOrEmpty(id)) return Result.fail("id不能为空！");
         return goodsCategoryService.deleteOneByCategoryId(id);
     }
 
     @ApiOperation(value = "批量删除分类" ,notes = "可跨级删除", tags = "商品分类管理")
-    @ApiImplicitParam(name = "Authorization", value = "管理员token", required = true)
+    @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
     @DeleteMapping("/some")
-    Result deleteByCategoryIds(@RequestHeader(name="Authorization") String token, @RequestBody IdsList idsList) {
+    Result deleteByCategoryIds(@RequestHeader(name=JwtConstant.HEADER_NAME) String token, @RequestBody IdsList idsList) {
         if (idsList.getIds().isEmpty()) return Result.fail("ids不能为空！");
         return goodsCategoryService.deleteByCategoryIds(idsList.getIds());
     }

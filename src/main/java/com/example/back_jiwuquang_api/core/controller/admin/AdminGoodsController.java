@@ -1,7 +1,7 @@
 package com.example.back_jiwuquang_api.core.controller.admin;
 
 /**
- * 描述
+ * 商品管理模块
  *
  * @className: AdminGoodsController
  * @author: Kiwi23333

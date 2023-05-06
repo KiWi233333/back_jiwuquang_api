@@ -8,7 +8,5 @@ package com.example.back_jiwuquang_api.core.constant;
  * @date: 2023/5/1 17:22
  */
 public class GoodsConstant {
-
-
     public static final String GOODS_CATEGORY_LIST = "goods:category:list:";// 用户列表
 }

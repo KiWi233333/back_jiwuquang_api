@@ -199,8 +199,11 @@ public class RedisUtil {
     public void set(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
     }
-    public void set(String key, String value,Integer seconds) {
+    public void set(String key, Object value,Integer seconds) {
         redisTemplate.opsForValue().set(key, value,seconds,TimeUnit.SECONDS);
+    }
+    public void set(String key, Object value,Integer val,TimeUnit timeUnit) {
+        redisTemplate.opsForValue().set(key, value,val,timeUnit);
     }
 
     /**

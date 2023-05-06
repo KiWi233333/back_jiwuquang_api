@@ -3,10 +3,12 @@ package com.example.back_jiwuquang_api.core.interceptor;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.back_jiwuquang_api.core.constant.JwtConstant;
+import com.example.back_jiwuquang_api.core.constant.UserConstant;
 import com.example.back_jiwuquang_api.dto.sys.UserRolePermissionDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserTokenDTO;
 import com.example.back_jiwuquang_api.util.JWTUtil;
 import com.example.back_jiwuquang_api.util.JacksonUtil;
+import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
+import static com.example.back_jiwuquang_api.core.constant.JwtConstant.REDIS_TOKEN_TIME;
 import static com.example.back_jiwuquang_api.core.constant.JwtConstant.TOKEN_TIME;
-import static com.example.back_jiwuquang_api.core.constant.UserConstant.USER_REFRESH_TOKEN_KEY;
 
 /**
  * 身份验证拦截器
@@ -35,7 +38,7 @@ import static com.example.back_jiwuquang_api.core.constant.UserConstant.USER_REF
 public class LoginInterceptor extends HandlerInterceptorAdapter {
 
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisUtil redisUtil;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -45,21 +48,15 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         response.setContentType("application/json;charset=UTF-8");
         // 2、获取token
         UserTokenDTO userTokenDTO;
-        if (StringUtils.isNotBlank(token)) {
+        if (StringUtils.isNotBlank(token)) {// token不为空
             try {
+                // 1、验证用户
                 userTokenDTO = JWTUtil.getTokenInfoByToken(token);
-                // 查看有效期
-                Long seconds = redisTemplate.getExpire(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId());
-                if (seconds <= 0) { // token失效
-                    log.info("身份已过期 {}", seconds);
-                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
-                    return false;
-                } else if (seconds > 0 && seconds <= TOKEN_TIME*60) {
-                    // 续签 小于 TOKEN_TIME 30分钟
-                    log.info("续签 剩余{}s", seconds);
-                    redisTemplate.expireAt(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), new Date(System.currentTimeMillis() + (seconds + TOKEN_TIME * 60) * 1000));
-                }
-                // 将用户id放入
+                // redis过期
+                if (userTokenDTO==null) log.info("身份已过期 长时间未操作 !");
+                // 2、redis_token续期
+                redisUtil.expire(UserConstant.USER_REFRESH_TOKEN_KEY +token, REDIS_TOKEN_TIME, TimeUnit.MINUTES);
+                // 将用户id放入头部 用于业务使用
                 request.setAttribute("userId", userTokenDTO.getId());
                 return true;
             } catch (TokenExpiredException e1) {
