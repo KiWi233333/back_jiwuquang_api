@@ -1,6 +1,6 @@
 package com.example.back_jiwuquang_api.dto.sys;
 
-import com.example.back_jiwuquang_api.core.annotation.Phone;
+import com.example.back_jiwuquang_api.domain.annotation.Phone;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

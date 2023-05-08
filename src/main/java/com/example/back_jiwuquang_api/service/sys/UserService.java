@@ -1,7 +1,7 @@
 package com.example.back_jiwuquang_api.service.sys;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.example.back_jiwuquang_api.core.constant.JwtConstant;
+import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
 import com.example.back_jiwuquang_api.dto.sys.UserCheckDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserRegisterDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserRolePermissionDTO;
@@ -16,12 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import static com.example.back_jiwuquang_api.core.constant.UserConstant.*;
+import static com.example.back_jiwuquang_api.domain.constant.UserConstant.*;
 
 /**
  * 用户业务
@@ -72,7 +73,7 @@ public class UserService {
                 String token = JWTUtil.createToken(userTokenDTO);
                 // 6、缓存token
                 if (token != null) {
-                    redisUtil.set(token, userTokenDTO,JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
+                    redisUtil.set(USER_REFRESH_TOKEN_KEY + token, userTokenDTO, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
                 }
                 saveLoginTime(userTokenDTO.getId());
                 return Result.ok("登录成功！", token);
@@ -123,7 +124,11 @@ public class UserService {
             // 6、生成 Token
             String token = JWTUtil.createToken(userTokenDTO);
             redisUtil.delete(PHONE_CODE_KEY + phone);
-            // 7、更新最后登录时间
+            // 7、缓存token
+            if (token != null) {
+                redisUtil.set(USER_REFRESH_TOKEN_KEY + token, userTokenDTO, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
+            }
+            // 8、更新最后登录时间
             saveLoginTime(userTokenDTO.getId());
             return Result.ok("登录成功！", token);
         }
@@ -153,7 +158,11 @@ public class UserService {
             // 6、生成 Token
             String token = JWTUtil.createToken(userTokenDTO);
             redisUtil.delete(EMAIL_CODE_KEY + email);// 删除邮箱验证码
-            // 7、更新最后登录时间
+            // 7、缓存token
+            if (token != null) {
+                redisUtil.set(USER_REFRESH_TOKEN_KEY + token, userTokenDTO, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
+            }
+            // 8、更新最后登录时间
             saveLoginTime(userTokenDTO.getId());
             return Result.ok("登录成功！", token);
         }
@@ -176,8 +185,6 @@ public class UserService {
         User user = new User().setId(id).setLastLoginTime(new Date());
         return userMapper.updateById(user) == 1;
     }
-
-
 
 
     /** -------------------注册相关操作--------------------- */
@@ -333,9 +340,9 @@ public class UserService {
             UserTokenDTO userTokenDTO = JWTUtil.getTokenInfoByToken(token);
             log.info(String.valueOf(userTokenDTO));
             // 删除缓存
-            redisUtil.delete(token);
+            redisUtil.delete(USER_REFRESH_TOKEN_KEY + token);
             // 更新最后登录时间
-            if (redisUtil.get(token) != null
+            if (redisUtil.get(USER_REFRESH_TOKEN_KEY + token) != null
                     && saveLoginTime(userTokenDTO.getId())) {
                 return Result.ok("退出成功！", null);
             }
@@ -365,5 +372,37 @@ public class UserService {
         // 修改为用户的数据(排除部分数据)
         return Result.ok(UserVO.formUser(user));
     }
+
+    @Autowired
+    FileOSSUpDownUtil fileOSSUpDownUtil;
+
+    /**
+     * 修改用户头像
+     *
+     * @param file   头像文件
+     * @param userId 用户id
+     * @return
+     */
+    public Result updateUserAvatar(MultipartFile file, String userId) {
+        // 图片格式
+        if (!FileUtil.isImage(file.getOriginalFilename())) return Result.fail("图片格式错误！");
+        // 上传
+        Result result = getUserInfoById(userId);
+        UserVO userVO;
+        try {
+            userVO = (UserVO) result.getData();
+        } catch (Exception e) {
+            return Result.fail("修改头像失败！");
+        }
+        String imgKey = fileOSSUpDownUtil.updateImage(file, userVO.getAvatar());
+        if (StringUtil.isNullOrEmpty(imgKey)) return Result.fail("图片文件上传失败！");
+        User user = new User().setAvatar(imgKey).setId(userId);
+        if (userMapper.updateById(user) <= 0)
+            return Result.fail("修改头像失败！");
+        // 清除缓存
+        redisUtil.delete(USER_KEY + userId);
+        return Result.ok("修改头像成功！", null);
+    }
+
 
 }

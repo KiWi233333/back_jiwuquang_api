@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.example.back_jiwuquang_api.core.constant.GoodsConstant.GOODS_CATEGORY_LIST;
+import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_CATEGORY_LIST;
 
 /**
  * 商品分类业务层

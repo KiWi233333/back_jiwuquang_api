@@ -18,8 +18,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.back_jiwuquang_api.core.constant.UserConstant.USER_RECHARGE_COMBO_KEY;
-import static com.example.back_jiwuquang_api.core.constant.UserConstant.USER_WALLET_KEY;
+import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_RECHARGE_COMBO_KEY;
+import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_WALLET_KEY;
 
 /**
  * 钱包业务层

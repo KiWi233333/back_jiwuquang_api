@@ -8,7 +8,7 @@ import com.example.back_jiwuquang_api.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.example.back_jiwuquang_api.core.constant.UserConstant.USER_SALT_DTO_KEY;
+import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_SALT_DTO_KEY;
 
 
 /**

@@ -5,7 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.example.back_jiwuquang_api.core.constant.JwtConstant;
+import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
 import com.example.back_jiwuquang_api.dto.sys.UserRolePermissionDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserTokenDTO;
 import com.fasterxml.jackson.core.JsonFactory;

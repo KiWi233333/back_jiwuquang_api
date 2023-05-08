@@ -4,6 +4,7 @@ import com.example.back_jiwuquang_api.enums.Gender;
 import com.example.back_jiwuquang_api.pojo.sys.User;
 import com.example.back_jiwuquang_api.util.BcryptPwdUtil;
 import com.example.back_jiwuquang_api.util.CheckValidUtil;
+import com.example.back_jiwuquang_api.util.FileUtil;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -89,5 +90,10 @@ class UtilTests {
     @Test
     void redisUtil() {
         redisUtil.set("23333", "23333");
+    }
+    @Test
+    void StringTest() {
+        String a = "wew12e3.png";
+        System.out.println(FileUtil.isImage(a));
     }
 }
