@@ -2,10 +2,7 @@ package com.example.back_jiwuquang_api.service.sys;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
-import com.example.back_jiwuquang_api.dto.sys.UserCheckDTO;
-import com.example.back_jiwuquang_api.dto.sys.UserRegisterDTO;
-import com.example.back_jiwuquang_api.dto.sys.UserRolePermissionDTO;
-import com.example.back_jiwuquang_api.dto.sys.UserTokenDTO;
+import com.example.back_jiwuquang_api.dto.sys.*;
 import com.example.back_jiwuquang_api.pojo.sys.User;
 import com.example.back_jiwuquang_api.repository.sys.UserMapper;
 import com.example.back_jiwuquang_api.service.MailService;
@@ -373,6 +370,7 @@ public class UserService {
         return Result.ok(UserVO.formUser(user));
     }
 
+
     @Autowired
     FileOSSUpDownUtil fileOSSUpDownUtil;
 
@@ -405,4 +403,43 @@ public class UserService {
     }
 
 
+    /**
+     * 修改密码
+     * @param updatePwdDto 参数
+     * @param userId 用户id
+     * @return 用户密码
+     */
+    public Result updatePwdByOldNewPwd(UpdatePwdDTO updatePwdDto, String userId) {
+        UserCheckDTO u = userSaltService.getUserSaltById(userId);
+        if (!BcryptPwdUtil.matches(updatePwdDto.getOldPassword(), u.getPassword(), u.getSalt())) {
+            return Result.fail("旧密码错误！");
+        }
+        // 新密码加密
+        String enPwd = BcryptPwdUtil.encodeBySalt(updatePwdDto.getNewPassword(), u.getSalt());
+        User user = new User().setId(userId).setPassword(enPwd);
+        if (userMapper.updateById(user) <= 0) {
+            return Result.fail("修改密码失败！");
+        }
+        // 清除缓存
+        redisUtil.delete(USER_KEY + userId);// 用户信息
+        redisUtil.delete(USER_REFRESH_TOKEN_KEY + userId);// 登录token信息
+        return Result.ok("修改成功，请重新登录！", null);
+    }
+
+
+    /**
+     * 修改用户基本信息
+     * @param updateUserInfoDTO
+     * @param userId
+     * @return
+     */
+    public Result updateUserInfo(UpdateUserInfoDTO updateUserInfoDTO, String userId) {
+        User user = UpdateUserInfoDTO.toUser(updateUserInfoDTO);
+        user.setId(userId);
+        if (userMapper.updateById(user)<=0) return Result.fail("修改失败！");
+        // 清除缓存
+        redisUtil.delete(USER_KEY + userId);// 用户信息
+        return Result.ok("修改成功！",null);
+
+    }
 }

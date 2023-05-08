@@ -136,20 +136,11 @@ public class FileOSSUpDownUtil {
         return null;
     }
 
-
     // 获取随机文件名
     private String getRandomNameByFile(MultipartFile file) {
         String oldFileName = file.getOriginalFilename();
         String ext = "." + FilenameUtils.getExtension(oldFileName);
         String uuid = UUID.randomUUID().toString().replace("-", "");
         return uuid + ext;
-    }
-
-    // 获取id文件名
-    private String getIdNameByKey(MultipartFile file, String oldKey) {
-        String oldFileName = file.getOriginalFilename();
-        String ext = "." + FilenameUtils.getExtension(oldFileName);
-        return oldKey + ext;
-
     }
 }

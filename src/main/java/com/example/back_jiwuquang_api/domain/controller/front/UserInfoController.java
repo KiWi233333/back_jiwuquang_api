@@ -1,16 +1,20 @@
 package com.example.back_jiwuquang_api.domain.controller.front;
 
-import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
+import com.example.back_jiwuquang_api.dto.sys.UpdatePwdDTO;
+import com.example.back_jiwuquang_api.dto.sys.UpdateUserInfoDTO;
 import com.example.back_jiwuquang_api.service.sys.UserService;
 import com.example.back_jiwuquang_api.util.Result;
-import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import java.util.Objects;
 
 import static com.example.back_jiwuquang_api.domain.constant.JwtConstant.HEADER_NAME;
 
@@ -41,6 +45,31 @@ public class UserInfoController {
         return usersService.getUserInfoById(String.valueOf(request.getAttribute("userId")));
     }
 
+    @ApiOperation(value = "修改密码", tags = "用户基本信息模块")
+    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @PostMapping("/info/pwd")
+    Result updateUserAvatar(@Valid @RequestBody UpdatePwdDTO updatePwdDto,
+                            BindingResult result,
+                            HttpServletRequest request) {
+        // 处理验证错误
+        if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+        if (updatePwdDto.getNewPassword().equals(updatePwdDto.getOldPassword())) return Result.fail("新旧密码一致");
+        return usersService.updatePwdByOldNewPwd(updatePwdDto, String.valueOf(request.getAttribute("userId")));
+    }
+
+
+    @ApiOperation(value = "修改基本信息", tags = "用户基本信息模块")
+    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @PostMapping("/info")
+    Result updateUserInfo(
+            @RequestHeader(name = HEADER_NAME) String token,
+            @Valid @RequestBody UpdateUserInfoDTO updateUserInfoDTO,
+            BindingResult result,
+            HttpServletRequest request) {
+        // 处理验证错误
+        if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+        return usersService.updateUserInfo(updateUserInfoDTO, String.valueOf(request.getAttribute("userId")));
+    }
 
     @ApiOperation(value = "用户头像更改", tags = "用户基本信息模块")
     @ApiParam(name = "file", value = "图片文件")

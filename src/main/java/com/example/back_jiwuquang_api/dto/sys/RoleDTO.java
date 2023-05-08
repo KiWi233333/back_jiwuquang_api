@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 /**
- * 描述
+ * 角色dto
  *
  * @className: RoleDTO
  * @author: Kiwi23333

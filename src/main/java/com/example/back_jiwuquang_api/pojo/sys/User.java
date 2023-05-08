@@ -39,25 +39,11 @@ public class User {
 
     private String avatar;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date birthday;
-
     /**
      * 用户类型 0前台 1后台
      */
     private Integer userType;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private Date createTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private Date updateTime;
-
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @TableField("last_login_time")
-    private Date lastLoginTime;
 
     /**
      * 登录的ip
@@ -76,6 +62,21 @@ public class User {
 
     @TableField("is_phone_verified")
     private Integer isPhoneVerified;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date birthday;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    private Date createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @TableField("last_login_time")
+    private Date lastLoginTime;
 
     @TableField(exist = false)
     private List<Role> roles;

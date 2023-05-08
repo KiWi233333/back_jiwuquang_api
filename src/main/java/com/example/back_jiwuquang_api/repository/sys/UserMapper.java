@@ -12,13 +12,33 @@ import java.util.List;
 @Mapper
 public interface UserMapper extends MPJBaseMapper<User> {
 
-    // 查询链表查询用户的 id、盐、密码
-    default UserCheckDTO selectUserRJoinSaltByUsername(String username, Integer userType) {
+    /**
+     * 查询链表查询用户的 id、盐、密码
+     * @param username
+     * @param userType
+     * @return
+     */
+    default UserCheckDTO selectUserCheckByUname(String username, Integer userType) {
         MPJLambdaWrapper<User> qw = new MPJLambdaWrapper<>();
         qw.select(User::getId, User::getPassword) // 用户表
                 .select(UserSalt::getSalt)// 盐表
                 .eq(User::getUserType, userType).and(q -> q.eq(User::getUsername, username).or().eq(User::getEmail, username).or().eq(User::getPhone, username))
 
+                .rightJoin(UserSalt.class, UserSalt::getUserId, User::getId); // 右表
+        // 返回该用户对应的盐值
+        return this.selectJoinOne(UserCheckDTO.class, qw);
+    }
+
+    /**
+     * 查询链表查询用户的 id、盐、密码
+     * @param userId
+     * @return
+     */
+    default UserCheckDTO selectUserCheckById(String userId) {
+        MPJLambdaWrapper<User> qw = new MPJLambdaWrapper<>();
+        qw.select(User::getId, User::getPassword) // 用户表
+                .select(UserSalt::getSalt)// 盐表
+                .eq(User::getId,userId)
                 .rightJoin(UserSalt.class, UserSalt::getUserId, User::getId); // 右表
         // 返回该用户对应的盐值
         return this.selectJoinOne(UserCheckDTO.class, qw);
