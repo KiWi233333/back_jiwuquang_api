@@ -11,14 +11,14 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 09/05/2023 02:20:17
+ Date: 10/05/2023 01:06:58
 */
-DROP DATABASE if EXISTS kiwi_kiwi_community_mall;
-CREATE DATABASE kiwi_community_mall;
-use kiwi_community_mall;
 
+DROP IF EXISTS kiwi_community_mall;
+create Database: kiwi_community_mall;
+USE Database: kiwi_community_mall;
 
-SET NAMES utf8mb4;
+    SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
@@ -285,7 +285,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('1652246616668012545', 'Lulu2333', '$2a$10$DjJfKH8I5j7EGBdlA5d.CeX/DPjYMyb978hT7EZgv9pnDz3IAkcbe', NULL, '13415000001', '新用户', '保密', 'default.png', NULL, 1, '2023-04-29 09:41:05', '2023-04-29 09:41:05', NULL, NULL, '正常', 0, 1);
 INSERT INTO `sys_user` VALUES ('1653240351484801026', 'admin233', '$2a$10$trFdiRCBradkZdD7S.xesupAXTj7xwwD1u3KSrgTaq436EmilDPRa', NULL, '13415048700', '新用户', '保密', 'default.png', NULL, 1, '2023-05-02 11:29:50', '2023-05-06 16:24:05', '2023-05-06 16:24:05', NULL, '正常', 0, 1);
-INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', '28e00a14ff0544dbbb16144bbbf6d62a.jpg', NULL, 0, '2022-03-01 10:00:00', '2023-05-09 02:12:06', '2023-05-09 00:42:14', '192.168.1.1', '正常', 1, 1);
+INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$DWdzdbF1uuiN2y4K4Jsi..0DQ8CD19DWxEJHt6qqcutVfYNc84Vl.', '1329634286@qq.com', '13415000000', 'Zxcv风格', '男', '28e00a14ff0544dbbb16144bbbf6d62a.jpg', '2005-03-24 20:33:11', 0, '2022-03-01 10:00:00', '2023-05-09 04:01:25', '2023-05-09 04:01:25', '192.168.1.1', '正常', 1, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_role
