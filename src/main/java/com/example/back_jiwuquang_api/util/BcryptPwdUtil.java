@@ -52,7 +52,11 @@ public class BcryptPwdUtil {
     public static boolean matches(String password, String encodedPassword, String salt) {
         String saltedPassword = salt + password;// 组成盐
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(saltedPassword, encodedPassword);
+        try {
+            return encoder.matches(saltedPassword, encodedPassword);
+        }catch (Exception e ) {
+            return false;
+        }
     }
 
     /**

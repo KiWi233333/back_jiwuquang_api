@@ -48,13 +48,15 @@ public class UserInfoController {
     @ApiOperation(value = "修改密码", tags = "用户基本信息模块")
     @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
     @PostMapping("/info/pwd")
-    Result updateUserAvatar(@Valid @RequestBody UpdatePwdDTO updatePwdDto,
-                            BindingResult result,
-                            HttpServletRequest request) {
+    Result updateUserAvatar(
+            @RequestHeader(name = HEADER_NAME) String token,
+            @Valid @RequestBody UpdatePwdDTO updatePwdDto,
+            BindingResult result,
+            HttpServletRequest request) {
         // 处理验证错误
         if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
         if (updatePwdDto.getNewPassword().equals(updatePwdDto.getOldPassword())) return Result.fail("新旧密码一致");
-        return usersService.updatePwdByOldNewPwd(updatePwdDto, String.valueOf(request.getAttribute("userId")));
+        return usersService.updatePwdByOldNewPwd(updatePwdDto, String.valueOf(request.getAttribute("userId")),token);
     }
 
 

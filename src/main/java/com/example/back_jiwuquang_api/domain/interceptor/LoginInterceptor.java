@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.back_jiwuquang_api.domain.constant.JwtConstant.REDIS_TOKEN_TIME;
+import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_REFRESH_TOKEN_KEY;
 
 /**
  * 身份验证拦截器
@@ -46,12 +47,18 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         UserTokenDTO userTokenDTO;
         if (StringUtils.isNotBlank(token)) {// token不为空
             try {
+                // redis缓存
+                if (redisUtil.getExpire(USER_REFRESH_TOKEN_KEY +token)<=0){
+                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
+                    log.info("身份已过期！");
+                    return false;
+                }
                 // 1、验证用户
                 userTokenDTO = JWTUtil.getTokenInfoByToken(token);
                 // redis过期
                 if (userTokenDTO==null) log.info("身份已过期 长时间未操作 !");
                 // 2、redis_token续期
-                redisUtil.expire(UserConstant.USER_REFRESH_TOKEN_KEY +token, REDIS_TOKEN_TIME, TimeUnit.MINUTES);
+                redisUtil.expire(USER_REFRESH_TOKEN_KEY +token, REDIS_TOKEN_TIME, TimeUnit.MINUTES);
                 // 将用户id放入头部 用于业务使用
                 request.setAttribute("userId", userTokenDTO.getId());
                 return true;

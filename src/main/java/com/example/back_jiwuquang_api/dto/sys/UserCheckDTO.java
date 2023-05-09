@@ -1,6 +1,8 @@
 package com.example.back_jiwuquang_api.dto.sys;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 校验密码登录参数类
  *
@@ -11,6 +13,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserCheckDTO {
     private String id;
     private String password;

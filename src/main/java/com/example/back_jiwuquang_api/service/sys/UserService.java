@@ -409,7 +409,7 @@ public class UserService {
      * @param userId 用户id
      * @return 用户密码
      */
-    public Result updatePwdByOldNewPwd(UpdatePwdDTO updatePwdDto, String userId) {
+    public Result updatePwdByOldNewPwd(UpdatePwdDTO updatePwdDto, String userId,String token) {
         UserCheckDTO u = userSaltService.getUserSaltById(userId);
         if (!BcryptPwdUtil.matches(updatePwdDto.getOldPassword(), u.getPassword(), u.getSalt())) {
             return Result.fail("旧密码错误！");
@@ -422,7 +422,7 @@ public class UserService {
         }
         // 清除缓存
         redisUtil.delete(USER_KEY + userId);// 用户信息
-        redisUtil.delete(USER_REFRESH_TOKEN_KEY + userId);// 登录token信息
+        redisUtil.delete(USER_REFRESH_TOKEN_KEY + token);// 登录token信息
         return Result.ok("修改成功，请重新登录！", null);
     }
 
