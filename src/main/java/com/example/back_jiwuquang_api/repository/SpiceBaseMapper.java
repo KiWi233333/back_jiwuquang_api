@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @className: SpliceBaseMapper
  * @author: Kiwi23333
- * @description: 封装自己的base-mapper
+ * @description: 封装自己的base-mapper,包含批量操作
  * @date: 2023/5/5 21:28
  */
 public interface SpiceBaseMapper<T> extends BaseMapper<T> {

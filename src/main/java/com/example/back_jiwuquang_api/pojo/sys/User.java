@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import com.example.back_jiwuquang_api.enums.Gender;
 import com.example.back_jiwuquang_api.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
