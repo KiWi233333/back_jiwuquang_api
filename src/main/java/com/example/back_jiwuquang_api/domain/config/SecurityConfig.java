@@ -19,7 +19,6 @@ package com.example.back_jiwuquang_api.domain.config;
 //                .antMatchers("/admin/**").hasRole("admin")  // 要具有某种权限
 //                .antMatchers("/user/**").hasAnyRole("admin", "user")// 要具有某种权限中的一种
 //                .anyRequest().authenticated();
-//
 //    }
 //
 //}

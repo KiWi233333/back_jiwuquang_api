@@ -24,7 +24,7 @@ import java.util.Date;
 @Accessors(chain = true)
 @TableName("goods")
 public class Goods {
-    @TableId(type = IdType.INPUT)
+    @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
     private String name;
@@ -42,6 +42,18 @@ public class Goods {
     private String images;
 
     private String video;
+
+    private String province;
+
+    private String city;
+
+    private String district;
+
+    @TableField("warranty_time")
+    private String warrantyTime;
+
+    @TableField("refund_time")
+    private String refundTime;
 
     @TableField("is_show")
     private Integer isShow;

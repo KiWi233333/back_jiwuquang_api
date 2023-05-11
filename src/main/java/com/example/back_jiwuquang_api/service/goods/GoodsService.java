@@ -3,12 +3,15 @@ package com.example.back_jiwuquang_api.service.goods;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.back_jiwuquang_api.dto.goods.GoodsDTO;
 import com.example.back_jiwuquang_api.dto.goods.GoodsPageDTO;
+import com.example.back_jiwuquang_api.dto.goods.UpdateGoodsDTO;
 import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import io.netty.util.internal.StringUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +24,7 @@ import org.springframework.stereotype.Service;
  * @date: 2023/5/1 16:06
  */
 @Service
-
+@Slf4j
 public class GoodsService {
 
     @Autowired
@@ -31,26 +34,30 @@ public class GoodsService {
 
     /**
      * 分页查询商品（）
+     *
      * @param goodsPageDTO 查询参数
-     * @param page 当前页码
-     * @param size 每页数量
+     * @param page         当前页码
+     * @param size         每页数量
+     * @param isShow       是否上架 0 管理员 1 用户
      * @return Page
      */
-    public Result getGoodsListByPageSize(GoodsPageDTO goodsPageDTO, Integer page, Integer size) {
+    public Result getGoodsListByPageSize(GoodsPageDTO goodsPageDTO, Integer page, Integer size, Integer isShow) {
 
         Page<Goods> pages = new Page<>(page, size); // 创建分页对象，指定当前页码和每页记录数
         QueryWrapper<Goods> qw = new QueryWrapper<>(); // 创建查询条件
+        // 筛选上架商品(用户)
+        if (isShow==1) qw.eq("is_show", 1);
         // 按名称查找
         if (goodsPageDTO.getName() != null) {
-            qw.like("name",goodsPageDTO.getName()).or().like("description",goodsPageDTO.getName());
+            qw.like("name", goodsPageDTO.getName()).or().like("description", goodsPageDTO.getName());
         }
         // 按类型排序
         if (goodsPageDTO.getCid() != null) {
-            qw.eq("category_id",goodsPageDTO.getCid());
+            qw.eq("category_id", goodsPageDTO.getCid());
         }
         // 是否为新品排序
         if (goodsPageDTO.getIsNew() != null) {
-            qw.eq("is_new",goodsPageDTO.getIsNew()==0?0:1);
+            qw.eq("is_new", goodsPageDTO.getIsNew() == 0 ? 0 : 1);
         }
         // 销量排序
         if (goodsPageDTO.getSaleSort() != null) {
@@ -71,13 +78,42 @@ public class GoodsService {
 
     /**
      * 根据id查询商品
+     *
      * @param id
      * @return
      */
     public Result getGoodsInfoById(String id) {
         if (StringUtil.isNullOrEmpty(id)) return Result.fail("商品id不能为空！");
         Goods goods = goodsMapper.selectById(id);
-        if (goods!=null) return Result.ok(goods);
+        if (goods != null) return Result.ok(goods);
         return Result.fail("查询失败！");
+    }
+
+    /**
+     * 添加商品
+     *
+     * @param goodsDTO 商品参数
+     * @return Result
+     */
+    public Result addGoodsByGoodsDTO(GoodsDTO goodsDTO) {
+        if (goodsMapper.insert(GoodsDTO.toGoods(goodsDTO)) <= 0) {
+            log.info("Good add failed 添加商品失败 ！");
+            return Result.fail("添加失败！");
+        }
+        return Result.ok("添加成功！", null);
+    }
+
+    /**
+     * 修改商品失败
+     *
+     * @param upGoodsDTO
+     * @return
+     */
+    public Result updateGoods(UpdateGoodsDTO upGoodsDTO) {
+        if (goodsMapper.updateById(UpdateGoodsDTO.toGoods(upGoodsDTO)) <= 0) {
+            log.info("Good add failed 修改商品失败 ！");
+            return Result.fail("修改失败！");
+        }
+        return Result.ok("修改成功！", null);
     }
 }
