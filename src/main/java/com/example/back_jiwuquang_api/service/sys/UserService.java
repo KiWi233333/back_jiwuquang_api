@@ -219,9 +219,7 @@ public class UserService {
             user.setEmail(u.getEmail()).setIsEmailVerified(1);
         }
         // 插入用户、盐值、钱包信息 （3）
-        if (userMapper.insert(user) <= 0
-                || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt))
-                || userWalletService.initUserWallet(user.getId()) <= 0) {
+        if (userMapper.insert(user) <= 0 || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt)) || userWalletService.initUserWallet(user.getId()) <= 0) {
             return Result.fail("注册失败!");
         } else {
             // 缓存数据
@@ -339,8 +337,7 @@ public class UserService {
             // 删除缓存
             redisUtil.delete(USER_REFRESH_TOKEN_KEY + token);
             // 更新最后登录时间
-            if (redisUtil.get(USER_REFRESH_TOKEN_KEY + token) != null
-                    && saveLoginTime(userTokenDTO.getId())) {
+            if (redisUtil.get(USER_REFRESH_TOKEN_KEY + token) != null && saveLoginTime(userTokenDTO.getId())) {
                 return Result.ok("退出成功！", null);
             }
         } catch (Exception e) {
@@ -395,8 +392,7 @@ public class UserService {
         String imgKey = fileOSSUpDownUtil.updateImage(file, userVO.getAvatar());
         if (StringUtil.isNullOrEmpty(imgKey)) return Result.fail("图片文件上传失败！");
         User user = new User().setAvatar(imgKey).setId(userId);
-        if (userMapper.updateById(user) <= 0)
-            return Result.fail("修改头像失败！");
+        if (userMapper.updateById(user) <= 0) return Result.fail("修改头像失败！");
         // 清除缓存
         redisUtil.delete(USER_KEY + userId);
         return Result.ok("修改头像成功！", null);
@@ -405,11 +401,12 @@ public class UserService {
 
     /**
      * 修改密码
+     *
      * @param updatePwdDto 参数
-     * @param userId 用户id
+     * @param userId       用户id
      * @return 用户密码
      */
-    public Result updatePwdByOldNewPwd(UpdatePwdDTO updatePwdDto, String userId,String token) {
+    public Result updatePwdByOldNewPwd(UpdatePwdDTO updatePwdDto, String userId, String token) {
         UserCheckDTO u = userSaltService.getUserSaltById(userId);
         if (!BcryptPwdUtil.matches(updatePwdDto.getOldPassword(), u.getPassword(), u.getSalt())) {
             return Result.fail("旧密码错误！");
@@ -429,6 +426,7 @@ public class UserService {
 
     /**
      * 修改用户基本信息
+     *
      * @param updateUserInfoDTO
      * @param userId
      * @return
@@ -436,10 +434,75 @@ public class UserService {
     public Result updateUserInfo(UpdateUserInfoDTO updateUserInfoDTO, String userId) {
         User user = UpdateUserInfoDTO.toUser(updateUserInfoDTO);
         user.setId(userId);
-        if (userMapper.updateById(user)<=0) return Result.fail("修改失败！");
+        if (userMapper.updateById(user) <= 0) return Result.fail("修改失败！");
         // 清除缓存
         redisUtil.delete(USER_KEY + userId);// 用户信息
-        return Result.ok("修改成功！",null);
+        return Result.ok("修改成功！", null);
 
+    }
+
+    /**
+     * 修改手机号
+     *
+     * @param updatePhoneDTO 参数
+     * @param userId         用户id
+     * @return
+     */
+    public Result updateUserPhone(UpdatePhoneDTO updatePhoneDTO, String userId) {
+        // 1、获取验证码
+        String code = (String) redisUtil.get(PHONE_CHECK_CODE_KEY + updatePhoneDTO.getNewPhone());
+        if (StringUtil.isNullOrEmpty(code)) return Result.fail("还未发送验证码！");
+        // 2、验证
+        if (!updatePhoneDTO.getCode().equals(code)) return Result.fail("验证码错误！");
+        // 3、更新数据库-手机号
+        User user = new User().setId(userId).setPhone(updatePhoneDTO.getNewPhone());
+        if (userMapper.updateById(user) <= 0) return Result.fail("更换手机号失败！");
+        // 4、获取用户信息缓存
+        User userInfo = userMapper.selectById(userId);
+        // 5、删除旧手机、验证码、用户信息缓存
+        redisUtil.delete(PHONE_CHECK_CODE_KEY + updatePhoneDTO.getNewPhone());
+        redisUtil.delete(PHONE_MAPS_KEY + userInfo.getPhone());
+        redisUtil.delete(USER_KEY + userInfo.getId());
+        redisUtil.set(PHONE_MAPS_KEY + updatePhoneDTO.getNewPhone(), updatePhoneDTO.getNewPhone());
+        return Result.ok("更换成功，请重新登陆！");
+    }
+
+    /**
+     * 修改邮箱
+     *
+     * @param updateEmailDTO 参数
+     * @param userId         用户id
+     * @return
+     */
+    public Result updateUserEmail(UpdateEmailDTO updateEmailDTO, String userId) {
+        // 1、获取验证码
+        String code = (String) redisUtil.get(EMAIL_CHECK_CODE_KEY + updateEmailDTO.getNewEmail());
+        if (StringUtil.isNullOrEmpty(code)) return Result.fail("还未发送验证码！");
+        // 2、验证
+        if (!updateEmailDTO.getCode().equals(code)) return Result.fail("验证码错误！");
+        // 3、更新数据库-手机号
+        User user = new User().setId(userId).setPhone(updateEmailDTO.getNewEmail());
+        if (userMapper.updateById(user) <= 0) return Result.fail("更换手机号失败！");
+        // 4、获取用户信息缓存
+        User userInfo = (User) redisUtil.get(USER_KEY + userId);
+        // 5、删除旧缓存 验证码缓存
+        redisUtil.delete(EMAIL_CODE_KEY + userInfo.getEmail());
+        redisUtil.set(EMAIL_CODE_KEY + updateEmailDTO.getNewEmail(), updateEmailDTO.getNewEmail());
+        return Result.ok("更换成功，请重新登陆！");
+    }
+
+
+    /**
+     * 获取新手机/邮箱验证码
+     *
+     * @param key
+     * @return
+     */
+    public Result sendUpdateCode(String key, Integer type) {
+        if (type == 0) {// 手机号
+            return getCodeByPhone(key, PHONE_CHECK_CODE_KEY, 1);// 1注册验证码
+        } else {// 邮箱
+            return getCodeByPhone(key, EMAIL_CHECK_CODE_KEY, 1);// 1注册验证码
+        }
     }
 }

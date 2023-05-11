@@ -9,6 +9,8 @@ package com.example.back_jiwuquang_api.domain.constant;
  * @date: 2023/4/27 18:56
  */
 public class UserConstant {
+    public  static final String USER_ID_KEY = "userId";
+
     /** 盐表 **/
     public static final String USER_SALT_KEY = "user:salt:";// 用户盐值
     public static final String USER_SALT_DTO_KEY = "user:salts:";// 用户全部盐表
@@ -19,7 +21,7 @@ public class UserConstant {
     public static final String PHONE_CHECK_CODE_KEY = "user:register:code:";// 注册临时手机号验证码
     public static final String EMAIL_CHECK_CODE_KEY = "user:register:code:";// 注册临时邮箱验证码
     /** 用户信息 **/
-    public static final String USER_ROLE_KEY = "user:role:";// 用户名
+    public static final String USER_ROLE_KEY = "user:role:";// 角色权限
     public static final String USERNAME_MAPS_KEY = "user:usernames:";// 用户名
     public static final String PHONE_MAPS_KEY = "user:phones:";// 手机号
     public static final String EMAIL_MAPS_KEY = "user:emails:";// 邮箱

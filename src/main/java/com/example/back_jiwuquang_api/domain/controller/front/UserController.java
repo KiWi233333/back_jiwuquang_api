@@ -93,7 +93,7 @@ public class UserController {
      */
 
     @ApiOperation(value = "注册", tags = "登录注册模块")
-    @PutMapping(value = "/register")
+    @PostMapping(value = "/register")
     Result toRegister(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult res) {
         if (res.hasErrors()) {
             // 处理校验错误信息
