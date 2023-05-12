@@ -44,17 +44,18 @@ public class ResController {
         try {
             response.sendRedirect(fileOSSConfig.hostName+"/video/"+name);
         }catch (Exception e) {
-            response.sendError(404);
             log.info("Redirect fail {}",e.getMessage());
+            response.sendError(404);
         }
     }
     @ApiOperation(value = "文件资源", tags = "资源模块")
     @GetMapping("/file/{name}")
-    void getFile(@PathVariable String name,HttpServletResponse response) {
+    void getFile(@PathVariable String name,HttpServletResponse response) throws IOException {
         try {
             response.sendRedirect(fileOSSConfig.hostName+"/file/"+name);
         }catch (Exception e) {
             log.info("Redirect fail {}",e.getMessage());
+            response.sendError(404);
         }
     }
 }
