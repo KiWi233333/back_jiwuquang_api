@@ -18,5 +18,5 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdsList {
-    List<String > ids;
+    List<String> ids;
 }

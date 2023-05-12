@@ -89,6 +89,7 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         "/category/**",
                         "/category",
                         "/goods/**",
+                        "/goods/sku/**",
                         "/admin/**"
                 )
         ; // 排除登录请求

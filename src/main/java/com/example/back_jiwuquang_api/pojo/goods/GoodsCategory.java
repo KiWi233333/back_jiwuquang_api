@@ -39,7 +39,7 @@ public class GoodsCategory {
     /**
      * 分类图标
      */
-    private String  icon;
+    private String icon;
     /**
      * 权重
      */
@@ -51,11 +51,11 @@ public class GoodsCategory {
     private Integer isShow;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     /**
@@ -67,8 +67,9 @@ public class GoodsCategory {
 
     /**
      * 递归 生成的树
+     *
      * @param categories 分类集合
-     * @param parentId 父id
+     * @param parentId   父id
      * @return 树形集合
      */
 
@@ -89,6 +90,6 @@ public class GoodsCategory {
 
     // vo 转换为 po
     public static GoodsCategory toGoodsCategory(GoodsCategoryDTO g) {
-        return new GoodsCategory(null, g.getName(), g.getParentId(), g.getIcon(), g.getSortOrder(), g.getIsShow(),null,null,null);
+        return new GoodsCategory(null, g.getName(), g.getParentId(), g.getIcon(), g.getSortOrder(), g.getIsShow(), null, null, null);
     }
 }

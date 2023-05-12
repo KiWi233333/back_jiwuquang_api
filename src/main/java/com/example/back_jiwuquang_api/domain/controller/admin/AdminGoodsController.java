@@ -7,6 +7,7 @@ import com.example.back_jiwuquang_api.dto.goods.UpdateGoodsDTO;
 import com.example.back_jiwuquang_api.dto.sys.LoginDTO;
 import com.example.back_jiwuquang_api.service.goods.GoodsService;
 import com.example.back_jiwuquang_api.util.Result;
+import io.netty.util.internal.StringUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
+ * 管理员模块
  * 商品管理模块
  *
  * @className: AdminGoodsController
@@ -44,6 +46,14 @@ public class AdminGoodsController {
         return goodsService.getGoodsListByPageSize(goodsPageDTO, page, size, 0);
     }
 
+
+    @ApiOperation(value = "查询商品信息", tags = "商品管理模块")
+    @GetMapping("/{id}")
+    Result getGoodsInfo(@ApiParam("商品id") @PathVariable String id) {
+        return goodsService.getGoodsInfoById(id);
+    }
+
+
     @ApiOperation(value = "添加商品", tags = "商品信息管理")
     @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
     @PostMapping(value = "")
@@ -62,15 +72,28 @@ public class AdminGoodsController {
     @ApiOperation(value = "修改商品", tags = "商品信息管理")
     @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
     @PutMapping(value = "")
-    Result update(@RequestHeader(name = JwtConstant.HEADER_NAME) String token,
-                  @Valid @RequestBody UpdateGoodsDTO upGoodsDTO,
-                  BindingResult result) {
+    Result updateGoods(@RequestHeader(name = JwtConstant.HEADER_NAME) String token,
+                       @Valid @RequestBody UpdateGoodsDTO upGoodsDTO,
+                       BindingResult result) {
         if (result.hasErrors()) {
             // 处理校验错误信息
             return Result.fail(result.getFieldError().getDefaultMessage());
         } else {
             // 添加商品
             return goodsService.updateGoods(upGoodsDTO);
+        }
+    }
+
+    @ApiOperation(value = "删除商品（单个）", tags = "商品信息管理")
+    @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
+    @DeleteMapping(value = "/{id}")
+    Result deleteGoods(@RequestHeader(name = JwtConstant.HEADER_NAME) String token,
+                       @PathVariable String id) {
+        if (StringUtil.isNullOrEmpty(id)) {
+            return Result.fail("商品id不能为空");
+        } else {
+            // 删除商品
+            return goodsService.deleteGoodsById(id);
         }
     }
 

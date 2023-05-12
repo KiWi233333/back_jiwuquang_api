@@ -112,7 +112,7 @@ public class UserService {
         String res = String.valueOf(redisUtil.get(PHONE_CODE_KEY + phone));
         if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
         // 3、验证
-        User user = userMapper.selectOne(new QueryWrapper<User>().eq("phone", phone));
+        User user = userMapper.selectOne(new QueryWrapper<User>().lambda().eq(User::getPhone, phone));
         // 4、生成 Token
         if (user != null) {
             // 5、获取角色权限信息
@@ -145,8 +145,7 @@ public class UserService {
         String res = String.valueOf(redisUtil.get(EMAIL_CODE_KEY + email));
         if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
         // 3、验证
-        UserRolePermissionDTO userRolePermissionDTO = new UserRolePermissionDTO();
-        User user = userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
+        User user = userMapper.selectOne(new QueryWrapper<User>().lambda().eq(User::getEmail, email));
         // 4、生成 Token
         if (user != null) {
             // 5、获取角色权限信息
@@ -256,7 +255,7 @@ public class UserService {
             log.info("该用户已存在，用户名Redis");
             return Result.fail("该用户已存在");
         } else {
-            user = userMapper.selectOne(new QueryWrapper<User>().select("username").eq("username", username));
+            user = userMapper.selectOne(new QueryWrapper<User>().lambda().select(User::getUsername).eq(User::getUsername, username));
         }
         // 数据库查询为不为空并保存redis
         if (user != null) {
@@ -274,13 +273,13 @@ public class UserService {
         if (redisUtil.get(KEY + phone) != null) return Result.fail("验证码已发送，请60s后再重试！");
         // 2、验证手机号是否已经被使用
         if (type == 0) {// 登录0
-            if (userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) == null) {
+            if (userMapper.selectOne(new QueryWrapper<User>().lambda().select(User::getPhone).eq(User::getPhone, phone)) == null) {
                 return Result.fail("该手机号未注册！");
             } else {
                 redisUtil.set(PHONE_MAPS_KEY + phone, phone);// 对数据库缓存
             }
         } else {// 注册1
-            if (userMapper.selectOne(new QueryWrapper<User>().select("phone").eq("phone", phone)) != null) {
+            if (userMapper.selectOne(new QueryWrapper<User>().lambda().select(User::getPhone).eq(User::getPhone, phone)) != null) {
                 redisUtil.set(PHONE_MAPS_KEY + phone, phone);// 对数据库缓存
                 return Result.fail("该手机号已经被使用！");
             }
@@ -300,13 +299,13 @@ public class UserService {
             return Result.fail("验证码已发送，请60s后再重试！");
         // 2、验证邮箱是否已经被使用
         if (type == 0) {// 登录
-            if (userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) == null) {
+            if (userMapper.selectOne(new QueryWrapper<User>().lambda().select(User::getEmail).eq(User::getEmail, email)) == null) {
                 return Result.fail("该邮箱未注册！");
             } else {
                 redisUtil.set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存邮箱号
             }
         } else {// 注册
-            if (userMapper.selectOne(new QueryWrapper<User>().select("email").eq("email", email)) != null) {
+            if (userMapper.selectOne(new QueryWrapper<User>().lambda().select(User::getEmail).eq(User::getEmail, email)) != null) {
                 redisUtil.set(EMAIL_MAPS_KEY + email, email);// 对数据库缓存邮箱号
                 return Result.fail("该邮箱已经被使用！");
             }

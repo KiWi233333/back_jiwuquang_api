@@ -105,7 +105,7 @@ public class GoodsCategoryService {
      */
     public Result deleteOneByCategoryId(String id) {
         // 删除其附属的分类
-        int flags = goodsCategoryMapper.delete(new QueryWrapper<GoodsCategory>().eq("id", id).or().eq("parent_id", id));
+        int flags = goodsCategoryMapper.delete(new QueryWrapper<GoodsCategory>().lambda().eq(GoodsCategory::getId, id).or().eq(GoodsCategory::getParentId, id));
         // 重新缓存
         if (flags > 0) {// 重新缓存
             redisUtil.delete(GOODS_CATEGORY_LIST);
@@ -124,8 +124,14 @@ public class GoodsCategoryService {
      */
     public Result deleteByCategoryIds(List<String> ids) {
         int count = 0;
-        count = goodsCategoryMapper.delete(new QueryWrapper<GoodsCategory>().in("id", ids).or().in("parent_id", ids));
+        // 1、数据库删除操作
+        count = goodsCategoryMapper.delete(
+                new QueryWrapper<GoodsCategory>().lambda()
+                .in(GoodsCategory::getId, ids)
+                .or()
+                .in(GoodsCategory::getParentId, ids));
         if (count == 0) {
+            // 2、redis 删除操作
             redisUtil.delete(GOODS_CATEGORY_LIST);
             return Result.fail("删除失败！");
         } else {

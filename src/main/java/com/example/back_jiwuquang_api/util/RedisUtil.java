@@ -1,6 +1,5 @@
 package com.example.back_jiwuquang_api.util;
 
-import com.example.back_jiwuquang_api.pojo.goods.GoodsCategory;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
@@ -86,6 +85,7 @@ public class RedisUtil {
     public Boolean expire(String key, long timeout, TimeUnit unit) {
         return redisTemplate.expire(key, timeout, unit);
     }
+
     public Boolean expireByS(String key, long timeout) {
         return redisTemplate.expire(key, timeout, TimeUnit.SECONDS);
     }
@@ -187,32 +187,34 @@ public class RedisUtil {
     }
 
 
-
-
     /** -------------------string相关操作--------------------- */
 
     /**
      * 设置指定 key 的值
+     *
      * @param key
      * @param value
      */
     public void set(String key, Object value) {
         redisTemplate.opsForValue().set(key, value);
     }
-    public void set(String key, Object value,Integer seconds) {
-        redisTemplate.opsForValue().set(key, value,seconds,TimeUnit.SECONDS);
+
+    public void set(String key, Object value, Integer seconds) {
+        redisTemplate.opsForValue().set(key, value, seconds, TimeUnit.SECONDS);
     }
-    public void set(String key, Object value,Integer val,TimeUnit timeUnit) {
-        redisTemplate.opsForValue().set(key, value,val,timeUnit);
+
+    public void set(String key, Object value, Integer val, TimeUnit timeUnit) {
+        redisTemplate.opsForValue().set(key, value, val, timeUnit);
     }
 
     /**
      * 获取指定 key 的值
+     *
      * @param key
      * @return
      */
     public <T> Object get(String key) {
-        return  (T) redisTemplate.opsForValue().get(key);
+        return (T) redisTemplate.opsForValue().get(key);
     }
 
     /**
@@ -220,7 +222,7 @@ public class RedisUtil {
      *
      * @param maps
      */
-    public void multiSet(Map<String, String> maps) {
+    public void multiSet(HashMap<String, Object> maps) {
         redisTemplate.opsForValue().multiSet(maps);
     }
 
@@ -228,12 +230,11 @@ public class RedisUtil {
      * 同时设置一个或多个 key-value 对，当且仅当所有给定 key 都不存在
      *
      * @param maps
-     * @return 之前已经存在返回false,不存在返回true
+     * @return 之前已经存在返回false, 不存在返回true
      */
     public boolean multiSetIfAbsent(Map<String, String> maps) {
         return redisTemplate.opsForValue().multiSetIfAbsent(maps);
     }
-
 
 
     /** -------------------hash相关操作------------------------- */
@@ -255,7 +256,7 @@ public class RedisUtil {
      * @param key
      * @return
      */
-    public Map<Object, Object> hGetAll(String key) {
+    public Map<String, Object> hGetAll(String key) {
         return redisTemplate.opsForHash().entries(key);
     }
 
@@ -270,11 +271,11 @@ public class RedisUtil {
         return redisTemplate.opsForHash().multiGet(key, fields);
     }
 
-    public void hPut(String key, String hashKey, String value) {
+    public void hPut(String key, String hashKey, Object value) {
         redisTemplate.opsForHash().put(key, hashKey, value);
     }
 
-    public void hPutAll(String key, Map<String, String> maps) {
+    public void hPutAll(String key, Map<String, Object> maps) {
         redisTemplate.opsForHash().putAll(key, maps);
     }
 
@@ -394,10 +395,8 @@ public class RedisUtil {
      * 获取列表指定范围内的元素
      *
      * @param key
-     * @param start
-     *            开始位置, 0是开始位置
-     * @param end
-     *            结束位置, -1返回所有
+     * @param start 开始位置, 0是开始位置
+     * @param end   结束位置, -1返回所有
      * @return
      */
     public List<String> lRange(String key, long start, long end) {
@@ -416,7 +415,6 @@ public class RedisUtil {
     }
 
     /**
-     *
      * @param key
      * @param value
      * @return
@@ -426,7 +424,6 @@ public class RedisUtil {
     }
 
     /**
-     *
      * @param key
      * @param value
      * @return
@@ -459,7 +456,6 @@ public class RedisUtil {
     }
 
     /**
-     *
      * @param key
      * @param value
      * @return
@@ -469,7 +465,6 @@ public class RedisUtil {
     }
 
     /**
-     *
      * @param key
      * @param value
      * @return
@@ -479,7 +474,6 @@ public class RedisUtil {
     }
 
     /**
-     *
      * @param key
      * @param value
      * @return
@@ -515,8 +509,7 @@ public class RedisUtil {
      * 通过索引设置列表元素的值
      *
      * @param key
-     * @param index
-     *            位置
+     * @param index 位置
      * @param value
      */
     public void lSet(String key, long index, String value) {
@@ -537,10 +530,8 @@ public class RedisUtil {
      * 移出并获取列表的第一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
      *
      * @param key
-     * @param timeout
-     *            等待时间
-     * @param unit
-     *            时间单位
+     * @param timeout 等待时间
+     * @param unit    时间单位
      * @return
      */
     public Object lBLeftPop(String key, long timeout, TimeUnit unit) {
@@ -561,10 +552,8 @@ public class RedisUtil {
      * 移出并获取列表的最后一个元素， 如果列表没有元素会阻塞列表直到等待超时或发现可弹出元素为止
      *
      * @param key
-     * @param timeout
-     *            等待时间
-     * @param unit
-     *            时间单位
+     * @param timeout 等待时间
+     * @param unit    时间单位
      * @return
      */
     public Object lBRightPop(String key, long timeout, TimeUnit unit) {
@@ -602,9 +591,8 @@ public class RedisUtil {
      * 删除集合中值等于value得元素
      *
      * @param key
-     * @param index
-     *            index=0, 删除所有值等于value的元素; index>0, 从头部开始删除第一个值等于value的元素;
-     *            index<0, 从尾部开始删除第一个值等于value的元素;
+     * @param index index=0, 删除所有值等于value的元素; index>0, 从头部开始删除第一个值等于value的元素;
+     *              index<0, 从尾部开始删除第一个值等于value的元素;
      * @param value
      * @return
      */
@@ -632,5 +620,6 @@ public class RedisUtil {
     public Long lLen(String key) {
         return redisTemplate.opsForList().size(key);
     }
+
 
 }

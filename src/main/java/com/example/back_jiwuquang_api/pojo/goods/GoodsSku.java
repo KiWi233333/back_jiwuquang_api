@@ -11,12 +11,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 商品模块
- * ## 商品规格项
+ * 商品规格实体类
  *
  * @className: GoodsSku
  * @author: Kiwi23333
- * @description: 商品模块
+ * @description: 商品规格实体类
  * @date: 2023/5/5 22:29
  */
 
@@ -54,10 +53,10 @@ public class GoodsSku {
     private Integer isShow;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
 }
