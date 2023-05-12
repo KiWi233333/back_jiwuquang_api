@@ -26,6 +26,7 @@ public class MailService {
     private String from;
     @Value("${emailTemplate}")
     private String emailTemplatePath;
+
     @Value("${emailCodeTemplate}")
     private String emailCodeTemplate;
 
