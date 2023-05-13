@@ -3,6 +3,7 @@ package com.example.back_jiwuquang_api;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.back_jiwuquang_api.dto.sys.UserRegisterDTO;
 import com.example.back_jiwuquang_api.pojo.sys.UserSalt;
+import com.example.back_jiwuquang_api.repository.shopcart.ShopCartMapper;
 import com.example.back_jiwuquang_api.repository.sys.UserMapper;
 import com.example.back_jiwuquang_api.repository.sys.UserSaltMapper;
 import com.example.back_jiwuquang_api.repository.pay.UserWalletMapper;
@@ -106,6 +107,15 @@ class ServiceTest {
         System.out.println(userMapper.selectUserRoleAndPermissionByUserId("2163652592439853323"));
 //        System.out.println(userMapper.selectAllRole());
 //        System.out.println(userMapper.selectAllPermission());
+    }
+
+
+    @Autowired
+    ShopCartMapper shopCartMapper;
+    @Test
+    void selectShopCartPage(){
+
+        System.out.println(shopCartMapper.selectShopCartPage(1,10,"2163652592439853323"));
     }
 
 }

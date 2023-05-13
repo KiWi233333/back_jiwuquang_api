@@ -45,12 +45,12 @@ public class GoodsCategoryService {
         if (list == null || list.isEmpty()) {
             list = goodsCategoryMapper.selectALlCategoryTree();
         } else {
-            return Result.ok(list);
+            return Result.ok("获取成功",list);
         }
         // 缓存
         if (!list.isEmpty()) {
             redisUtil.set(GOODS_CATEGORY_LIST, list);
-            return Result.ok(list);
+            return Result.ok("获取成功",list);
         } else {
             return Result.fail("获取失败！");
         }
@@ -94,7 +94,7 @@ public class GoodsCategoryService {
         }
         // 3、清空缓存
         redisUtil.delete(GOODS_CATEGORY_LIST);
-        return Result.ok("添加成功，"+categoryList.size()+"条数据", null);
+        return Result.ok("添加成功，"+categoryList.size()+"条数据", categoryList.size());
     }
 
     /**
@@ -109,7 +109,7 @@ public class GoodsCategoryService {
         // 重新缓存
         if (flags > 0) {// 重新缓存
             redisUtil.delete(GOODS_CATEGORY_LIST);
-            return Result.ok("删除成功！", "删除共" + flags + "条数据");
+            return Result.ok("删除成功！", flags);
         } else {
             return Result.fail("删除失败！");
         }
@@ -135,7 +135,7 @@ public class GoodsCategoryService {
             redisUtil.delete(GOODS_CATEGORY_LIST);
             return Result.fail("删除失败！");
         } else {
-            return Result.ok("删除成功！", "共删除" + count + "条数据");
+            return Result.ok("删除成功！", count);
         }
     }
 }

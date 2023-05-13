@@ -40,15 +40,15 @@ public class UserInfoController {
 
     /************** 用户基本信息（增删查改）*************/
     @ApiOperation(value = "获取用户信息", tags = "用户基本信息模块")
-    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @GetMapping("/info")
-    Result getUserInfo(@RequestHeader("Authorization") String token, HttpServletRequest request) {
+    Result getUserInfo(@RequestHeader(HEADER_NAME) String token, HttpServletRequest request) {
         // 获取拦截请求后获取的id
         return usersService.getUserInfoById(request.getAttribute(USER_ID_KEY).toString());
     }
 
     @ApiOperation(value = "修改密码", tags = "用户基本信息模块")
-    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PutMapping("/info/pwd")
     Result updateUserAvatar(
             @RequestHeader(name = HEADER_NAME) String token,
@@ -63,7 +63,7 @@ public class UserInfoController {
 
 
     @ApiOperation(value = "修改基本信息", tags = "用户基本信息模块")
-    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PutMapping("/info")
     Result updateUserInfo(
             @RequestHeader(name = HEADER_NAME) String token,
@@ -78,7 +78,7 @@ public class UserInfoController {
 
     @ApiOperation(value = "获取新手机/邮箱验证码", tags = "用户基本信息模块")
     @GetMapping(value = "/code/{key}")
-    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @ApiModelProperty(name = "key", value = "手机号/邮箱")
     @ApiParam(name = "type", value = "类型：0手机号/ 1邮箱")
     Result getUpdatePhoneOrEmailCode(@RequestHeader(name = HEADER_NAME) String token,
@@ -87,7 +87,7 @@ public class UserInfoController {
     }
 
     @ApiOperation(value = "更换手机号", tags = "用户基本信息模块")
-    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PutMapping("/info/phone")
     Result updateUserPhone(
             @RequestHeader(name = HEADER_NAME) String token,
@@ -101,7 +101,7 @@ public class UserInfoController {
     }
 
     @ApiOperation(value = "更换邮箱", tags = "用户基本信息模块")
-    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PutMapping("/info/email")
     Result updateUserEmail(
             @RequestHeader(name = HEADER_NAME) String token,
@@ -117,7 +117,7 @@ public class UserInfoController {
 
     @ApiOperation(value = "用户头像更改", tags = "用户基本信息模块")
     @ApiParam(name = "file", value = "图片文件")
-    @ApiImplicitParam(name = "Authorization", value = "用户token", required = true)
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PutMapping("/info/avatar")
     Result updateUserAvatar(@RequestHeader(name = HEADER_NAME) String token,
                             @RequestParam(name = "file") MultipartFile file,

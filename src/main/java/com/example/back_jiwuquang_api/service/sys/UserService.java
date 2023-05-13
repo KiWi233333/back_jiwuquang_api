@@ -363,7 +363,7 @@ public class UserService {
             redisUtil.set(USER_KEY + userId, user);
         }
         // 修改为用户的数据(排除部分数据)
-        return Result.ok(UserVO.formUser(user));
+        return Result.ok("获取成功",UserVO.formUser(user));
     }
 
 
@@ -463,7 +463,7 @@ public class UserService {
         redisUtil.delete(PHONE_MAPS_KEY + userInfo.getPhone());
         redisUtil.delete(USER_KEY + userInfo.getId());
         redisUtil.set(PHONE_MAPS_KEY + updatePhoneDTO.getNewPhone(), updatePhoneDTO.getNewPhone());
-        return Result.ok("更换成功，请重新登陆！");
+        return Result.ok("更换成功，请重新登陆！",null);
     }
 
     /**
@@ -487,7 +487,7 @@ public class UserService {
         // 5、删除旧缓存 验证码缓存
         redisUtil.delete(EMAIL_CODE_KEY + userInfo.getEmail());
         redisUtil.set(EMAIL_CODE_KEY + updateEmailDTO.getNewEmail(), updateEmailDTO.getNewEmail());
-        return Result.ok("更换成功，请重新登陆！");
+        return Result.ok("更换成功，请重新登陆！",null);
     }
 
 

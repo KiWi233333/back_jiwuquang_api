@@ -45,7 +45,7 @@ public class GoodsSkuService {
         // 1、redis 并构建
         Map<String, Object> map = redisUtil.hGetAll(GOODS_SKU_MAPS + gid);
         if (!map.isEmpty()) {
-            for(String key : map.keySet()){
+            for (String key : map.keySet()) {
                 goodsSkuList.add((GoodsSku) map.get(key));
             }
             return Result.ok("获取成功！", goodsSkuList);
@@ -87,18 +87,20 @@ public class GoodsSkuService {
 
     /**
      * 修改规格
-     * @param goodsId 商品id
-     * @param skuId 规格id
+     *
+     * @param goodsId        商品id
+     * @param skuId          规格id
      * @param updateGoodsSku updateGoodsSku
      * @return Result
      */
     public Result updateGoodsSku(String goodsId, String skuId, UpdateGoodsSkuDTO updateGoodsSku) {
         // 1、修改
         GoodsSku goodsSku = UpdateGoodsSkuDTO.toGoodsSku(updateGoodsSku).setId(skuId);
-        if (goodsSkuMapper.updateById(goodsSku)<=0) return Result.fail("修改失败！");
+        if (goodsSkuMapper.updateById(goodsSku) <= 0) return Result.fail("修改失败！");
         // 2、删除对应缓存
         redisUtil.delete(GOODS_SKU_MAPS + goodsId);
-        return Result.ok("修改成功！",null);
+        // 3、success
+        return Result.ok("修改成功！", null);
     }
 
 
@@ -111,14 +113,15 @@ public class GoodsSkuService {
      */
     public Result deleteGoodsSkuById(String goodsId, String skuId) {
         // 1、sql
-        if (goodsSkuMapper.delete(new QueryWrapper<GoodsSku>().lambda()
+        int flag = goodsSkuMapper.delete(new QueryWrapper<GoodsSku>().lambda()
                 .eq(GoodsSku::getGoodsId, goodsId)
-                .eq(GoodsSku::getId, skuId)) <= 0)
+                .eq(GoodsSku::getId, skuId));
+        if (flag <= 0)
             return Result.fail("删除失败，没有此规格！");
         // 2、删除对应缓存
         redisUtil.hDelete(GOODS_SKU_MAPS + goodsId, skuId);
         // 3、success
-        return Result.ok("删除成功！", null);
+        return Result.ok("删除成功！", flag);
     }
 
 
@@ -132,12 +135,12 @@ public class GoodsSkuService {
         // 1、sql
         int flag = goodsSkuMapper.delete(new QueryWrapper<GoodsSku>().lambda()
                 .eq(GoodsSku::getGoodsId, goodsId)
-                .in(GoodsSku::getId,ids));
+                .in(GoodsSku::getId, ids));
         if (flag <= 0) return Result.fail("删除失败，没有此规格！");
         // 2、删除缓存
         redisUtil.delete(GOODS_SKU_MAPS + goodsId);
         // 3、success
-        return Result.ok("删除成功！", null);
+        return Result.ok("删除成功！", flag);
     }
 
 }

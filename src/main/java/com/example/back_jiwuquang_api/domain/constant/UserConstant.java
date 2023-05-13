@@ -9,6 +9,7 @@ package com.example.back_jiwuquang_api.domain.constant;
  * @date: 2023/4/27 18:56
  */
 public class UserConstant {
+    /** 用户token key **/
     public  static final String USER_ID_KEY = "userId";
 
     /** 盐表 **/

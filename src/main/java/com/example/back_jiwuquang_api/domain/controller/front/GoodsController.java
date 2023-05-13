@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  *
  * @className: GoodsController
  * @author: Kiwi23333
- * @description: TODO描述
+ * @description: 商品模块
  * @date: 2023/5/1 16:07
  */
 @Slf4j

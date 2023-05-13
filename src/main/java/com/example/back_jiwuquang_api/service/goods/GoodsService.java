@@ -81,7 +81,7 @@ public class GoodsService {
         }
         IPage<Goods> userPage = goodsMapper.selectPage(pages, qw); // 调用Mapper接口方法进行分页查询
 
-        return Result.ok(userPage);
+        return Result.ok("获取成功！",userPage);
     }
 
     /** 采取 Hash缓存 GOODS_INFO_MAPS **/

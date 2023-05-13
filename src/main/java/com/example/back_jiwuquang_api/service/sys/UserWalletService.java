@@ -73,7 +73,7 @@ public class UserWalletService {
         UserWallet userWallet = getWalletById(id);
         // 2、判断
         if (userWallet != null) {
-            return Result.ok(userWallet);
+            return Result.ok("获取成功",userWallet);
         } else {
             return Result.fail("获取失败！");
         }
@@ -104,7 +104,7 @@ public class UserWalletService {
             }
         }
         if (!list.isEmpty())
-            return Result.ok(list);
+            return Result.ok("获取成功",list);
 
         return Result.fail("获取失败！");
     }
