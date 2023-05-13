@@ -73,19 +73,43 @@ public class ShopCartService {
      */
     public Result addShopCart(AddShopCartDTO addShopCartDTO, String userId) {
         ShopCart shopCart = AddShopCartDTO.toShopCart(addShopCartDTO).setUserId(userId);
-        if (shopCartMapper.insert(shopCart) <= 0) return Result.fail("添加失败！");
+        // 查看是否存在
+        ShopCart selectCart = shopCartMapper.selectOne(new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getSkuId, addShopCartDTO.getSkuId()));
+        // 存在更新数量+1
+        if (selectCart != null) {// 更新
+            int count = shopCartMapper.update(new ShopCart()
+                            .setId(selectCart.getId())
+                            .setQuantity(selectCart.getQuantity() + shopCart.getQuantity()),
+                    new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getId, selectCart.getId()).eq(ShopCart::getUserId, userId));
+            if (count <= 0) {
+                log.info("ShopCart  update failed id {}", shopCart.getId());
+                return Result.fail("添加失败！");
+            }
+        } else {// 添加
+            if (shopCartMapper.insert(shopCart) <= 0) return Result.fail("添加失败！");
+        }
         // 清除缓存
         redisUtil.delete(SHOP_CART_MAPS + userId);
-        return Result.ok("添加成功！",null);
+        return Result.ok("添加成功！", null);
     }
 
 
-    public Result updateShopCartByDto(AddShopCartDTO addShopCartDTO, String userId) {
-        ShopCart shopCart = AddShopCartDTO.toShopCart(addShopCartDTO);
-        if (shopCartMapper.updateById(shopCart) <= 0) return Result.fail("修改失败！");
+    /**
+     * 修改购物车
+     *
+     * @param id     规格id
+     * @param nums   数量
+     * @param userId 用户id
+     * @return Result
+     */
+    public Result updateShopCartByDto(String id, Integer nums, String userId) {
+        // sql updateShopCart
+        if (shopCartMapper.update(new ShopCart().setId(id).setQuantity(nums),
+                new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getUserId, userId)) <= 0)
+            return Result.fail("修改失败！");
         // 清除缓存
         redisUtil.delete(SHOP_CART_MAPS + userId);
-        return Result.ok("修改成功！",null);
+        return Result.ok("修改成功！", null);
     }
 
 
@@ -103,7 +127,7 @@ public class ShopCartService {
         }
         // 2、清除缓存
         redisUtil.delete(SHOP_CART_MAPS + userId);
-        return Result.ok("删除成功！",null);
+        return Result.ok("删除成功！", null);
     }
 
     /**
@@ -121,8 +145,8 @@ public class ShopCartService {
         }
         // 2、清除缓存
         redisUtil.delete(SHOP_CART_MAPS + userId);
-        log.info("删除购物车 {} 条! {}", flag,userId);
-        return Result.ok("删除成功！",flag);
+        log.info("删除购物车 {} 条! {}", flag, userId);
+        return Result.ok("删除成功！", flag);
     }
 
 }

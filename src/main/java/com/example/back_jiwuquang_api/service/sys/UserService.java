@@ -34,7 +34,6 @@ import static com.example.back_jiwuquang_api.domain.constant.UserConstant.*;
 public class UserService {
     @Autowired
     UserMapper userMapper;
-
     @Autowired
     UserSaltService userSaltService;
     @Autowired
@@ -44,7 +43,7 @@ public class UserService {
 
     @Resource
     RedisUtil redisUtil;
-    /** -------------------User 登录相关操作--------------------- */
+    /** -------------------User 登录相关操作--------------------- **/
 
     /**
      * 密码登录

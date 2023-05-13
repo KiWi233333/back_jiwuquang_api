@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 添加购物车类
@@ -21,7 +22,7 @@ public class AddShopCartDTO {
     String skuId;
 
     @ApiModelProperty(value = "数量", required = true)
-    @NotBlank(message = "数量不能为空")
+    @NotNull(message = "数量不能为空")
     private Integer quantity;
 
     @ApiModelProperty("活动id")

@@ -61,17 +61,14 @@ public class ShopCartController {
 
     @ApiOperation(value = "修改购物车", tags = "购物车模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-    @PostMapping("/")
+    @PutMapping("/{id}")
     Result updateShopCartByDto(@RequestHeader(name = HEADER_NAME) String token,
-                            @Valid @RequestBody AddShopCartDTO addShopCartDTO,
-                            BindingResult result,
-                            HttpServletRequest request) {
-        // 参数校验
-        if (result.hasErrors()) {
-            return Result.fail(result.getFieldError().getDefaultMessage());
-        }
+                               @PathVariable String id,
+                               @RequestParam Integer nums,
+                               HttpServletRequest request) {
+        if (nums==0) return  Result.fail("修改失败，数量不能小于1！");
         String userId = request.getAttribute(USER_ID_KEY).toString();
-        return shopCartService.updateShopCartByDto(addShopCartDTO, userId);
+        return shopCartService.updateShopCartByDto(id,nums, userId);
     }
 
     @ApiOperation(value = "删除购物车（单个）", tags = "购物车模块")
