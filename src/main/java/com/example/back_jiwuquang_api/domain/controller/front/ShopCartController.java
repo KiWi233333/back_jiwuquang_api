@@ -85,12 +85,21 @@ public class ShopCartController {
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @DeleteMapping("/some")
     Result deleteShopCartBySome(@RequestHeader(name = HEADER_NAME) String token,
-                               @RequestBody IdsList idList,
-                               HttpServletRequest request) {
+                                @RequestBody IdsList idList,
+                                HttpServletRequest request) {
         // 业务
         String userId = request.getAttribute(USER_ID_KEY).toString();
         return shopCartService.deleteShopCartByIds(idList.getIds(), userId);
     }
 
+    @ApiOperation(value = "清空购物车", tags = "购物车模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @DeleteMapping("/all")
+    Result deleteShopCartByAll(@RequestHeader(name = HEADER_NAME) String token,
+                                HttpServletRequest request) {
+        // 业务
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        return shopCartService.clearShopCartByUserId( userId);
+    }
 
 }

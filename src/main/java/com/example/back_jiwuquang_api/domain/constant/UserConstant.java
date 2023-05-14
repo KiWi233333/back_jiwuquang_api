@@ -11,6 +11,7 @@ package com.example.back_jiwuquang_api.domain.constant;
 public class UserConstant {
     /** 用户token key **/
     public  static final String USER_ID_KEY = "userId";
+    public  static final String USER_AGENT = "User-Agent";
 
     /** 盐表 **/
     public static final String USER_SALT_KEY = "user:salt:";// 用户盐值

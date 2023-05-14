@@ -100,7 +100,7 @@ public class UserVO {
 
 
 
-    public static UserVO formUser(User user) {
+    public static UserVO toUserVo(User user) {
         return new UserVO()
                 .setId(user.getId())
                 .setUsername(user.getUsername())

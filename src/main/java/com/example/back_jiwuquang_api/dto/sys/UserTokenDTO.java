@@ -24,6 +24,7 @@ public class UserTokenDTO {
      */
     private String id;
 
+
     /**
      * 角色集合
      */
@@ -34,5 +35,10 @@ public class UserTokenDTO {
      */
     private String[] permissionUrlList;
     private Integer[] permissionTypeList;
+
+
+//    public static User toSecurityUser(UserTokenDTO userTokenDTO) {
+//        return new User(userTokenDTO.getId(),null,null);
+//    }
 
 }

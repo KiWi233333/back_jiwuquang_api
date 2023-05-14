@@ -28,7 +28,7 @@ import java.util.List;
 @Slf4j
 @Api(value = "商品分类管理")
 @RestController
-@RequestMapping("/admin/category")
+@RequestMapping("/admin/goods/category")
 public class AdminGoodsCategoryController {
     @Autowired
     GoodsCategoryService goodsCategoryService;

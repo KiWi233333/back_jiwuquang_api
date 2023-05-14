@@ -1,13 +1,17 @@
 package com.example.back_jiwuquang_api.service.sys;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
 import com.example.back_jiwuquang_api.dto.sys.*;
+import com.example.back_jiwuquang_api.enums.UserStatus;
 import com.example.back_jiwuquang_api.pojo.sys.User;
 import com.example.back_jiwuquang_api.repository.sys.UserMapper;
 import com.example.back_jiwuquang_api.service.MailService;
 import com.example.back_jiwuquang_api.util.*;
 import com.example.back_jiwuquang_api.vo.UserVO;
+import eu.bitwalker.useragentutils.UserAgent;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.back_jiwuquang_api.domain.constant.UserConstant.*;
@@ -52,11 +56,10 @@ public class UserService {
      * @param password 密码
      * @return Result
      */
-    public Result toUserLoginByPwd(String username, String password, Integer userType) {
+    public Result toUserLoginByPwd(String username, String password, Integer userType, String userAgent) {
         // 1、获取用户的盐值
         UserCheckDTO userCheckDTO = userSaltService.getUserSalt(username, userType);
         if (userCheckDTO != null) {// 存在该用户
-
             // 2、用户验证密码(密码验证)
             boolean flag = BcryptPwdUtil.matches(password, // 密码和数据库密码比对校验
                     userCheckDTO.getPassword(),// 数据库
@@ -65,12 +68,8 @@ public class UserService {
             if (flag) {
                 // 4、获取角色权限信息
                 UserTokenDTO userTokenDTO = getUserTokenDTOById(userCheckDTO.getId());
-                // 5、生成 Token
-                String token = JWTUtil.createToken(userTokenDTO);
-                // 6、缓存token
-                if (token != null) {
-                    redisUtil.set(USER_REFRESH_TOKEN_KEY + token, userTokenDTO, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
-                }
+                // 5、获取用户token
+                String token = getUserToken(userTokenDTO, userAgent);
                 saveLoginTime(userTokenDTO.getId());
                 return Result.ok("登录成功！", token);
             } else {
@@ -99,6 +98,20 @@ public class UserService {
         }
     }
 
+
+    // 获取和缓存用户token
+    private String getUserToken(UserTokenDTO userTokenDTO, String ua) {
+        // 1、获取缓存 Token
+//        String token = (String) redisUtil.hGet(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), ua);
+        // 2、创建token
+//        if (token == null) {
+        String token = JWTUtil.createToken(userTokenDTO);
+//        }
+        // 3、缓存 token + 用户登录信息
+        redisUtil.hPut(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), ua, token, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
+        return token;
+    }
+
     /**
      * 手机验证码登录 code
      *
@@ -106,7 +119,7 @@ public class UserService {
      * @param code  验证码
      * @return Result
      */
-    public Result toUserLoginByPhoneCode(String phone, String code) {
+    public Result toUserLoginByPhoneCode(String phone, String code, String userAgent) {
         // 获取缓存验证码
         String res = String.valueOf(redisUtil.get(PHONE_CODE_KEY + phone));
         if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
@@ -117,15 +130,13 @@ public class UserService {
             // 5、获取角色权限信息
             UserTokenDTO userTokenDTO = getUserTokenDTOById(user.getId());
             if (userTokenDTO == null) return Result.fail("登录失败，权限错误！");
-            // 6、生成 Token
-            String token = JWTUtil.createToken(userTokenDTO);
-            redisUtil.delete(PHONE_CODE_KEY + phone);
-            // 7、缓存token
-            if (token != null) {
-                redisUtil.set(USER_REFRESH_TOKEN_KEY + token, userTokenDTO, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
-            }
-            // 8、更新最后登录时间
+            // 6、获取用户token
+            String token = getUserToken(userTokenDTO, userAgent);
+            // 7、更新最后登录时间
             saveLoginTime(userTokenDTO.getId());
+            // 8、删除验证码
+            redisUtil.delete(PHONE_CODE_KEY + phone);
+
             return Result.ok("登录成功！", token);
         }
         return Result.fail("登录失败！");
@@ -139,7 +150,7 @@ public class UserService {
      * @param code  验证码
      * @return Result
      */
-    public Result toUserLoginByEmailCode(String email, String code) {
+    public Result toUserLoginByEmailCode(String email, String code, String userAgent) {
         // 获取缓存验证码
         String res = String.valueOf(redisUtil.get(EMAIL_CODE_KEY + email));
         if (StringUtil.isNullOrEmpty(res) || !res.equals(code)) return Result.fail("验证码错误！");
@@ -150,15 +161,12 @@ public class UserService {
             // 5、获取角色权限信息
             UserTokenDTO userTokenDTO = getUserTokenDTOById(user.getId());
             if (userTokenDTO == null) return Result.fail("登录失败，权限错误！");
-            // 6、生成 Token
-            String token = JWTUtil.createToken(userTokenDTO);
-            redisUtil.delete(EMAIL_CODE_KEY + email);// 删除邮箱验证码
-            // 7、缓存token
-            if (token != null) {
-                redisUtil.set(USER_REFRESH_TOKEN_KEY + token, userTokenDTO, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
-            }
-            // 8、更新最后登录时间
+            // 6、获取用户token
+            String token = getUserToken(userTokenDTO, userAgent);
+            // 7、更新最后登录时间
             saveLoginTime(userTokenDTO.getId());
+            // 8、删除验证码
+            redisUtil.delete(EMAIL_CODE_KEY + email);
             return Result.ok("登录成功！", token);
         }
         return Result.fail("登录失败！");
@@ -323,24 +331,33 @@ public class UserService {
     }
 
     /**
-     * 退出登录
+     * 退出登录（单个）
      *
-     * @param token jwt token
+     * @param userId 用户id
      * @return Result
      */
-    public Result loginOut(String token) {
-        try {
-            UserTokenDTO userTokenDTO = JWTUtil.getTokenInfoByToken(token);
-            log.info(String.valueOf(userTokenDTO));
-            // 删除缓存
-            redisUtil.delete(USER_REFRESH_TOKEN_KEY + token);
-            // 更新最后登录时间
-            if (redisUtil.get(USER_REFRESH_TOKEN_KEY + token) != null && saveLoginTime(userTokenDTO.getId())) {
-                return Result.ok("退出成功！", null);
-            }
-        } catch (Exception e) {
-            log.info("Exception 退出登录 {}", e.getMessage());
-            return Result.fail("退出失败！");
+    public Result logoutOne(String userId, String userAgent) {
+        // 删除缓存
+        redisUtil.hDelete(USER_REFRESH_TOKEN_KEY + userId, userAgent);
+        // 更新最后登录时间
+        if (saveLoginTime(userId)) {
+            return Result.ok("退出成功！", null);
+        }
+        return Result.fail("退出失败！");
+    }
+
+    /**
+     * 退出登录（所有）停用
+     *
+     * @param userId 用户id
+     * @return Result
+     */
+    public Result logoutAll(String userId) {
+        // 删除缓存
+        redisUtil.delete(USER_REFRESH_TOKEN_KEY + userId);
+        // 更新最后登录时间
+        if (saveLoginTime(userId)) {
+            return Result.ok("退出成功！", null);
         }
         return Result.fail("退出失败！");
     }
@@ -362,7 +379,19 @@ public class UserService {
             redisUtil.set(USER_KEY + userId, user);
         }
         // 修改为用户的数据(排除部分数据)
-        return Result.ok("获取成功",UserVO.formUser(user));
+        return Result.ok("获取成功", UserVO.toUserVo(user));
+    }
+
+    /**
+     * 查询用户权限角色信息
+     *
+     * @param username 用户名/手机号/邮箱
+     * @return UserTokenDTO
+     */
+    public UserTokenDTO getUserRolePermissionByUname(String username) {
+        User user = userMapper.selectOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username).or().eq(User::getPhone, username).or().eq(User::getEmail, username));
+        if (user == null) return null;
+        return userMapper.selectUserRoleAndPermissionByUserId(user.getId());
     }
 
 
@@ -374,7 +403,7 @@ public class UserService {
      *
      * @param file   头像文件
      * @param userId 用户id
-     * @return
+     * @return Result
      */
     public Result updateUserAvatar(MultipartFile file, String userId) {
         // 图片格式
@@ -425,9 +454,9 @@ public class UserService {
     /**
      * 修改用户基本信息
      *
-     * @param updateUserInfoDTO
-     * @param userId
-     * @return
+     * @param updateUserInfoDTO updateUserInfoDTO
+     * @param userId            用户id
+     * @return Result
      */
     public Result updateUserInfo(UpdateUserInfoDTO updateUserInfoDTO, String userId) {
         User user = UpdateUserInfoDTO.toUser(updateUserInfoDTO);
@@ -444,7 +473,7 @@ public class UserService {
      *
      * @param updatePhoneDTO 参数
      * @param userId         用户id
-     * @return
+     * @return Result
      */
     public Result updateUserPhone(UpdatePhoneDTO updatePhoneDTO, String userId) {
         // 1、获取验证码
@@ -462,7 +491,7 @@ public class UserService {
         redisUtil.delete(PHONE_MAPS_KEY + userInfo.getPhone());
         redisUtil.delete(USER_KEY + userInfo.getId());
         redisUtil.set(PHONE_MAPS_KEY + updatePhoneDTO.getNewPhone(), updatePhoneDTO.getNewPhone());
-        return Result.ok("更换成功，请重新登陆！",null);
+        return Result.ok("更换成功，请重新登陆！", null);
     }
 
     /**
@@ -470,7 +499,7 @@ public class UserService {
      *
      * @param updateEmailDTO 参数
      * @param userId         用户id
-     * @return
+     * @return Result
      */
     public Result updateUserEmail(UpdateEmailDTO updateEmailDTO, String userId) {
         // 1、获取验证码
@@ -486,15 +515,15 @@ public class UserService {
         // 5、删除旧缓存 验证码缓存
         redisUtil.delete(EMAIL_CODE_KEY + userInfo.getEmail());
         redisUtil.set(EMAIL_CODE_KEY + updateEmailDTO.getNewEmail(), updateEmailDTO.getNewEmail());
-        return Result.ok("更换成功，请重新登陆！",null);
+        return Result.ok("更换成功，请重新登陆！", null);
     }
 
 
     /**
      * 获取新手机/邮箱验证码
      *
-     * @param key
-     * @return
+     * @param key 手机号、邮箱
+     * @return Result
      */
     public Result sendUpdateCode(String key, Integer type) {
         if (type == 0) {// 手机号
@@ -502,5 +531,60 @@ public class UserService {
         } else {// 邮箱
             return getCodeByPhone(key, EMAIL_CHECK_CODE_KEY, 1);// 1注册验证码
         }
+    }
+
+
+    /**
+     * 获取用户列表
+     *
+     * @param page 页码
+     * @param size 每页个数
+     * @return Result
+     */
+    public Result getUserInfoPage(Integer page, Integer size, UserInfoPageDTO userInfoPageDTO) {
+        Page<User> pages = new Page<>(page, size); // 创建分页对象，指定当前页码和每页记录数
+        LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<>(); // 创建查询条件
+        qw.eq(User::getUserType, 0);// 限制查询用户
+        // id查询
+        if (userInfoPageDTO.getUserId() != null) {
+            qw.eq(User::getId, userInfoPageDTO.getUserId());
+        }
+
+        // 是否状态正常
+        if (userInfoPageDTO.getStatus() != null) {
+            qw.eq(User::getStatus, userInfoPageDTO.getStatus() == 0 ? UserStatus.正常 : UserStatus.禁用);
+        }
+
+        // keyWord查询
+        if (userInfoPageDTO.getKeyWord() != null) {
+            String k = userInfoPageDTO.getKeyWord();
+            qw.and(w -> w.like(User::getUsername, k).or().like(User::getNickname, k).or().like(User::getPhone, k).or().like(User::getEmail, k));
+        }
+        // 创建时间排序
+        if (userInfoPageDTO.getCreateTimeSort() != null) {
+            qw.orderByDesc(userInfoPageDTO.getCreateTimeSort() == 1, User::getCreateTime);
+        }
+
+
+        Page<User> userPage = userMapper.selectPage(pages, qw); // 调用Mapper接口方法进行分页查询
+        List<UserVO> userVOS = new ArrayList<>();
+        for (User user : userPage.getRecords()) {
+            user.setPassword(null);
+            userVOS.add(UserVO.toUserVo(user));
+        }
+        return Result.ok("获取成功！", userPage);
+    }
+
+    /**
+     * 强制用户下辖
+     *
+     * @param userId id
+     * @return Result
+     */
+    public Result loginOutById(String userId) {
+        // 清空用户登录
+        this.logoutAll(userId);
+        redisUtil.delete(USER_REFRESH_TOKEN_KEY + userId);
+        return Result.ok("操作成功！", null);
     }
 }

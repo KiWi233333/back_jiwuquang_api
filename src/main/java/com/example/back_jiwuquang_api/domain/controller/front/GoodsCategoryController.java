@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @Api(value = "商品分类模块")
 @RestController
-@RequestMapping("/category")
+@RequestMapping("/goods/category")
 public class GoodsCategoryController {
     @Autowired
     GoodsCategoryService goodsCategoryService;

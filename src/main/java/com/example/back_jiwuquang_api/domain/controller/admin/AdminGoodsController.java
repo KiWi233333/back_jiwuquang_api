@@ -43,7 +43,7 @@ public class AdminGoodsController {
                               @ApiParam("每页个数") @PathVariable int size,
                               @RequestBody GoodsPageDTO goodsPageDTO) {
         // 查询所有商品
-        return goodsService.getGoodsListByPageSize(goodsPageDTO, page, size, 0);
+        return goodsService.getGoodsListByPageSize(goodsPageDTO, page, size, 1);
     }
 
 

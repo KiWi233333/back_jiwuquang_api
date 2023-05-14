@@ -34,8 +34,11 @@ public class UserSaltService {
      * @return UserCheckDTO
      */
     public UserCheckDTO getUserSalt(String username, Integer userType) {
-        UserCheckDTO userCheckDTO = userMapper.selectUserCheckByUname(username, userType);
+        UserCheckDTO userCheckDTO = (UserCheckDTO) redisUtil.get(USER_SALT_DTO_KEY + username);
+        if (userCheckDTO!= null) return userCheckDTO;
+        userCheckDTO = userMapper.selectUserCheckByUname(username, userType);
         // 缓存
+        redisUtil.set(USER_SALT_DTO_KEY + username, userCheckDTO);
         redisUtil.set(USER_SALT_DTO_KEY + userCheckDTO.getId(), userCheckDTO);
         return userCheckDTO;
     }
@@ -43,6 +46,7 @@ public class UserSaltService {
 
     /**
      * 获取用户的加密密码和专属盐 （通过id 为key存储盐）
+     *
      * @param userId
      * @return
      */

@@ -9,6 +9,7 @@ import com.example.back_jiwuquang_api.util.JWTUtil;
 import com.example.back_jiwuquang_api.util.JacksonUtil;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
+import eu.bitwalker.useragentutils.UserAgent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -47,18 +48,23 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         UserTokenDTO userTokenDTO;
         if (StringUtils.isNotBlank(token)) {// token不为空
             try {
-                // redis缓存
-                if (redisUtil.getExpire(USER_REFRESH_TOKEN_KEY +token)<=0){
-                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
-                    log.info("身份已过期！");
-                    return false;
-                }
                 // 1、验证用户
                 userTokenDTO = JWTUtil.getTokenInfoByToken(token);
-                // redis过期
-                if (userTokenDTO==null) log.info("身份已过期 长时间未操作 !");
+                // redis缓存
+                if (redisUtil.getExpire(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId()) <= 0) {
+                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
+                    log.info("身份已全过期！");
+                    return false;
+                }
+                // 获取对应
+                String userAgent = request.getHeader("User-Agent");
+                if (redisUtil.hGet(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), userAgent) == null) {
+                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证错误，登录设备有误！")));
+                    log.info("身份已全过期！");
+                    return false;
+                }
                 // 2、redis_token续期
-                redisUtil.expire(USER_REFRESH_TOKEN_KEY +token, REDIS_TOKEN_TIME, TimeUnit.MINUTES);
+                redisUtil.expire(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), REDIS_TOKEN_TIME, TimeUnit.MINUTES);
                 // 将用户id放入头部 用于业务使用
                 request.setAttribute("userId", userTokenDTO.getId());
                 return true;
@@ -72,7 +78,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证失败！")));
                 return false;
             }
-        }else {
+        } else {
             response.sendError(400, "token不能为空!");
             return false; // Token验证失败，请求中止
         }

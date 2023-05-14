@@ -1,7 +1,6 @@
 package com.example.back_jiwuquang_api.service.shopcart;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.back_jiwuquang_api.dto.shopcart.AddShopCartDTO;
 import com.example.back_jiwuquang_api.pojo.shopcart.ShopCart;
@@ -149,4 +148,18 @@ public class ShopCartService {
         return Result.ok("删除成功！", flag);
     }
 
+    /**
+     * 清空购物车
+     *
+     * @param userId 用户id
+     * @return Result
+     */
+    public Result clearShopCartByUserId(String userId) {
+        // 1、sql
+        int flag = shopCartMapper.delete(new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getUserId, userId));
+        // 2、清除缓存
+        redisUtil.delete(SHOP_CART_MAPS + userId);
+        log.info("删除购物车 {} 条! {}", flag, userId);
+        return Result.ok("删除成功！", flag);
+    }
 }

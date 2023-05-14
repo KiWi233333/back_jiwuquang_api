@@ -38,7 +38,7 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
     @Bean
     public Docket SwaggerDocket(Environment environment) {
         // 获取当前生产环境
-        Profiles profiles =  Profiles.of("dev","pro");
+        Profiles profiles = Profiles.of("dev", "pro");
         boolean isDev = environment.acceptsProfiles(profiles);
 
         return new Docket(DocumentationType.SWAGGER_2)
@@ -74,9 +74,11 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                 .allowedHeaders("*")
                 .exposedHeaders("*");
     }
+
     // 拦截器
     @Autowired
     LoginInterceptor loginInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor) // 注册拦截器
@@ -90,7 +92,7 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         "/category",
                         "/goods/**",
                         "/goods/sku/**",
-                        "/admin/**"
+                        "/admin/login/**"
                 )
         ; // 排除登录请求
     }

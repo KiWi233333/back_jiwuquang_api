@@ -46,15 +46,15 @@ public class GoodsService {
      * @param goodsPageDTO 查询参数
      * @param page         当前页码
      * @param size         每页数量
-     * @param isShow       是否上架 0 管理员 1 用户
+     * @param isPermission       是否上架 0 管理员 1 用户
      * @return Page
      */
-    public Result getGoodsListByPageSize(GoodsPageDTO goodsPageDTO, Integer page, Integer size, Integer isShow) {
-
+    public Result getGoodsListByPageSize(GoodsPageDTO goodsPageDTO, Integer page, Integer size, Integer isPermission) {
+        
         Page<Goods> pages = new Page<>(page, size); // 创建分页对象，指定当前页码和每页记录数
         QueryWrapper<Goods> qw = new QueryWrapper<>(); // 创建查询条件
         // 筛选上架商品(用户)
-        if (isShow == 1) qw.eq("is_show", 1);
+        if (isPermission == 0) qw.eq("is_show", 1);
         // 按名称查找
         if (goodsPageDTO.getName() != null) {
             qw.like("name", goodsPageDTO.getName()).or().like("description", goodsPageDTO.getName());

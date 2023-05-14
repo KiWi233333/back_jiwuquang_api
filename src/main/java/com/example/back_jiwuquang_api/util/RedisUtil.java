@@ -1,5 +1,7 @@
 package com.example.back_jiwuquang_api.util;
 
+import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
+import com.example.back_jiwuquang_api.dto.sys.UserTokenDTO;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.DataType;
@@ -273,6 +275,10 @@ public class RedisUtil {
 
     public void hPut(String key, String hashKey, Object value) {
         redisTemplate.opsForHash().put(key, hashKey, value);
+    }
+    public void hPut(String key, String hashKey, Object value,Integer minutes,TimeUnit timeUtil) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+        redisTemplate.expire(key, minutes, timeUtil);
     }
 
     public void hPutAll(String key, Map<String, Object> maps) {
