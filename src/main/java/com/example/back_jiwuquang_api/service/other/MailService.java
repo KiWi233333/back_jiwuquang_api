@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.service;
+package com.example.back_jiwuquang_api.service.other;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;

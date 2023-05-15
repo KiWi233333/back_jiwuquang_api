@@ -1,6 +1,8 @@
 package com.example.back_jiwuquang_api.domain.controller.admin;
 
 import com.example.back_jiwuquang_api.dto.sys.LoginDTO;
+import com.example.back_jiwuquang_api.dto.sys.UpdateUserAllInfoDTO;
+import com.example.back_jiwuquang_api.dto.sys.UpdateUserInfoDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserInfoPageDTO;
 import com.example.back_jiwuquang_api.service.sys.UserService;
 import com.example.back_jiwuquang_api.util.Result;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import java.util.Objects;
 
 import static com.example.back_jiwuquang_api.domain.constant.JwtConstant.HEADER_NAME;
 import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_AGENT;
@@ -63,6 +67,25 @@ public class AdminController {
         return usersService.getUserInfoPage(page, size, userInfoPageDTO);
     }
 
+    @ApiOperation(value = "修改用户信息", tags = "用户信息模块")
+    @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
+    @PutMapping("/user/info")
+    Result updateUserInfo(
+            @RequestHeader(name = HEADER_NAME) String token,
+            @Valid @RequestBody UpdateUserAllInfoDTO updateUserAllInfoDTO,
+            BindingResult result,
+            HttpServletRequest request) {
+        // 处理验证错误
+        if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+        return usersService.updateUserAllInfo(updateUserAllInfoDTO, request.getAttribute(USER_ID_KEY).toString());
+    }
+
+    @ApiOperation(value = "用户禁用", tags = "用户模块")
+    @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
+    @DeleteMapping(value = "/user/disable/{userId}")
+    Result toUserDisable(@RequestHeader(name = HEADER_NAME) String token, @PathVariable String userId, @ApiParam("是否禁用") @RequestParam Integer disable) {
+        return usersService.toUserDisableToggle(userId, disable);
+    }
 
     @ApiOperation(value = "用户强制下线", tags = "用户模块")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
@@ -70,7 +93,6 @@ public class AdminController {
     Result toUserLogout(@RequestHeader(name = HEADER_NAME) String token, @PathVariable String userId) {
         return usersService.loginOutById(userId);
     }
-
 
 
 }

@@ -1,7 +1,6 @@
 package com.example.back_jiwuquang_api.vo;
 
 import com.example.back_jiwuquang_api.enums.Gender;
-import com.example.back_jiwuquang_api.enums.UserStatus;
 import com.example.back_jiwuquang_api.pojo.sys.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -85,9 +84,9 @@ public class UserVO {
     private Date lastLoginTime;
 
     /**
-     * 登录状态：on|off
+     * 登录状态
      */
-    private UserStatus status;
+    private Integer status;
 
     /**
      * 邮箱是否验证（绑定）

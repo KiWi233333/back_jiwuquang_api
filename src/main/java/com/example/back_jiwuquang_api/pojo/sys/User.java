@@ -2,13 +2,12 @@ package com.example.back_jiwuquang_api.pojo.sys;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.example.back_jiwuquang_api.enums.Gender;
-import com.example.back_jiwuquang_api.enums.UserStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import okhttp3.internal.Internal;
 
 import java.util.Date;
 import java.util.List;
@@ -53,10 +52,10 @@ public class User {
     private String lastLoginIp;
 
     /**
-     * 状态：on|off
+     * 状态：0 1
      */
     @TableField("status")
-    private UserStatus status;
+    private Integer status;
 
     @TableField("is_email_verified")
     private Integer isEmailVerified;

@@ -8,10 +8,9 @@ import com.example.back_jiwuquang_api.dto.sys.*;
 import com.example.back_jiwuquang_api.enums.UserStatus;
 import com.example.back_jiwuquang_api.pojo.sys.User;
 import com.example.back_jiwuquang_api.repository.sys.UserMapper;
-import com.example.back_jiwuquang_api.service.MailService;
+import com.example.back_jiwuquang_api.service.other.MailService;
 import com.example.back_jiwuquang_api.util.*;
 import com.example.back_jiwuquang_api.vo.UserVO;
-import eu.bitwalker.useragentutils.UserAgent;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -465,7 +464,14 @@ public class UserService {
         // 清除缓存
         redisUtil.delete(USER_KEY + userId);// 用户信息
         return Result.ok("修改成功！", null);
-
+    }
+    public Result updateUserAllInfo(UpdateUserAllInfoDTO updateUserInfoDTO, String userId) {
+        User user = UpdateUserAllInfoDTO.toUser(updateUserInfoDTO);
+        user.setId(userId);
+        if (userMapper.updateById(user) <= 0) return Result.fail("修改失败！");
+        // 清除缓存
+        redisUtil.delete(USER_KEY + userId);// 用户信息
+        return Result.ok("修改成功！", null);
     }
 
     /**
@@ -552,7 +558,7 @@ public class UserService {
 
         // 是否状态正常
         if (userInfoPageDTO.getStatus() != null) {
-            qw.eq(User::getStatus, userInfoPageDTO.getStatus() == 0 ? UserStatus.正常 : UserStatus.禁用);
+            qw.eq(User::getStatus, userInfoPageDTO.getStatus() == 0 ? UserStatus.OFF : UserStatus.ON);
         }
 
         // keyWord查询
@@ -585,6 +591,24 @@ public class UserService {
         // 清空用户登录
         this.logoutAll(userId);
         redisUtil.delete(USER_REFRESH_TOKEN_KEY + userId);
+        return Result.ok("下线成功！", null);
+    }
+
+    /**
+     * 用户禁用
+     *
+     * @param userId 用户id
+     * @return Result
+     */
+    public Result toUserDisableToggle(String userId, Integer disable) {
+        // 1、是否禁用
+        Integer flag = disable == 1 ? UserStatus.ON.getKey() : UserStatus.OFF.getKey();
+        // 2、sql
+        if (userMapper.updateById(new User().setId(userId).setStatus(flag)) <= 0) {
+            return Result.fail("操作失败！");
+        }
+        // 3、清空用户登录
+        this.logoutAll(userId);
         return Result.ok("操作成功！", null);
     }
 }
