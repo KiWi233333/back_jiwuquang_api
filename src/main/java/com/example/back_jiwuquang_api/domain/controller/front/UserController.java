@@ -98,10 +98,7 @@ public class UserController {
         return usersService.logoutAll(request.getAttribute(USER_ID_KEY).toString());
     }
 
-    /**
-     * 注册相关（注册、验证码）
-     */
-
+    /*************************** 注册相关（注册、验证码） **************************/
     @ApiOperation(value = "注册", tags = "登录注册模块")
     @PostMapping(value = "/register")
     Result toRegister(@Valid @RequestBody UserRegisterDTO userRegisterDTO, BindingResult res) {
@@ -125,6 +122,9 @@ public class UserController {
             return usersService.getRegisterCodeByEmail(key);
         }
     }
+
+
+
 
 
 }

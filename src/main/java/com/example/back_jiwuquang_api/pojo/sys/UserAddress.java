@@ -1,9 +1,7 @@
 package com.example.back_jiwuquang_api.pojo.sys;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -32,61 +30,53 @@ public class UserAddress {
     /**
      * 收货人
      */
-    @TableField(value = "name")
     private String name;
 
     /**
      * 用户id
      */
-    @TableField(value = "user_id")
     private String userId;
+    /**
+     * 是否默认
+     */
+    private Integer isDefault;
 
     /**
      * 省份
      */
-    @TableField(value = "province")
     private String province;
 
     /**
      * 城市
      */
-    @TableField(value = "city")
     private String city;
 
     /**
      * 区/县
      */
-    @TableField(value = "county")
     private String county;
 
     /**
      * 详细地址
      */
-    @TableField(value = "address")
     private String address;
 
     /**
      * 邮编
      */
-    @TableField(value = "postal_code")
     private String postalCode;
 
     /**
      * 手机号
      */
-    @TableField(value = "phone")
     private String phone;
 
-    /**
-     * 创建时间
-     */
-    @TableField(value = "create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
     private Date createTime;
 
-    /**
-     * 更新时间
-     */
-    @TableField(value = "update_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 }
 

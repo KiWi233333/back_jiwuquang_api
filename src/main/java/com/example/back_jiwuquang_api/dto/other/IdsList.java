@@ -1,9 +1,11 @@
 package com.example.back_jiwuquang_api.dto.other;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -18,5 +20,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class IdsList {
+
+
+    @ApiModelProperty(value = "ids", required = true)
+    @NotNull(message = "ids不能为空！")
     List<String> ids;
 }

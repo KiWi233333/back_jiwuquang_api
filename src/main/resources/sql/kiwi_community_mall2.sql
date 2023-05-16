@@ -11,11 +11,36 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 16/05/2023 02:39:28
+ Date: 17/05/2023 02:18:04
 */
 
+DROP DATABASE IF EXISTS kiwi_community_mall;
+CREATE DATABASE kiwi_community_mall;
+USE kiwi_community_mall;
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for activity_event
+-- ----------------------------
+DROP TABLE IF EXISTS `activity_event`;
+CREATE TABLE `activity_event`  (
+  `id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '活动ID',
+  `title` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '活动标题',
+  `details` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '活动详情描述md',
+  `goods_ids` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '商品列表(,隔开)',
+  `images` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '活动图片集(,隔开)',
+  `start_time` datetime NOT NULL COMMENT '活动开始时间',
+  `end_time` datetime NOT NULL COMMENT '活动结束时间',
+  `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '活动状态，0表示未开始，1表示正在进行，2表示已结束',
+  `created_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商城活动表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of activity_event
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for goods
@@ -46,7 +71,7 @@ CREATE TABLE `goods`  (
   INDEX `category_index`(`category_id` ASC) USING BTREE,
   INDEX `name_index`(`name` ASC) USING BTREE,
   INDEX `description_index`(`description` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of goods
@@ -74,7 +99,7 @@ CREATE TABLE `goods_category`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name` ASC) USING BTREE,
   INDEX `goods_category_parent_id`(`parent_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of goods_category
@@ -113,7 +138,7 @@ CREATE TABLE `goods_sku`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `goods_id_index`(`goods_id` ASC) USING BTREE,
   CONSTRAINT `goods_sku_chk_1` CHECK (`price` <= `cost_price`)
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of goods_sku
@@ -172,7 +197,7 @@ CREATE TABLE `shop_cart`  (
   INDEX `sku_id_index`(`sku_id` ASC) USING BTREE,
   INDEX `activity_id_index`(`activity_id` ASC) USING BTREE,
   INDEX `user_id_index`(`user_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_cart
@@ -312,14 +337,14 @@ CREATE TABLE `sys_user`  (
   INDEX `user_username_index`(`username` ASC) USING BTREE,
   INDEX `user_email_index`(`email` ASC) USING BTREE,
   INDEX `user_phone_index`(`phone` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('1652246616668012545', 'Lulu2333', '$2a$10$DjJfKH8I5j7EGBdlA5d.CeX/DPjYMyb978hT7EZgv9pnDz3IAkcbe', NULL, '13415000001', '新用户', '保密', 'default.png', NULL, 1, '2023-04-29 09:41:05', '2023-04-29 09:41:05', NULL, NULL, 1, 0, 1);
 INSERT INTO `sys_user` VALUES ('1653240351484801026', 'admin233', '$2a$10$trFdiRCBradkZdD7S.xesupAXTj7xwwD1u3KSrgTaq436EmilDPRa', NULL, '13415048700', '新用户', '保密', 'default.png', NULL, 1, '2023-05-02 11:29:50', '2023-05-15 17:30:50', '2023-05-15 17:30:50', NULL, 1, 0, 1);
-INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', 'default.png', NULL, 0, '2022-03-01 10:00:00', '2023-05-15 12:37:26', '2023-05-15 12:37:26', '192.168.1.1', 1, 1, 1);
+INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', 'default.png', NULL, 0, '2022-03-01 10:00:00', '2023-05-16 22:14:55', '2023-05-16 22:14:55', '192.168.1.1', 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -369,6 +394,7 @@ CREATE TABLE `user_address`  (
   `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'id',
   `name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货人',
   `user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
+  `is_default` int NOT NULL DEFAULT 0 COMMENT '是否默认',
   `province` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '省份',
   `city` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '城市',
   `county` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '区/县',
@@ -385,8 +411,9 @@ CREATE TABLE `user_address`  (
 -- ----------------------------
 -- Records of user_address
 -- ----------------------------
-INSERT INTO `user_address` VALUES ('503399947050422323', '张三', '2163652592439853323', '江苏省', '南京市', '玄武区', '中山路123号', '210000', '13416231111', '2023-05-16 02:38:06', '2023-05-16 02:38:06');
-INSERT INTO `user_address` VALUES ('503399947050422324', '李四', '2163652592439853323', '江苏省', '南京市', '白下区', '长白路456号', '210000', '13912113421', '2023-05-16 02:38:06', '2023-05-16 02:38:06');
+INSERT INTO `user_address` VALUES ('503399947050422323', '张三', '2163652592439853323', 0, '江苏省', '南京市', '玄武区', '中山路123号', '210000', '13416231111', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
+INSERT INTO `user_address` VALUES ('503399947050422324', 'kiwi233', '1652246616668012545', 0, '江苏省', '南京市', '白下区', '长白路456号', '210000', '13912113421', '2023-05-16 18:40:10', '2023-05-16 18:40:30');
+INSERT INTO `user_address` VALUES ('503399947050422325', '猕猴桃', '2163652592439853323', 1, '广东省', '汕头市', '潮阳区', '谷饶石门', '515159', '13912113421', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
 
 -- ----------------------------
 -- Table structure for user_wallet

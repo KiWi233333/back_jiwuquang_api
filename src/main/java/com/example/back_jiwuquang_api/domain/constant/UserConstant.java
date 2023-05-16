@@ -39,4 +39,9 @@ public class UserConstant {
     /** 用户钱包 **/
     public static final String USER_WALLET_KEY = "user:wallet:";// 钱包信息
     public static final String USER_RECHARGE_COMBO_KEY = "user:wallet:combo";// 钱包信息
+    /** 用户地址 **/
+    public static final String USER_ADDRESS_PAGE_KEY = "user:address:";// 钱包信息
+
+
+
 }

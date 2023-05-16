@@ -7,10 +7,12 @@ import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
 import com.example.back_jiwuquang_api.dto.sys.*;
 import com.example.back_jiwuquang_api.enums.UserStatus;
 import com.example.back_jiwuquang_api.pojo.sys.User;
+import com.example.back_jiwuquang_api.pojo.sys.UserAddress;
 import com.example.back_jiwuquang_api.repository.sys.UserMapper;
 import com.example.back_jiwuquang_api.service.other.MailService;
 import com.example.back_jiwuquang_api.util.*;
 import com.example.back_jiwuquang_api.vo.UserVO;
+import eu.bitwalker.useragentutils.UserAgent;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -445,7 +447,7 @@ public class UserService {
         }
         // 清除缓存
         redisUtil.delete(USER_KEY + userId);// 用户信息
-        redisUtil.delete(USER_REFRESH_TOKEN_KEY + token);// 登录token信息
+        redisUtil.delete(USER_REFRESH_TOKEN_KEY + userId);// 登录token信息
         return Result.ok("修改成功，请重新登录！", null);
     }
 
@@ -465,6 +467,7 @@ public class UserService {
         redisUtil.delete(USER_KEY + userId);// 用户信息
         return Result.ok("修改成功！", null);
     }
+
     public Result updateUserAllInfo(UpdateUserAllInfoDTO updateUserInfoDTO, String userId) {
         User user = UpdateUserAllInfoDTO.toUser(updateUserInfoDTO);
         user.setId(userId);
@@ -610,5 +613,17 @@ public class UserService {
         // 3、清空用户登录
         this.logoutAll(userId);
         return Result.ok("操作成功！", null);
+    }
+
+    public Result getUserLoginDevice(String userId) {
+        // 1、获取登录设备
+        Map<String, Object> map = redisUtil.hGetAll(USER_REFRESH_TOKEN_KEY + userId);
+        // 2、有序化
+        List<UserAgent> userAgentList = new ArrayList<>();
+        for (String key : map.keySet()) {
+            userAgentList.add(UserAgent.parseUserAgentString(key));
+        }
+        // 3、成功
+        return Result.ok("获取成功", userAgentList);
     }
 }
