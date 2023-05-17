@@ -30,5 +30,4 @@ public class GoodsCategoryController {
         return goodsCategoryService.getAllCategoryTree();
     }
 
-
 }
