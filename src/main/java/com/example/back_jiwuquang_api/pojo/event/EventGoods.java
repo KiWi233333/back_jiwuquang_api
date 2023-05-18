@@ -2,7 +2,10 @@ package com.example.back_jiwuquang_api.pojo.event;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,6 +20,9 @@ import java.util.Date;
  */
 @Data
 @TableName("event_goods")
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
 public class EventGoods {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
@@ -26,6 +32,7 @@ public class EventGoods {
      * 活动id
      */
     @TableField(value = "event_id")
+    @LinkedField
     private String eventId;
 
     /**

@@ -17,16 +17,33 @@ import lombok.Data;
 public class Result {
     /**
      * @code 状态码：
-     *  20000操作成功
-     *
-     *  20010添加或已经存在， 增
-     *  20011被删或不存在， 删
-     *  20012查询不到，    查
-     *  20013修改失败，    改
-     *  20014不能为空，
-     *  20020阻塞或被占用
+     * 20000操作成功
+     * <p>
+     * 20000添加或已经存在， 增
+     * 20001被删或不存在， 删
+     * 20002查询不到，    查
+     * 20003修改失败，    改
+     * 40001不能为空，
+     * 40002认证失败
+     * 40004阻塞或被占用 繁忙
      */
-    @ApiModelProperty("状态码：20000成功，20010添加已经存在，20011被删或不存在，20012查询不到，20013修改失败，20014不能为空，20020常规性错误")
+    public static final int SUCCESS = 20000;
+    public static final int INSERT_ERR = 20001;
+    public static final int DELETE_ERR = 20002;
+    public static final int UPDATE_ERR = 20003;
+    public static final int GET_ERR = 20004;
+    public static final int NULL_ERR = 40001;
+    public static final int TOKEN_ERR = 40002;
+    public static final int BUSY_ERR = 40004;
+
+    /** 20000添加或已经存在， 增
+     * 20001被删或不存在， 删
+     * 20002查询不到，    查
+     * 20003修改失败，    改
+     * 40001不能为空，
+     * 40002身份认证失败
+     * 40004阻塞或被占用繁忙
+     */
     private Integer code;
     @ApiModelProperty("描述信息")
     private String message;
@@ -39,17 +56,17 @@ public class Result {
      **/
     // 成功请求--普通
     public static Result ok() {
-        return new Result(20000, "操作成功!", null);
+        return new Result(SUCCESS, "操作成功!", null);
     }
 
     // 成功请求--传入数据
     public static Result ok(Object data) {
-        return new Result(20000, "获取成功!", data);
+        return new Result(SUCCESS, "获取成功!", data);
     }
 
     // 成功请求--传入消息和数据
     public static Result ok(String message, Object data) {
-        return new Result(20000, message, data);
+        return new Result(SUCCESS, message, data);
     }
 
     /**
@@ -57,19 +74,18 @@ public class Result {
      **/
     // 失败请求--普通
     public static Result fail() {
-        return new Result(20020, "操作失败！", null);
+        return new Result(20002, "操作失败！", null);
     }
 
     // 失败请求--传入消息
     public static Result fail(String message) {
-        return new Result(20020, message,null);
+        return new Result(20002, message, null);
     }
 
     // 失败请求--传入消息和数据
     public static Result fail(int code, String message) {
         return new Result(code, message, null);
     }
-
 
 
 }
