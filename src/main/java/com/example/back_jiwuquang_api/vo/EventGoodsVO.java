@@ -1,7 +1,11 @@
-package com.example.back_jiwuquang_api.pojo.goods;
+package com.example.back_jiwuquang_api.vo;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,32 +15,35 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 商品表实体类
+ * 活动商品列表视图类
  *
- * @className: Goods
+ * @className: EventGoodsVO
  * @author: Kiwi23333
- * @description: 商品表实体类
- * @date: 2023/5/1 2:36
+ * @description: TODO描述
+ * @date: 2023/5/17 16:51
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
-@TableName("goods")
-public class Goods {
-    @TableId(type = IdType.ASSIGN_ID)
-    private String id;
+public class EventGoodsVO {
+
+    private String eventId;
+    private String goodsId;
+    private String eventGoodsId;
+
+    @ApiModelProperty("活动价")
+    private BigDecimal eventPrice;
 
     private String name;
 
     private String description;
 
+
     private BigDecimal price;
 
-    @TableField("cost_price")
     private BigDecimal costPrice;
 
-    @TableField("category_id")
     private String categoryId;
 
     private String images;
@@ -81,10 +88,10 @@ public class Goods {
     private Long views;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 }

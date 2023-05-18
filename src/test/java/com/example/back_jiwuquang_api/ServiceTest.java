@@ -3,6 +3,7 @@ package com.example.back_jiwuquang_api;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.back_jiwuquang_api.dto.sys.UserRegisterDTO;
 import com.example.back_jiwuquang_api.pojo.sys.UserSalt;
+import com.example.back_jiwuquang_api.repository.event.EventMapper;
 import com.example.back_jiwuquang_api.repository.shopcart.ShopCartMapper;
 import com.example.back_jiwuquang_api.repository.sys.UserMapper;
 import com.example.back_jiwuquang_api.repository.sys.UserSaltMapper;
@@ -71,8 +72,8 @@ class ServiceTest {
     void sendEmail() {
         try {
 //            mailService.sendTextMail("2701398270@qq.com","验证码","123456");
-            mailService.sendCodeMail("1329634286@qq.com","验证码","登录","123456");
-        }catch (Exception e){
+            mailService.sendCodeMail("1329634286@qq.com", "验证码", "登录", "123456");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -82,8 +83,9 @@ class ServiceTest {
     UserWalletService userWalletService;
     @Autowired
     UserWalletMapper userWalletMapper;
+
     @Test
-    void addWallet(){
+    void addWallet() {
         System.out.println(userWalletService.initUserWallet("123456"));
 //        System.out.println(userWalletMapper.updateById(new UserWallet().setUserId("123456").setBalance(12.30)));
     }
@@ -96,6 +98,7 @@ class ServiceTest {
 
     @Autowired
     GoodsCategoryService goodsCategoryService;
+
     @Test
     void getGoodsCategoryAll() {
         goodsCategoryService.getAllCategoryTree();
@@ -112,10 +115,20 @@ class ServiceTest {
 
     @Autowired
     ShopCartMapper shopCartMapper;
-    @Test
-    void selectShopCartPage(){
 
-        System.out.println(shopCartMapper.selectShopCartPage(1,10,"2163652592439853323"));
+    @Test
+    void selectShopCartPage() {
+
+        System.out.println(shopCartMapper.selectShopCartPage(1, 10, "2163652592439853323"));
+    }
+
+
+    @Autowired
+    EventMapper eventMapper;
+
+    @Test
+    void selectEventGoodsList() {
+        System.out.println(eventMapper.selectEventGoodsList("2018072309121200101"));
     }
 
 }

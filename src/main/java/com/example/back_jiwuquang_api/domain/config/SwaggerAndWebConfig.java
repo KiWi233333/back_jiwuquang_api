@@ -34,6 +34,7 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
         WebMvcConfigurer.super.addResourceHandlers(registry);
     }
 
+
     // 配置Swagger bean实例
     @Bean
     public Docket SwaggerDocket(Environment environment) {
@@ -84,15 +85,15 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
         registry.addInterceptor(loginInterceptor) // 注册拦截器
                 .addPathPatterns("/**") // 拦截所有请求
                 .excludePathPatterns(
-                        "/res/**",
+                        "/res/**",// 公共资源
                         "/user/login/**",// 登录
                         "/user/register/**",// 注册
                         "/user/wallet/combo",// 充值套餐
-                        "/category/**",
-                        "/category",
-                        "/goods/**",
+                        "/category/**",// 分类
+                        "/goods/**", // 商品
                         "/goods/sku/**",
-                        "/admin/login/**"
+                        "/admin/login/**",// 管理员登录
+                        "/event/**" // 前台活动
                 )
         ; // 排除登录请求
     }
