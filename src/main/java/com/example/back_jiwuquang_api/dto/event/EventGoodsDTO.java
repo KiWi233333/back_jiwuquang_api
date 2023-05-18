@@ -3,7 +3,6 @@ package com.example.back_jiwuquang_api.dto.event;
 import com.baomidou.mybatisplus.annotation.*;
 import com.example.back_jiwuquang_api.pojo.event.EventGoods;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sun.istack.internal.NotNull;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

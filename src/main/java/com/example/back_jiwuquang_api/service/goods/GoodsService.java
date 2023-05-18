@@ -1,11 +1,13 @@
 package com.example.back_jiwuquang_api.service.goods;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.dto.goods.GoodsDTO;
 import com.example.back_jiwuquang_api.dto.goods.GoodsPageDTO;
 import com.example.back_jiwuquang_api.dto.goods.UpdateGoodsDTO;
+import com.example.back_jiwuquang_api.pojo.event.Event;
 import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
@@ -50,7 +52,7 @@ public class GoodsService {
      * @return Page
      */
     public Result getGoodsListByPageSize(GoodsPageDTO goodsPageDTO, Integer page, Integer size, Integer isPermission) {
-        
+
         Page<Goods> pages = new Page<>(page, size); // 创建分页对象，指定当前页码和每页记录数
         QueryWrapper<Goods> qw = new QueryWrapper<>(); // 创建查询条件
         // 筛选上架商品(用户)
@@ -115,6 +117,7 @@ public class GoodsService {
      */
     public Result addGoodsByGoodsDTO(GoodsDTO goodsDTO) {
         Goods goods = GoodsDTO.toGoods(goodsDTO);
+
         // 1、插入sql
         if (goodsMapper.insert(goods) <= 0) {
             log.info("Good add failed 添加商品失败 ！");

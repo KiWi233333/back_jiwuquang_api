@@ -23,6 +23,7 @@ public class Result {
      * 20001被删或不存在， 删
      * 20002查询不到，    查
      * 20003修改失败，    改
+     * 20004父元素不存在，    改
      * 40001不能为空，
      * 40002认证失败
      * 40004阻塞或被占用 繁忙
@@ -31,6 +32,7 @@ public class Result {
     public static final int INSERT_ERR = 20001;
     public static final int DELETE_ERR = 20002;
     public static final int UPDATE_ERR = 20003;
+    public static final int INSERT_NULL_ERR = 20004;
     public static final int GET_ERR = 20004;
     public static final int NULL_ERR = 40001;
     public static final int TOKEN_ERR = 40002;

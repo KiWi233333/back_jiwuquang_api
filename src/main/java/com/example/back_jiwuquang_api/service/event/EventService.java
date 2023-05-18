@@ -3,6 +3,7 @@ package com.example.back_jiwuquang_api.service.event;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.back_jiwuquang_api.dto.event.EventGoodsDTO;
 import com.example.back_jiwuquang_api.pojo.event.Event;
+import com.example.back_jiwuquang_api.pojo.event.EventGoods;
 import com.example.back_jiwuquang_api.repository.event.EventMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
@@ -37,7 +38,6 @@ public class EventService {
         // 1、缓存获取
         List<EventGoodsVO> list = new ArrayList<>();
         Map<String, Object> map = redisUtil.hGetAll(EVENT_GOODS_MAPS_KEY + id);
-
         for (String key : map.keySet()) {
             list.add((EventGoodsVO) map.get(key));
         }
@@ -75,14 +75,5 @@ public class EventService {
         return Result.ok("获取成功！", list);
     }
 
-    /**
-     * 添加活动的商品（单个）
-     * @param eventGoodsDTO
-     * @return
-     */
-    public Result addEventGoodsById( EventGoodsDTO eventGoodsDTO) {
 
-
-        return Result.ok("获取成功！");
-    }
 }

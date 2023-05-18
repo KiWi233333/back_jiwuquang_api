@@ -1,9 +1,12 @@
 package com.example.back_jiwuquang_api.service.goods;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.back_jiwuquang_api.dto.goods.GoodsSkuDTO;
 import com.example.back_jiwuquang_api.dto.goods.UpdateGoodsSkuDTO;
+import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
+import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
 import com.example.back_jiwuquang_api.repository.goods.GoodsSkuMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
@@ -63,6 +66,8 @@ public class GoodsSkuService {
         return Result.ok("获取成功！", goodsSkuList);
     }
 
+    @Autowired
+    GoodsMapper goodsMapper;
 
     /**
      * 添加商品规格
@@ -74,8 +79,9 @@ public class GoodsSkuService {
         // 1、dto转化为实体类
         GoodsSku goodsSku = GoodsSkuDTO.toGoodsSku(goodsSkuDTO);
         // 查询是否有该商品
-        if (goodsService.getGoodsInfoById(goodsSku.getGoodsId()).getData() == null)
-            return Result.fail("对应商品不存在！");
+        if (goodsMapper.selectOne(new LambdaQueryWrapper<Goods>().eq(Goods::getId, goodsSku.getGoodsId())) == null) {
+            return Result.fail(Result.INSERT_NULL_ERR, "对应商品不存在！");
+        }
         log.info("addGoodSku ing 添加规格中 {}", goodsSku);
         // 2、插入操作
         if (goodsSkuMapper.insert(goodsSku) <= 0) return Result.fail("添加规格失败！");

@@ -1,9 +1,12 @@
 package com.example.back_jiwuquang_api.service.goods;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.back_jiwuquang_api.dto.goods.GoodsCategoryDTO;
+import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsCategory;
 import com.example.back_jiwuquang_api.repository.goods.GoodsCategoryMapper;
+import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -55,6 +58,9 @@ public class GoodsCategoryService {
             return Result.fail("获取失败！");
         }
     }
+
+    @Autowired
+    GoodsMapper goodsMapper;
 
     /**
      * 添加分类（单个）

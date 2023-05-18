@@ -1,6 +1,7 @@
 package com.example.back_jiwuquang_api.domain.controller.admin;
 
 import com.example.back_jiwuquang_api.dto.event.EventGoodsDTO;
+import com.example.back_jiwuquang_api.service.event.EventGoodsService;
 import com.example.back_jiwuquang_api.service.event.EventService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.Api;
@@ -11,6 +12,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * 管理员模块
@@ -42,15 +45,28 @@ public class AdminEventController {
         return eventService.getEventGoodsList(id);
     }
 
+    /************************ 活动商品关联表操作 ************************/
 
-    @ApiOperation(value = "添加活动商品", tags = "活动模块")
+    @Autowired
+    EventGoodsService eventGoodsService;
+
+    @ApiOperation(value = "添加活动商品（单个）", tags = "活动模块")
     @PostMapping("/goods")
     Result addEventGoodsById(@Valid @RequestBody EventGoodsDTO eventGoodsDTO,
-                             BindingResult result ) {
+                             BindingResult result) {
         if (result.hasErrors()) {
-            return Result.fail(result.getFieldError().getDefaultMessage());
+            return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
         }
-        return eventService.addEventGoodsById( eventGoodsDTO);
+        return eventGoodsService.addEventGoodsById(eventGoodsDTO);
+    }
+    @ApiOperation(value = "添加活动商品（批量）", tags = "活动模块")
+    @PostMapping("/goods/list")
+    Result addEventGoodsByBatch(@Valid @RequestBody List<EventGoodsDTO> list,
+                                BindingResult result) {
+        if (result.hasErrors()) {
+            return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
+        }
+        return eventGoodsService.addEventGoodsByBatch(list);
     }
 
 }

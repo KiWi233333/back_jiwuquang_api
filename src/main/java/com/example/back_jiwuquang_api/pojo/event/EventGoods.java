@@ -2,6 +2,7 @@ package com.example.back_jiwuquang_api.pojo.event;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.github.yulichang.autoconfigure.conditional.MPJSqlInjectorCondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,7 +33,6 @@ public class EventGoods {
      * 活动id
      */
     @TableField(value = "event_id")
-    @LinkedField
     private String eventId;
 
     /**
