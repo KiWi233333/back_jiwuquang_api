@@ -1,9 +1,7 @@
 package com.example.back_jiwuquang_api.service.event;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.back_jiwuquang_api.dto.event.EventGoodsDTO;
 import com.example.back_jiwuquang_api.pojo.event.Event;
-import com.example.back_jiwuquang_api.pojo.event.EventGoods;
 import com.example.back_jiwuquang_api.repository.event.EventMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;

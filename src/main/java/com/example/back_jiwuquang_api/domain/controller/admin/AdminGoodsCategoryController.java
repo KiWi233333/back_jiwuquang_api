@@ -19,7 +19,7 @@ import java.util.List;
 
 /**
  * 管理员模块
- * 商品分类管理
+ * #商品分类管理
  * @className: GoodsController
  * @author: Kiwi23333
  * @description: TODO描述

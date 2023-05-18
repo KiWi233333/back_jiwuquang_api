@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 /**
- * 钱包套餐模块
+ * 管理员模块
+ * #钱包套餐模块
  *
  * @className: AdminWalletController
  * @author: Kiwi23333
@@ -23,7 +24,7 @@ import javax.validation.Valid;
  * @date: 2023/5/5 15:08
  */
 @Slf4j
-@Api(value = "钱包套餐模块" )
+@Api(value = "钱包套餐模块")
 @RestController
 @RequestMapping("/admin/wallet")
 public class AdminWalletController {
@@ -33,7 +34,7 @@ public class AdminWalletController {
     @ApiOperation(value = "添加充值套餐", tags = "钱包模块")
     @ApiImplicitParam(name = JwtConstant.HEADER_NAME, value = "管理员token", required = true)
     @PostMapping("/combo/one")
-    Result addRechargeCombo(@RequestHeader(name= JwtConstant.HEADER_NAME) String token,
+    Result addRechargeCombo(@RequestHeader(name = JwtConstant.HEADER_NAME) String token,
                             @Valid @RequestBody RechargeComboDTO rechargeComboDTO, BindingResult res) {
         if (res.hasErrors()) {
             return Result.fail(res.getFieldError().getDefaultMessage());// 验证格式错误！

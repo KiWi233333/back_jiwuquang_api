@@ -21,7 +21,7 @@ import javax.validation.Valid;
 
 /**
  * 管理员模块
- * 商品管理模块
+ * #商品管理模块
  *
  * @className: AdminGoodsController
  * @author: Kiwi23333
