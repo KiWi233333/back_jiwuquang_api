@@ -25,8 +25,8 @@ public interface EventMapper extends SpiceBaseMapper<Event> {
 //        return this.selectPage(pages, qw);
 //    }
 
-    @Select("SELECT e.id event_id,eg.id event_goods_id, g.id goods_id,g.*,eg.event_price FROM event e " +
-            "LEFT JOIN event_goods eg ON eg.event_id = e.id " +
+    @Select("SELECT eg.id id,e.id event_id, g.id goods_id,g.*,eg.event_price FROM event_goods eg " +
+            "LEFT JOIN event e ON eg.event_id = e.id " +
             "LEFT JOIN goods g ON eg.goods_id = g.id " +
             "WHERE e.id = #{eventId}")
     List<EventGoodsVO> selectEventGoodsList(@Param("eventId") String eventId);

@@ -11,11 +11,8 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 18/05/2023 23:52:28
+ Date: 19/05/2023 16:54:46
 */
-DROP DATABASE IF EXISTS kiwi_community_mall;
-Create DATABASE kiwi_community_mall;
-USE kiwi_community_mall;
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
@@ -33,20 +30,20 @@ CREATE TABLE `event`  (
   `start_time` datetime NOT NULL COMMENT '活动开始时间',
   `end_time` datetime NOT NULL COMMENT '活动结束时间',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '活动状态，0表示未开始，1表示正在进行，-1表示已结束',
-  `created_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商城活动表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of event
 -- ----------------------------
-INSERT INTO `event` VALUES ('2018072115284300903', '限时秒杀，只为更好的你', '## 活动细则\n\n1. 活动时间7月21日至7月24日\n2. 每日10:00、15:00、20:00准时开抢\n3. 商品数量有限，先到先得\n4. 如遇活动页面崩溃或者无法下单等问题，可联系客服进行处理。', 'default.png', 0, '2023-05-15 19:59:11', '2023-05-17 19:59:11', -1, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
-INSERT INTO `event` VALUES ('2018072211041601402', '299元起包邮，家居特卖', '## 活动细则\n\n1. 活动时间7月22日至7月29日\n2. 家居类商品满299元包邮（港澳台及部分偏远地区除外）\n3. 如有任何疑问，请联系客服解决。', 'default.png', 0, '2023-05-17 19:59:11', '2023-05-24 19:59:11', 1, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
-INSERT INTO `event` VALUES ('2018072309121200101', '全场8折，疯狂购物季', '## 活动细则\n\n1. 活动时间7月23日至8月23日\n2. 全场商品8折优惠，数量有限，先到先得。\n3. 如遇活动页面崩溃或者无法下单等问题，可联系客服进行处理。', 'default.png', 0, '2023-05-16 19:59:11', '2023-05-22 19:59:11', 1, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
-INSERT INTO `event` VALUES ('2018072511282102304', '618大促，苹果产品特价献礼', '## 活动细则\n\n1. 活动时间6月18日至7月2日\n2. 苹果品牌商品7折优惠，仅限618大促期间。\n3. 如有任何疑问，请联系客服解决。', 'default.png', 0, '2023-05-13 19:59:11', '2023-05-20 19:59:11', 1, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
-INSERT INTO `event` VALUES ('2018072809375302506', '夏日清凉，买就送空调', '## 活动细则\n\n1. 活动时间7月28日至8月31日\n2. 购买价值2999元及以上家电类商品，即可获赠可调节风速空调一台。\n3. 活动期间，赠品数量有限，先到先得。\n4. 如有任何疑问，请联系客服解决。', 'default.png', 0, '2023-05-17 19:59:11', '2023-05-28 19:59:11', 0, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
-INSERT INTO `event` VALUES ('2018073008354504605', '零元购物狂欢节，快来参加吧', '## 活动细则\n\n1. 活动时间7月30日至8月5日\n2. 参与本活动即可享受免费领取商品一次。\n3. 每个账户仅限参加一次，请珍惜机会。\n4. 如遇活动页面崩溃或者无法下单等问题，可联系客服进行处理。', 'default.png', 0, '2023-05-16 19:59:11', '2023-05-20 19:59:11', 0, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
+INSERT INTO `event` VALUES ('2018072115284300903', '限时秒杀，只为更好的你', '## 活动细则\n\n1. 活动时间7月21日至7月24日\n2. 每日10:00、15:00、20:00准时开抢\n3. 商品数量有限，先到先得\n4. 如遇活动页面崩溃或者无法下单等问题，可联系客服进行处理。', 'default.png', 0, '2023-05-16 16:54:31', '2023-05-18 16:54:31', -1, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
+INSERT INTO `event` VALUES ('2018072211041601402', '299元起包邮，家居特卖', '## 活动细则\n\n1. 活动时间7月22日至7月29日\n2. 家居类商品满299元包邮（港澳台及部分偏远地区除外）\n3. 如有任何疑问，请联系客服解决。', 'default.png', 0, '2023-05-18 16:54:31', '2023-05-25 16:54:31', 1, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
+INSERT INTO `event` VALUES ('2018072309121200101', '全场8折，疯狂购物季', '## 活动细则\n\n1. 活动时间7月23日至8月23日\n2. 全场商品8折优惠，数量有限，先到先得。\n3. 如遇活动页面崩溃或者无法下单等问题，可联系客服进行处理。', 'default.png', 0, '2023-05-17 16:54:31', '2023-05-23 16:54:31', 1, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
+INSERT INTO `event` VALUES ('2018072511282102304', '618大促，苹果产品特价献礼', '## 活动细则\n\n1. 活动时间6月18日至7月2日\n2. 苹果品牌商品7折优惠，仅限618大促期间。\n3. 如有任何疑问，请联系客服解决。', 'default.png', 0, '2023-05-14 16:54:31', '2023-05-21 16:54:31', 1, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
+INSERT INTO `event` VALUES ('2018072809375302506', '夏日清凉，买就送空调', '## 活动细则\n\n1. 活动时间7月28日至8月31日\n2. 购买价值2999元及以上家电类商品，即可获赠可调节风速空调一台。\n3. 活动期间，赠品数量有限，先到先得。\n4. 如有任何疑问，请联系客服解决。', 'default.png', 0, '2023-05-18 16:54:31', '2023-05-29 16:54:31', 0, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
+INSERT INTO `event` VALUES ('2018073008354504605', '零元购物狂欢节，快来参加吧', '## 活动细则\n\n1. 活动时间7月30日至8月5日\n2. 参与本活动即可享受免费领取商品一次。\n3. 每个账户仅限参加一次，请珍惜机会。\n4. 如遇活动页面崩溃或者无法下单等问题，可联系客服进行处理。', 'default.png', 0, '2023-05-17 16:54:31', '2023-05-21 16:54:31', 0, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
 
 -- ----------------------------
 -- Table structure for event_goods
@@ -57,8 +54,8 @@ CREATE TABLE `event_goods`  (
   `event_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '活动id',
   `goods_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品id',
   `event_price` decimal(10, 2) NOT NULL COMMENT '活动价',
-  `created_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updated_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   INDEX `event_id_i`(`event_id` ASC) USING BTREE,
   INDEX `goods_id_i`(`goods_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '活动商品关联表' ROW_FORMAT = Dynamic;
@@ -66,9 +63,9 @@ CREATE TABLE `event_goods`  (
 -- ----------------------------
 -- Records of event_goods
 -- ----------------------------
-INSERT INTO `event_goods` VALUES ('5018072309121200101', '2018072309121200101', '104215909657394688', 299.00, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
-INSERT INTO `event_goods` VALUES ('5118072309121200102', '2018072309121200101', '104215909657394689', 99.00, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
-INSERT INTO `event_goods` VALUES ('5218072309121200103', '2018072309121200101', '104215909657394690', 2899.00, '2023-05-18 19:59:11', '2023-05-18 19:59:11');
+INSERT INTO `event_goods` VALUES ('5018072309121200101', '2018072309121200101', '104215909657394688', 299.00, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
+INSERT INTO `event_goods` VALUES ('5118072309121200102', '2018072309121200101', '104215909657394689', 99.00, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
+INSERT INTO `event_goods` VALUES ('5218072309121200103', '2018072309121200101', '104215909657394690', 2899.00, '2023-05-19 16:54:31', '2023-05-19 16:54:31');
 
 -- ----------------------------
 -- Table structure for goods
@@ -199,7 +196,7 @@ CREATE TABLE `orders`  (
   `updated_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `user_id_i`(`user_id` ASC) USING BTREE,
-  INDEX `status_i`(`status` ASC) USING BTREE
+  INDEX `address_id_i`(`address_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -393,7 +390,7 @@ CREATE TABLE `sys_user`  (
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('1652246616668012545', 'Lulu2333', '$2a$10$DjJfKH8I5j7EGBdlA5d.CeX/DPjYMyb978hT7EZgv9pnDz3IAkcbe', NULL, '13415000001', '新用户', '保密', 'default.png', NULL, 1, '2023-04-29 09:41:05', '2023-04-29 09:41:05', NULL, NULL, 1, 0, 1);
-INSERT INTO `sys_user` VALUES ('1653240351484801026', 'admin233', '$2a$10$trFdiRCBradkZdD7S.xesupAXTj7xwwD1u3KSrgTaq436EmilDPRa', NULL, '13415048700', '新用户', '保密', 'default.png', NULL, 1, '2023-05-02 11:29:50', '2023-05-18 23:51:24', '2023-05-18 23:51:24', NULL, 1, 0, 1);
+INSERT INTO `sys_user` VALUES ('1653240351484801026', 'admin233', '$2a$10$trFdiRCBradkZdD7S.xesupAXTj7xwwD1u3KSrgTaq436EmilDPRa', NULL, '13415048700', '新用户', '保密', 'default.png', NULL, 1, '2023-05-02 11:29:50', '2023-05-19 16:40:24', '2023-05-19 16:40:24', NULL, 1, 0, 1);
 INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', 'default.png', NULL, 0, '2022-03-01 10:00:00', '2023-05-16 22:14:55', '2023-05-16 22:14:55', '192.168.1.1', 1, 1, 1);
 
 -- ----------------------------

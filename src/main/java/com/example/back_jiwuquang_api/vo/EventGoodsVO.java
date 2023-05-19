@@ -28,6 +28,8 @@ import java.util.Date;
 @Accessors(chain = true)
 public class EventGoodsVO {
 
+    private String id;
+
     private String eventId;
     private String goodsId;
     private String eventGoodsId;

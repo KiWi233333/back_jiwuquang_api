@@ -34,12 +34,13 @@ public class UserSaltService {
      * @return UserCheckDTO
      */
     public UserCheckDTO getUserSalt(String username, Integer userType) {
-        UserCheckDTO userCheckDTO = (UserCheckDTO) redisUtil.get(USER_SALT_DTO_KEY + username);
-        if (userCheckDTO!= null) return userCheckDTO;
+        UserCheckDTO userCheckDTO = (UserCheckDTO) redisUtil.get(USER_SALT_DTO_KEY + username + userType);
+        if (userCheckDTO != null) return userCheckDTO;
         userCheckDTO = userMapper.selectUserCheckByUname(username, userType);
+        if (userCheckDTO == null) return null;
         // 缓存
-        redisUtil.set(USER_SALT_DTO_KEY + username, userCheckDTO);
-        redisUtil.set(USER_SALT_DTO_KEY + userCheckDTO.getId(), userCheckDTO);
+        redisUtil.set(USER_SALT_DTO_KEY + username + userType, userCheckDTO);
+        redisUtil.set(USER_SALT_DTO_KEY + userCheckDTO.getId() + userType, userCheckDTO);
         return userCheckDTO;
     }
 

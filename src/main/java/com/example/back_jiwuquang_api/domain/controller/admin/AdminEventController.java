@@ -42,22 +42,24 @@ public class AdminEventController {
     @ApiOperation(value = "获取全部活动列表", tags = "活动模块")
     @GetMapping("/list")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
-    Result getAllEventList() {
+    Result getAllEventList(@RequestHeader(name = HEADER_NAME) String token) {
         return eventService.getAllEventList(1);
     }
 
     @ApiOperation(value = "获取活动商品", tags = "活动模块")
     @GetMapping("/goods/{id}")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
-    Result getEventGoodsList(@PathVariable String id) {
+    Result getEventGoodsList(@PathVariable String id,
+                             @RequestHeader(name = HEADER_NAME) String token) {
         return eventService.getEventGoodsList(id);
     }
 
 
     @ApiOperation(value = "添加活动", tags = "活动模块")
-    @PutMapping("/")
+    @PostMapping("/")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
     Result updateEventById(@Valid @RequestBody EventDTO eventDTO,
+                           @RequestHeader(name = HEADER_NAME) String token,
                            BindingResult result) {
         if (result.hasErrors()) {
             return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
@@ -69,7 +71,9 @@ public class AdminEventController {
     @ApiOperation(value = "修改活动", tags = "活动模块")
     @PutMapping("/{id}")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
-    Result updateEventById(@Valid @RequestBody EventDTO eventDTO, @PathVariable String id,
+    Result updateEventById(@Valid @RequestBody EventDTO eventDTO,
+                           @RequestHeader(name = HEADER_NAME) String token,
+                           @PathVariable String id,
                            BindingResult result) {
         if (result.hasErrors()) {
             return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
@@ -80,7 +84,9 @@ public class AdminEventController {
     @ApiOperation(value = "删除活动", tags = "活动模块")
     @DeleteMapping("/{id}")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
-    Result deleteEventById(@PathVariable String id, BindingResult result) {
+    Result deleteEventById(@PathVariable String id,
+                           @RequestHeader(name = HEADER_NAME) String token,
+                           BindingResult result) {
         if (StringUtil.isNullOrEmpty(id)) {
             return Result.fail(Result.NULL_ERR, "活动id不能为空！");
         }
@@ -131,7 +137,7 @@ public class AdminEventController {
 
 
     @ApiOperation(value = "删除活动商品（单个）", tags = "活动模块")
-    @DeleteMapping("/goods/{eid}/{gid}")
+    @DeleteMapping("/goods/{eid}/{id}")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
     Result deleteEventById(@PathVariable String eid,
                            @PathVariable String gid,
@@ -146,11 +152,11 @@ public class AdminEventController {
     @ApiOperation(value = "删除活动商品（批量）", tags = "活动模块")
     @DeleteMapping("/goods/{eid}")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
-    Result deleteEventByIds(@PathVariable String eid,@Valid @RequestBody IdsList idsList,@RequestHeader(name = HEADER_NAME) String token, BindingResult result) {
+    Result deleteEventByIds(@PathVariable String eid, @Valid @RequestBody IdsList idsList, @RequestHeader(name = HEADER_NAME) String token, BindingResult result) {
         if (idsList.getIds().size() == 0) {
             return Result.fail(Result.NULL_ERR, "活动ids不能为空！");
         }
-        return eventGoodsService.deleteEventGoodsByIds(eid,idsList.getIds());
+        return eventGoodsService.deleteEventGoodsByIds(eid, idsList.getIds());
     }
 
 }

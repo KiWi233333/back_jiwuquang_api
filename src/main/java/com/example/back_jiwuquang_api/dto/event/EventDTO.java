@@ -7,9 +7,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Range;
 
+import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
@@ -37,21 +40,21 @@ public class EventDTO {
     private String images;
 
     @ApiModelProperty(value = "权重")
-    @Size(max = 9,message = "权重值为0-9")
+    @Range(min = 0, max = 9, message = "权重值为0-")
     private Integer level;
 
     @ApiModelProperty(value = "开始时间", required = true)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @NotBlank(message = "开始时间不能为空")
+    @NotNull(message = "开始时间不能为空")
     private Date startTime;
 
     @ApiModelProperty(value = "结束时间", required = true)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @NotBlank(message = "结束时间不能为空")
+    @NotNull(message = "结束时间不能为空")
     private Date endTime;
 
-    @ApiModelProperty(value = "活动名称")
-    @Size(min = 1, max = 50,message = "活动名称长度1-50字符")
+    @ApiModelProperty(value = "活动状态", notes = "0还未开始 1正在进行 2已结束")
+    @Range(min = 0, max = 1, message = "权重值为0-2")
     private Integer status;
 
     // 对象转换

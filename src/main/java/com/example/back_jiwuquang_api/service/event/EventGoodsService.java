@@ -44,14 +44,15 @@ public class EventGoodsService {
     public Result addEventGoodsById(EventGoodsDTO eventGoodsDTO) {
         // 1、sql query
         EventGoods eventGoods = EventGoodsDTO.toEventGoods(eventGoodsDTO);
-        if (eventMapper.selectOne(new LambdaQueryWrapper<Event>().eq(Event::getId, eventGoodsDTO.getId())) == null || goodsMapper.selectOne(new LambdaQueryWrapper<Goods>().eq(Goods::getId, eventGoodsDTO.getGoodsId())) == null) {
+        if (eventMapper.selectOne(new LambdaQueryWrapper<Event>().eq(Event::getId, eventGoodsDTO.getEventId())) == null ||
+                goodsMapper.selectOne(new LambdaQueryWrapper<Goods>().eq(Goods::getId, eventGoodsDTO.getGoodsId())) == null) {
             return Result.fail(Result.LINK_NULL_ERR, "对应活动或商品不存在！");
         }
         // 2、insert into
         if (eventGoodsMapper.insert(eventGoods) <= 0) {
             return Result.fail(Result.INSERT_ERR, "添加失败");
         }
-        redisUtil.delete(EVENT_GOODS_MAPS_KEY + eventGoodsDTO.getId());
+        redisUtil.delete(EVENT_GOODS_MAPS_KEY + eventGoodsDTO.getEventId());
         return Result.ok("添加成功！", null);
     }
 
@@ -64,20 +65,28 @@ public class EventGoodsService {
      */
     public Result addEventGoodsByBatch(List<EventGoodsDTO> list) {
         // 1、转化 校验
-        String flag = list.get(0).getId();
+        String eventId = list.get(0).getEventId();
         List<EventGoods> eventGoodsList = new ArrayList<>();
+        List<String> gidList = new ArrayList<>();
         for (EventGoodsDTO eg : list) {
-            if (!flag.equals(eg.getId())) {
+            if (!eventId.equals(eg.getEventId())) {
                 return Result.fail(Result.INSERT_ERR, "添加失败，父活动不一致！");
+            } else {
+                gidList.add(eg.getGoodsId());
+                eventGoodsList.add(EventGoodsDTO.toEventGoods(eg));
             }
         }
         // 2、sql query
-        if (eventMapper.selectOne(new LambdaQueryWrapper<Event>().eq(Event::getId, flag)) == null) {
+        if (eventMapper.selectOne(new LambdaQueryWrapper<Event>().eq(Event::getId, eventId)) == null) {
             return Result.fail(Result.LINK_NULL_ERR, "对应活动不存在！");
+        }
+        // 查询是否存在商品（批量查询）
+        if (goodsMapper.selectCount(new LambdaQueryWrapper<Goods>().in(Goods::getId, gidList)) != gidList.size()) {
+            return Result.fail(Result.LINK_NULL_ERR, "对应商品部分不存在！");
         }
         // 3、批量插入
         int count = eventGoodsMapper.insertBatchSomeColumn(eventGoodsList);
-        redisUtil.delete(EVENT_GOODS_MAPS_KEY + flag);
+        redisUtil.delete(EVENT_GOODS_MAPS_KEY + eventId);
         return Result.ok("添加成功！", count);
     }
 
@@ -89,17 +98,17 @@ public class EventGoodsService {
      */
     public Result updateEventGoodsById(EventGoodsDTO eventGoodsDTO) {
         // 1、查询
-        if (eventMapper.selectOne(new LambdaQueryWrapper<Event>().eq(Event::getId, eventGoodsDTO.getId())) == null) {
-            return Result.fail(Result.LINK_NULL_ERR, "修改失败！");
+        if (goodsMapper.selectById(eventGoodsDTO.getGoodsId()) == null) {
+            return Result.fail(Result.LINK_NULL_ERR, "对应商品不存在！");
         }
-        EventGoods eventGoods = EventGoodsDTO.toEventGoods(eventGoodsDTO);
+        EventGoods eventGoods = EventGoodsDTO.toEventGoods(eventGoodsDTO).setId(eventGoodsDTO.getId());
         // 2、sql
         int flag = eventGoodsMapper.updateById(eventGoods);
         if (flag <= 0) {
-            return Result.fail(Result.UPDATE_ERR, "修改失败！");
+            return Result.fail(Result.UPDATE_ERR, "修改失败，对应关联id错误！");
         }
         // 3、删除缓存
-        redisUtil.delete(EVENT_GOODS_MAPS_KEY + eventGoodsDTO.getId());
+        redisUtil.delete(EVENT_GOODS_MAPS_KEY + eventGoodsDTO.getEventId());
         return Result.ok("修改成功！", null);
     }
 
@@ -107,17 +116,17 @@ public class EventGoodsService {
      * 删除活动商品
      *
      * @param eid 活动id
-     * @param gid 活动商品id
+     * @param id 关联id
      * @return Result
      */
-    public Result deleteEventGoodsById(String eid, String gid) {
+    public Result deleteEventGoodsById(String eid, String id) {
         // 1、sql 删除
-        if (eventGoodsMapper.deleteById(gid) <= 0) {
+        if (eventGoodsMapper.deleteById(id) <= 0) {
             return Result.fail(Result.DELETE_ERR, "删除失败！");
         }
         // 2、删除缓存
-        redisUtil.hDelete(EVENT_GOODS_MAPS_KEY + eid, gid);
-        return Result.ok("删除成功！");
+        redisUtil.hDelete(EVENT_GOODS_MAPS_KEY + eid, id);
+        return Result.ok("删除成功！", null);
     }
 
     /**
@@ -131,10 +140,10 @@ public class EventGoodsService {
         // 1、delete sql
         int count = eventGoodsMapper.delete(new LambdaQueryWrapper<EventGoods>().eq(EventGoods::getEventId, eid).in(EventGoods::getId, ids));
         if (count <= 0) {
-            return Result.fail(Result.DELETE_ERR, "删除失败！");
+            return Result.fail(Result.LINK_NULL_ERR, "删除失败，资源不存在！");
         }
         // 2、删除
-        redisUtil.hDelete(EVENT_GOODS_MAPS_KEY + eid);
+        redisUtil.delete(EVENT_GOODS_MAPS_KEY + eid);
         return Result.ok("删除成功！", count);
     }
 }

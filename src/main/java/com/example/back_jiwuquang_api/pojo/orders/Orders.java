@@ -1,8 +1,8 @@
-package com.example.back_jiwuquang_api.pojo.event;
+package com.example.back_jiwuquang_api.pojo.orders;
+
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.yulichang.autoconfigure.conditional.MPJSqlInjectorCondition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,41 +12,32 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 /**
- * 活动商品关联表实体类
+ * 主订单实体类
  *
- * @className: Event
+ * @className: Orders
  * @author: Kiwi23333
- * @description: 活动商品关联表实体类
- * @date: 2023/5/17 16:29
+ * @description: 主订单实体类
+ * @date: 2023/5/19 22:12
  */
 @Data
-@TableName("event_goods")
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Accessors(chain = true)
-public class EventGoods {
+@TableName("orders")
+public class Orders {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
-    /**
-     * 活动id
-     */
-    @TableField(value = "event_id")
-    private String eventId;
+    private String userId;
 
-    /**
-     * 商品id
-     */
-    @TableField(value = "goods_id")
-    private String goodsId;
+    private String addressId;
 
-    /**
-     * 活动价格
-     */
-    @TableField(value = "event_price")
-    private BigDecimal eventPrice;
+    private Date ordersTime;
 
+    private BigDecimal totalPrice;
+
+    private Integer status;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")

@@ -8,8 +8,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -27,26 +29,23 @@ import java.util.Date;
 @Accessors(chain = true)
 public class EventGoodsDTO {
 
-    @ApiModelProperty(value = "活动id", required = true)
-    @NotBlank(message = "活动id不能为空")
+    @ApiModelProperty(value = "关联id", required = true)
+    @NotBlank(message = "id不能为空")
     private String id;
 
+    @ApiModelProperty(value = "活动id", required = true)
+    @NotBlank(message = "活动id不能为空")
+    
+    private String eventId;
     @ApiModelProperty(value = "商品id", required = true)
     @NotBlank(message = "商品id不能为空")
     private String goodsId;
 
     @ApiModelProperty(value = "活动价格", required = true)
-    @NotBlank(message = "活动价格不能为空")
+    @NotNull(message = "活动价格不能为空")
+    @Range(min = 0,message = "活动价格不能为负数")
     private BigDecimal eventPrice;
 
-
-    @TableField(value = "created_time", fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date createdTime;
-
-    @TableField(value = "updated_time", fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date updatedTime;
 
 
     // 对象转换

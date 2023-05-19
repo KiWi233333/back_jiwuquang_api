@@ -44,13 +44,15 @@ public class EventService {
             list.add((EventGoodsVO) map.get(key));
         }
         // 2、sql
-        if (map.isEmpty() || list.isEmpty()) {
+        if (map.isEmpty()) {
             list = eventMapper.selectEventGoodsList(id);
             // 3、缓存
-            for (EventGoodsVO vo : list) {
-                map.put(vo.getGoodsId(), vo);
+            if (!list.isEmpty()) {
+                for (EventGoodsVO goodsVO : list) {
+                    map.put(goodsVO.getId(),goodsVO);
+                }
+                redisUtil.hPutAll(EVENT_GOODS_MAPS_KEY + id,map);
             }
-            redisUtil.hPutAll(EVENT_GOODS_MAPS_KEY + id, map);
         }
         return Result.ok("获取成功！", list);
     }
@@ -67,7 +69,7 @@ public class EventService {
         list = (List<Event>) redisUtil.get(EVENT_LIST_KEY);
         // 2、sql获取
         if (list == null) {
-            list = eventMapper.selectList(new LambdaQueryWrapper<Event>().orderByDesc(Event::getCreatedTime));
+            list = eventMapper.selectList(new LambdaQueryWrapper<Event>().orderByDesc(Event::getCreateTime));
             redisUtil.set(EVENT_LIST_KEY, list);
         }
 
@@ -96,7 +98,7 @@ public class EventService {
         }
         // 2、删除缓存
         redisUtil.delete(EVENT_LIST_KEY);
-        return Result.ok("添加成功！");
+        return Result.ok("添加成功！",null);
     }
 
     /**
@@ -108,15 +110,15 @@ public class EventService {
      */
     public Result updateEventById(String id, EventDTO eventDTO) {
         // 1、sql query
-        if (eventMapper.selectById(id) == null) {
-            return Result.fail(Result.LINK_NULL_ERR, "活动不存在！");
+        // 校验
+        if (EventDTO.startEndTimeValid(eventDTO)) {
+            return Result.fail(Result.INSERT_ERR, "时间间隔不少于30秒！");
         }
-        // 2、修改
-        if (eventMapper.updateById(EventDTO.toEventGoods(eventDTO)) <= 0) {
+        if (eventMapper.updateById(EventDTO.toEventGoods(eventDTO).setId(id)) <= 0) {
             return Result.fail(Result.UPDATE_ERR, "修改失败！");
         }
         redisUtil.delete(EVENT_LIST_KEY);
-        return Result.ok("修改成功！");
+        return Result.ok("修改成功！",null);
     }
 
 
