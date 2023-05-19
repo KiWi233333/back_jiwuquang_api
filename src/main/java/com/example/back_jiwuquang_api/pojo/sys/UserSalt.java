@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 @TableName("sys_user_salt")
 public class UserSalt {
 
-    @TableId(type = IdType.ASSIGN_ID)
-    @TableField("user_id")
+    @TableId(value = "user_id", type = IdType.ASSIGN_ID)
     private String userId;
 
     @TableField("salt")

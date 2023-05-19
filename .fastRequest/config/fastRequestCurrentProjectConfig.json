@@ -1,0 +1,37 @@
+{
+	"dataList":[
+		{
+			"hostGroup":[
+				{
+					"env":"dev",
+					"url":""
+				}
+			],
+			"name":"localhost:3000"
+		}
+	],
+	"envList":[
+		"dev"
+	],
+	"headerList":[],
+	"postScript":"",
+	"preScript":"",
+	"projectList":[
+		"localhost:3000"
+	],
+	"syncModel":{
+		"branch":"master",
+		"domain":"https://github.com",
+		"enabled":false,
+		"namingPolicy":"byDoc",
+		"owner":"",
+		"repo":"",
+		"repoUrl":"",
+		"syncAfterRun":false,
+		"token":"",
+		"type":"github"
+	},
+	"urlEncodedKeyValueList":[],
+	"urlParamsKeyValueList":[],
+	"urlSuffix":""
+}
