@@ -23,7 +23,7 @@ public class Result {
      * 20002被删或不存在， 删
      * 20003查询不到，    查
      * 20004修改失败，    改
-     * 20005父元素不存在
+     * 20005链接元素不存在
      * 40001不能为空，
      * 40002认证失败
      * 40004阻塞或被占用 繁忙
@@ -33,20 +33,19 @@ public class Result {
     public static final int DELETE_ERR = 20002;
     public static final int SELECT_ERR = 20003;
     public static final int UPDATE_ERR = 20004;
-    public static final int INSERT_NULL_ERR = 20005;
-    public static final int GET_ERR = 20004;
+    public static final int LINK_NULL_ERR = 20005;
     public static final int NULL_ERR = 40001;
     public static final int TOKEN_ERR = 40002;
     public static final int BUSY_ERR = 40004;
 
-    /** 20000添加或已经存在， 增
-     * 20001被删或不存在， 删
-     * 20002查询不到，    查
-     * 20003修改失败，    改
-     * 40001不能为空，
-     * 40002身份认证失败
-     * 40004阻塞或被占用繁忙
-     */
+    @ApiModelProperty(value = "状态码", notes = "20001添加或已经存在， 增" +
+            "20002被删或不存在， 删" +
+            "20003查询不到，    查" +
+            "20004修改失败，    改" +
+            "20005链接元素不存在" +
+            "40001不能为空" +
+            "40002认证失败" +
+            "40004阻塞或被占用 繁忙")
     private Integer code;
     @ApiModelProperty("描述信息")
     private String message;
