@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.dto.goods.GoodsDTO;
 import com.example.back_jiwuquang_api.dto.goods.GoodsPageDTO;
 import com.example.back_jiwuquang_api.dto.goods.UpdateGoodsDTO;
-import com.example.back_jiwuquang_api.pojo.event.Event;
 import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
@@ -48,42 +47,42 @@ public class GoodsService {
      * @param goodsPageDTO 查询参数
      * @param page         当前页码
      * @param size         每页数量
-     * @param isPermission       是否上架 0 管理员 1 用户
+     * @param isPermission 是否上架 0 管理员 1 用户
      * @return Page
      */
     public Result getGoodsListByPageSize(GoodsPageDTO goodsPageDTO, Integer page, Integer size, Integer isPermission) {
 
         Page<Goods> pages = new Page<>(page, size); // 创建分页对象，指定当前页码和每页记录数
-        QueryWrapper<Goods> qw = new QueryWrapper<>(); // 创建查询条件
+        LambdaQueryWrapper<Goods> qw = new LambdaQueryWrapper<>(); // 创建查询条件
         // 筛选上架商品(用户)
-        if (isPermission == 0) qw.eq("is_show", 1);
+        if (isPermission == 0) qw.eq(Goods::getIsShow, 1);
         // 按名称查找
         if (goodsPageDTO.getName() != null) {
-            qw.like("name", goodsPageDTO.getName()).or().like("description", goodsPageDTO.getName());
+            qw.like(Goods::getName, goodsPageDTO.getName()).or().like(Goods::getDescription, goodsPageDTO.getName());
         }
         // 按类型排序
         if (goodsPageDTO.getCid() != null) {
-            qw.eq("category_id", goodsPageDTO.getCid());
+            qw.eq(Goods::getCategoryId, goodsPageDTO.getCid());
         }
         // 是否为新品排序
         if (goodsPageDTO.getIsNew() != null) {
-            qw.eq("is_new", goodsPageDTO.getIsNew() == 0 ? 0 : 1);
+            qw.eq(Goods::getIsNew, goodsPageDTO.getIsNew() == 0 ? 0 : 1);
         }
         // 销量排序
         if (goodsPageDTO.getSaleSort() != null) {
-            qw.orderBy(true, goodsPageDTO.getSaleSort() == 0, "sales");
+            qw.orderBy(true, goodsPageDTO.getSaleSort() == 0, Goods::getSales);
         }
         // 价格排序
         if (goodsPageDTO.getPriceSort() != null) {
-            qw.orderBy(true, goodsPageDTO.getPriceSort() == 0, "price");
+            qw.orderBy(true, goodsPageDTO.getPriceSort() == 0, Goods::getPrice);
         }
         // 浏览量排序
         if (goodsPageDTO.getViewsSort() != null) {
-            qw.orderBy(true, goodsPageDTO.getViewsSort() == 0, "views");
+            qw.orderBy(true, goodsPageDTO.getViewsSort() == 0, Goods::getViews);
         }
         IPage<Goods> userPage = goodsMapper.selectPage(pages, qw); // 调用Mapper接口方法进行分页查询
 
-        return Result.ok("获取成功！",userPage);
+        return Result.ok("获取成功！", userPage);
     }
 
     /** 采取 Hash缓存 GOODS_INFO_MAPS **/
@@ -104,7 +103,7 @@ public class GoodsService {
         goods = goodsMapper.selectById(id);
         if (goods != null) {
             redisUtil.hPut(GOODS_INFO_MAPS, id, goods);// 缓存
-            return Result.ok("获取成功！",goods);
+            return Result.ok("获取成功！", goods);
         }
         return Result.fail("查无该商品！");
     }
@@ -117,7 +116,6 @@ public class GoodsService {
      */
     public Result addGoodsByGoodsDTO(GoodsDTO goodsDTO) {
         Goods goods = GoodsDTO.toGoods(goodsDTO);
-
         // 1、插入sql
         if (goodsMapper.insert(goods) <= 0) {
             log.info("Good add failed 添加商品失败 ！");
@@ -131,8 +129,8 @@ public class GoodsService {
     /**
      * 修改商品失败
      *
-     * @param upGoodsDTO
-     * @return
+     * @param upGoodsDTO UpdateGoodsDTO
+     * @return Result
      */
     public Result updateGoods(UpdateGoodsDTO upGoodsDTO) {
         if (goodsMapper.updateById(UpdateGoodsDTO.toGoods(upGoodsDTO)) <= 0) {

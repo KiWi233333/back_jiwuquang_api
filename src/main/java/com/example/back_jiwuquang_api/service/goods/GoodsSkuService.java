@@ -79,7 +79,7 @@ public class GoodsSkuService {
         // 1、dto转化为实体类
         GoodsSku goodsSku = GoodsSkuDTO.toGoodsSku(goodsSkuDTO);
         // 查询是否有该商品
-        if (goodsMapper.selectOne(new LambdaQueryWrapper<Goods>().eq(Goods::getId, goodsSku.getGoodsId())) == null) {
+        if (goodsMapper.selectOne(new LambdaQueryWrapper<Goods>().eq(Goods::getId, goodsSku.getGoodsId()).last("limit 1")) == null) {
             return Result.fail(Result.LINK_NULL_ERR, "对应商品不存在！");
         }
         log.info("addGoodSku ing 添加规格中 {}", goodsSku);
