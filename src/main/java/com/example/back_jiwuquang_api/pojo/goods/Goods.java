@@ -24,6 +24,8 @@ import java.util.Date;
 @Accessors(chain = true)
 @TableName("goods")
 public class Goods {
+
+
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
 
@@ -81,10 +83,10 @@ public class Goods {
     private Long views;
 
     @TableField(fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 }
