@@ -65,22 +65,19 @@ public class GoodsDTO {
     private Integer isNew;
 
 
-    @ApiModelProperty(value = "保修时间")
+    @ApiModelProperty(value = "保修时长")
     private String warrantyTime;
 
-    @ApiModelProperty(value = "包换时间")
+    @ApiModelProperty(value = "包换时长")
     private String refundTime;
 
     @ApiModelProperty(value = "发货省")
-//    @Pattern(regexp ="省$",message = "省份格式不正确！")
     private String province;
 
     @ApiModelProperty(value = "发货市")
-//    @Pattern(regexp = "市$",message = "市格式不正确！")
     private String city;
 
     @ApiModelProperty(value = "发货区")
-//    @Pattern(regexp = "区$",message = "区格式不正确！")
     private String district;
 
 

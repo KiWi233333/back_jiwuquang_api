@@ -1,8 +1,9 @@
-package com.example.back_jiwuquang_api.pojo.orders;
+package com.example.back_jiwuquang_api.vo.orders;
 
-
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,21 +11,21 @@ import lombok.experimental.Accessors;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
- * 主订单实体类
+ * 用户订单VO
  *
- * @className: Orders
+ * @className: UserInfoVo
  * @author: Kiwi23333
- * @description: 主订单实体类
- * @date: 2023/5/19 22:12
+ * @description: 用户订单VO
+ * @date: 2023/5/1 2:13
  */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
-@TableName("orders")
-public class Orders {
+public class OrderListVO {
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
@@ -39,17 +40,13 @@ public class Orders {
 
     private Integer status;
 
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 
-    /**支付时间 */
-    @TableField(value = "paid_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date paidTime;
-
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
+
+    @ApiModelProperty("订单项列表")
+    List<OrderItemVO> orderItemVOList;
 
 }
