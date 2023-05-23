@@ -32,14 +32,25 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
      * @param size           个数
      * @param selectOrderDTO DTO
      * @param userId         用户id
+     * @param status         状态：0:待付款，1:已付款，2:已发货，3:待收货，4:已收货，5:已评价，6:已取消，7:已超时取消',
      * @return Result
      */
-    default IPage<OrderInfoVO> selectOrderInfoPage(int page, int size, SelectOrderDTO selectOrderDTO, String userId) {
+    default IPage<OrderInfoVO> selectOrderInfoPage(int page, int size, SelectOrderDTO selectOrderDTO, String userId, Integer status) {
 
         MPJLambdaWrapper<Orders> qw = new MPJLambdaWrapper<>();
-        // 工具id查询
+        // 订单id查询
         if (selectOrderDTO.getId() != null) {
-            qw.eq(Orders::getId, selectOrderDTO.getId()).last("limit 1");
+            qw.like(Orders::getId, selectOrderDTO.getId());
+        }
+
+        // 状态查询
+        if (status != null) {
+            qw.eq(Orders::getStatus, status);
+        }
+
+        // 店铺id查询
+        if (selectOrderDTO.getShopId() != null) {
+            qw.like(OrdersItem::getShopId, selectOrderDTO.getShopId());
         }
         // 时间筛选
         if (selectOrderDTO.getStartTime() != null || selectOrderDTO.getEndTime() != null) {
@@ -48,6 +59,7 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
             }
             qw.between(Orders::getCreateTime, selectOrderDTO.getStartTime(), selectOrderDTO.getEndTime());
         }
+        // sql
         qw.select(
                         Orders::getId,
                         Orders::getUserId,
@@ -59,41 +71,24 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
                         Orders::getCreateTime,
                         Orders::getUpdateTime
                 )
-//                .select(
-//                OrdersItem::getSkuId,
-//                OrdersItem::getQuantity,
-//                OrdersItem::getReducePrice,
-//                OrdersItem::getFinalPrice,
-//                OrdersItem::getActivityId )
-                .selectAssociation(OrdersItem.class, OrderInfoVO::getOrderItemVOList, map -> map
+                .selectCollection(OrdersItem.class, OrderInfoVO::getOrdersItems, map -> map
                         .result(OrdersItem::getSkuId)
                         .result(OrdersItem::getQuantity)
                         .result(OrdersItem::getReducePrice)
                         .result(OrdersItem::getFinalPrice)
-                        .result(OrdersItem::getActivityId))
-                .selectAssociation(Goods.class, Goods::getId, map -> map
-                        .result(Goods::getName))
-                .selectAssociation(GoodsSku.class, GoodsSku::getId, map -> map
-                        .result(GoodsSku::getDescription)
-                        .result(GoodsSku::getImage)
-                        .result(GoodsSku::getColor)
-                        .result(GoodsSku::getCombo)
-                        .result(GoodsSku::getSize))
-//                .select(
-//                        GoodsSku::getDescription,
-//                        GoodsSku::getImage,
-//                        GoodsSku::getColor,
-//                        GoodsSku::getCombo,
-//                        GoodsSku::getSize)
-                .innerJoin(OrdersItem.class, OrdersItem::getOrdersId, Orders::getId)
-                .innerJoin(GoodsSku.class, GoodsSku::getId, OrdersItem::getSkuId)
-                .innerJoin(Goods.class, Goods::getId, GoodsSku::getGoodsId)
-                .groupBy(OrdersItem::getOrdersId);
+                        .result(OrdersItem::getActivityId)
+                        .result(OrdersItem::getShopId)
+                        .association(Goods.class, OrderItemVO::getGoods)
+                        .association(GoodsSku.class, OrderItemVO::getGoodsSku)
+                )
+                .leftJoin(OrdersItem.class, OrdersItem::getOrdersId, Orders::getId)
+                .leftJoin(GoodsSku.class, GoodsSku::getId, OrdersItem::getSkuId)
+                .leftJoin(Goods.class, Goods::getId, GoodsSku::getGoodsId);
         // 用户id
         qw.eq(Orders::getUserId, userId);
         Page<OrderInfoVO> pages = new Page<>(page, size);
-        IPage<OrderInfoVO> pageList = this.selectJoinPage(pages, OrderInfoVO.class, qw); // 调用Mapper接口方法进行分页查询
-        return pageList;
+        // result
+        return this.selectJoinPage(pages, OrderInfoVO.class, qw);
     }
 
 

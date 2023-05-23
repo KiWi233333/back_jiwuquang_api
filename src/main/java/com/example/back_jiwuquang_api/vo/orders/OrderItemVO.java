@@ -1,6 +1,9 @@
 package com.example.back_jiwuquang_api.vo.orders;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.example.back_jiwuquang_api.pojo.goods.Goods;
+import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
+import com.example.back_jiwuquang_api.vo.EventGoodsVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.github.yulichang.annotation.FieldMapping;
 import io.swagger.annotations.ApiModelProperty;
@@ -37,15 +40,21 @@ public class OrderItemVO {
 
     private String activityId;
 
-    private String name;
+    private String shopId;
 
-    private String description;
+    private OrderGoodsVO goods;
 
-    private String image;
-
-    private String color;
-
-    private String combo;
-
-    private String size;
+    private OrderGoodsSkuVO goodsSku;
+//
+//    private String name;
+//
+//    private String description;
+//
+//    private String image;
+//
+//    private String color;
+//
+//    private String combo;
+//
+//    private String size;
 }

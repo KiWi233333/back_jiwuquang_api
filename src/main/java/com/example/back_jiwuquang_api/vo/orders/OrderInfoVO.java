@@ -1,9 +1,7 @@
 package com.example.back_jiwuquang_api.vo.orders;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.yulichang.annotation.EntityMapping;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,7 +53,7 @@ public class OrderInfoVO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
 
-    @TableField(exist = false) 
-    private List<OrderItemVO> orderItemVOList;
+    @TableField(exist = false)
+    private List<OrderItemVO> ordersItems;
 
 }
