@@ -26,6 +26,7 @@ public class Result {
      * 20005链接元素不存在
      * 40001不能为空，
      * 40002认证失败
+     * 40003参数错误
      * 40004阻塞或被占用 繁忙
      */
     public static final int SUCCESS = 20000;
@@ -36,6 +37,7 @@ public class Result {
     public static final int LINK_NULL_ERR = 20005;
     public static final int NULL_ERR = 40001;
     public static final int TOKEN_ERR = 40002;
+    public static final int PARAM_ERR = 40003;
     public static final int BUSY_ERR = 40004;
 
     @ApiModelProperty(value = "状态码", notes = "20001添加或已经存在， 增" +

@@ -13,13 +13,6 @@ import com.example.back_jiwuquang_api.vo.orders.OrderItemVO;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Mapper
 public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Orders> {
@@ -64,6 +57,7 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
                         Orders::getId,
                         Orders::getUserId,
                         Orders::getAddressId,
+                        Orders::getRemark,
                         Orders::getOrdersTime,
                         Orders::getPaidTime,
                         Orders::getTotalPrice,
@@ -92,4 +86,38 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
     }
 
 
+    default Object selectOrderInfo(String userId, String id){
+        MPJLambdaWrapper<Orders> qw = new MPJLambdaWrapper<>();
+        // sql
+        qw.select(
+                        Orders::getId,
+                        Orders::getUserId,
+                        Orders::getAddressId,
+                        Orders::getRemark,
+                        Orders::getOrdersTime,
+                        Orders::getPaidTime,
+                        Orders::getTotalPrice,
+                        Orders::getStatus,
+                        Orders::getCreateTime,
+                        Orders::getUpdateTime
+                )
+                .selectCollection(OrdersItem.class, OrderInfoVO::getOrdersItems, map -> map
+                        .result(OrdersItem::getSkuId)
+                        .result(OrdersItem::getQuantity)
+                        .result(OrdersItem::getReducePrice)
+                        .result(OrdersItem::getFinalPrice)
+                        .result(OrdersItem::getActivityId)
+                        .result(OrdersItem::getShopId)
+                        .association(Goods.class, OrderItemVO::getGoods)
+                        .association(GoodsSku.class, OrderItemVO::getGoodsSku)
+                )
+                .leftJoin(OrdersItem.class, OrdersItem::getOrdersId, Orders::getId)
+                .leftJoin(GoodsSku.class, GoodsSku::getId, OrdersItem::getSkuId)
+                .leftJoin(Goods.class, Goods::getId, GoodsSku::getGoodsId);
+        // 2、用户id
+        qw.eq(Orders::getUserId, userId)
+                .eq(Orders::getId,id);
+        // 3、result
+        return this.selectJoinOne( OrderInfoVO.class, qw);
+    }
 }

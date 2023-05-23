@@ -45,16 +45,4 @@ public class OrderItemVO {
     private OrderGoodsVO goods;
 
     private OrderGoodsSkuVO goodsSku;
-//
-//    private String name;
-//
-//    private String description;
-//
-//    private String image;
-//
-//    private String color;
-//
-//    private String combo;
-//
-//    private String size;
 }

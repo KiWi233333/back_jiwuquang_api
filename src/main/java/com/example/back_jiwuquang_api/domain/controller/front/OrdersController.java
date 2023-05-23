@@ -1,6 +1,7 @@
 package com.example.back_jiwuquang_api.domain.controller.front;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.back_jiwuquang_api.dto.orders.InsertOrderDTO;
 import com.example.back_jiwuquang_api.dto.orders.SelectOrderDTO;
 import com.example.back_jiwuquang_api.pojo.orders.Orders;
 import com.example.back_jiwuquang_api.service.event.EventService;
@@ -37,6 +38,7 @@ public class OrdersController {
 
     @Autowired
     OrdersService ordersService;
+    /** ******************* 查询 *********************** **/
 
     @ApiOperation(value = "获取全部订单（分页）", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
@@ -73,15 +75,43 @@ public class OrdersController {
         return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, status);
     }
 
+    @ApiOperation(value = "获取订单详细信息", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @GetMapping("/{id}")
+    Result getOrderAllInfo(@RequestHeader(name = HEADER_NAME) String token,
+                           HttpServletRequest request,
+                           @ApiParam("订单id") @PathVariable String id) {
+        // 业务
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        return ordersService.getOrderAllInfo( userId, id);
+    }
+    /********************* 添加 提交 *************************/
+    @ApiOperation(value = "提交订单", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PostMapping("/")
+    Result pullOrderByDTO(@RequestHeader(name = HEADER_NAME) String token,
+                             HttpServletRequest request,
+                             @Valid @RequestBody InsertOrderDTO insertOrderDTO,
+                             BindingResult res) {
+        if (res.hasErrors()) {
+            return Result.fail(res.getFieldError().getDefaultMessage());
+        }
+        // 业务
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        return ordersService.addOrderByDTO(insertOrderDTO, userId);
+    }
 
-    @ApiOperation(value = "删除订单（分页）", tags = "订单模块")
+    /********************* 删除 取消 *************************/
+
+
+    @ApiOperation(value = "删除订单", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @DeleteMapping("/{id}")
-    Result getOrderPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-                             HttpServletRequest request,
-                             @ApiParam("订单id") @PathVariable String id) {
+    Result deleteOrderById(@RequestHeader(name = HEADER_NAME) String token,
+                           HttpServletRequest request,
+                           @ApiParam("订单id") @PathVariable String id) {
         String userId = request.getAttribute(USER_ID_KEY).toString();
-        return ordersService.deleteOrderById(userId,id);
+        return ordersService.deleteOrderById(userId, id);
     }
 
 

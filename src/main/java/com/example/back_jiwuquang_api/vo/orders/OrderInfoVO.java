@@ -37,20 +37,23 @@ public class OrderInfoVO {
     @ApiModelProperty("地址id")
     private String addressId;
 
-    @ApiModelProperty(value = "状态",notes = "0:待付款，1:已付款，2:已发货，3:待收货，4:已收货，5:已评价，6:已取消，7:已超时取消")
+    @ApiModelProperty(value = "状态", notes = "0:待付款，1:已付款，2:已发货，3:待收货，4:已收货，5:已评价，6:已取消，7:已超时取消")
     private Integer status;
+
+    @ApiModelProperty("备注")
+    private String remark;
 
     private Date ordersTime;
 
     private BigDecimal totalPrice;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date paidTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     @TableField(exist = false)

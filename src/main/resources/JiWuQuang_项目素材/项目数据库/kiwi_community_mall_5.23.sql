@@ -11,7 +11,7 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 23/05/2023 23:46:05
+ Date: 24/05/2023 01:27:49
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `event`  (
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商城活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商城活动表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of event
@@ -58,7 +58,7 @@ CREATE TABLE `event_goods`  (
   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   INDEX `event_id_i`(`event_id` ASC) USING BTREE,
   INDEX `goods_id_i`(`goods_id` ASC) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '活动商品关联表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '活动商品关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of event_goods
@@ -189,6 +189,7 @@ CREATE TABLE `orders`  (
   `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '订单id',
   `user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
   `address_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货地址id',
+  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
   `orders_time` datetime NOT NULL COMMENT '下单时间',
   `paid_time` datetime NULL DEFAULT NULL COMMENT '支付时间',
   `total_price` decimal(10, 2) NOT NULL COMMENT '订单总价',
@@ -203,8 +204,8 @@ CREATE TABLE `orders`  (
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
-INSERT INTO `orders` VALUES ('4998270577145333242', '2163652592439853323', '503399947050422323', '2023-05-23 00:08:11', NULL, 488.99, 0, '2023-05-23 00:08:11', '2023-05-23 00:08:11');
-INSERT INTO `orders` VALUES ('4998270577145333243', '2163652592439853323', '503399947050422325', '2023-05-23 00:08:11', '2023-05-23 00:08:11', 129.99, 1, '2023-05-23 00:08:11', '2023-05-23 00:08:11');
+INSERT INTO `orders` VALUES ('4998270577145333242', '2163652592439853323', '503399947050422323', '包装好！', '2023-05-24 01:20:34', NULL, 488.99, 0, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
+INSERT INTO `orders` VALUES ('4998270577145333243', '2163652592439853323', '503399947050422325', '', '2023-05-24 01:20:34', '2023-05-24 01:20:34', 129.99, 1, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
 
 -- ----------------------------
 -- Table structure for orders_item
@@ -231,9 +232,9 @@ CREATE TABLE `orders_item`  (
 -- ----------------------------
 -- Records of orders_item
 -- ----------------------------
-INSERT INTO `orders_item` VALUES ('5998270577145333242', '4998270577145333242', '8998270577145333231', 1, '', NULL, 0.00, 479.00, '2023-05-23 00:08:11', '2023-05-23 22:07:15');
-INSERT INTO `orders_item` VALUES ('5998270577145333243', '4998270577145333242', '8998270577145333237', 1, '', NULL, 0.00, 9.99, '2023-05-23 00:08:11', '2023-05-23 22:07:16');
-INSERT INTO `orders_item` VALUES ('5998270577145333244', '4998270577145333243', '8998270577145333234', 1, '', NULL, 0.00, 129.00, '2023-05-23 00:08:11', '2023-05-23 22:07:17');
+INSERT INTO `orders_item` VALUES ('5998270577145333242', '4998270577145333242', '8998270577145333231', 1, NULL, NULL, 0.00, 479.00, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
+INSERT INTO `orders_item` VALUES ('5998270577145333243', '4998270577145333242', '8998270577145333237', 1, NULL, NULL, 0.00, 9.99, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
+INSERT INTO `orders_item` VALUES ('5998270577145333244', '4998270577145333243', '8998270577145333234', 1, NULL, NULL, 0.00, 129.00, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
 
 -- ----------------------------
 -- Table structure for recharge_combo
@@ -423,7 +424,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('1652246616668012545', 'Lulu2333', '$2a$10$DjJfKH8I5j7EGBdlA5d.CeX/DPjYMyb978hT7EZgv9pnDz3IAkcbe', NULL, '13415000001', '新用户', '保密', 'default.png', NULL, 1, '2023-04-29 09:41:05', '2023-04-29 09:41:05', NULL, NULL, 1, 0, 1);
 INSERT INTO `sys_user` VALUES ('1653240351484801026', 'admin233', '$2a$10$trFdiRCBradkZdD7S.xesupAXTj7xwwD1u3KSrgTaq436EmilDPRa', NULL, '13415048700', '新用户', '保密', 'default.png', NULL, 1, '2023-05-02 11:29:50', '2023-05-20 02:37:42', '2023-05-20 02:37:42', NULL, 1, 0, 1);
-INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', 'default.png', NULL, 0, '2022-03-01 10:00:00', '2023-05-23 21:38:23', '2023-05-23 21:38:23', '192.168.1.1', 1, 1, 1);
+INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', 'default.png', NULL, 0, '2022-03-01 10:00:00', '2023-05-24 00:44:28', '2023-05-24 00:44:28', '192.168.1.1', 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_role

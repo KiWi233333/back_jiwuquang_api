@@ -66,10 +66,10 @@ public class GoodsDTO {
 
 
     @ApiModelProperty(value = "保修时长")
-    private String warrantyTime;
+    private Integer warrantyTime;
 
     @ApiModelProperty(value = "包换时长")
-    private String refundTime;
+    private Integer refundTime;
 
     @ApiModelProperty(value = "发货省")
     private String province;

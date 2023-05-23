@@ -61,10 +61,10 @@ public class Goods {
     private String district;
 
     @TableField("warranty_time")
-    private String warrantyTime;
+    private Integer warrantyTime;
 
     @TableField("refund_time")
-    private String refundTime;
+    private Integer refundTime;
 
     @TableField("is_show")
     private Integer isShow;
