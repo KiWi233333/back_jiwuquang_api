@@ -1,13 +1,7 @@
 package com.example.back_jiwuquang_api.repository.sys;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.dto.sys.*;
-import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
-import com.example.back_jiwuquang_api.pojo.shopcart.ShopCart;
 import com.example.back_jiwuquang_api.pojo.sys.*;
-import com.example.back_jiwuquang_api.vo.ShopCartPageVO;
-import com.example.back_jiwuquang_api.vo.UserInfoVO;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.apache.ibatis.annotations.Mapper;

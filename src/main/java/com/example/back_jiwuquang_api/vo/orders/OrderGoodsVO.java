@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
+import java.math.BigDecimal;
+
 /**
  * 订单商品VO
  *
@@ -22,7 +24,7 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 public class OrderGoodsVO {
 
-    @ApiModelProperty("订单id")
+    @ApiModelProperty("商品id")
     private String id;
 
 
@@ -32,8 +34,8 @@ public class OrderGoodsVO {
     @ApiModelProperty("商品描述")
     private String description;
 
+    @ApiModelProperty("运费")
+    private BigDecimal postage;
 
-    @ApiModelProperty(value = "状态", notes = "0:待付款，1:已付款，2:已发货，3:待收货，4:已收货，5:已评价，6:已取消，7:已超时取消")
-    private Integer status;
 
 }

@@ -45,6 +45,8 @@ public class Goods {
 
     private String video;
 
+    private BigDecimal postage;
+
     /**
      * 省份
      */

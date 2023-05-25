@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.vo;
+package com.example.back_jiwuquang_api.vo.shopcart;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;

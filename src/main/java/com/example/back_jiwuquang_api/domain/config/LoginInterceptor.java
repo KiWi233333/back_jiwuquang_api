@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.domain.interceptor;
+package com.example.back_jiwuquang_api.domain.config;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -50,6 +50,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
             try {
                 // 1、验证用户
                 userTokenDTO = JWTUtil.getTokenInfoByToken(token);
+                log.info("登录{}",userTokenDTO);
                 // redis缓存
                 if (redisUtil.getExpire(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId()) <= 0) {
                     response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
@@ -79,6 +80,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
                 return false;
             }
         } else {
+            response.getWriter().write(JacksonUtil.toJSON(Result.fail("验证错误，您还未登录！")));
             response.sendError(400, "token不能为空!");
             return false; // Token验证失败，请求中止
         }

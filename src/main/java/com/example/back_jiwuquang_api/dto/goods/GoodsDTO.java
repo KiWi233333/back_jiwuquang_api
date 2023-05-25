@@ -48,6 +48,9 @@ public class GoodsDTO {
     @NotNull(message = "原价不能为空")
     private BigDecimal costPrice;
 
+    @ApiModelProperty(value = "运费")
+    private BigDecimal postage;
+
     @ApiModelProperty(value = "分类id",required = true)
     @NotBlank(message = "分类id不能为空")
     private String categoryId;
@@ -86,6 +89,7 @@ public class GoodsDTO {
                 .setDescription(goodsDTO.getDescription())
                 .setPrice(goodsDTO.getPrice())
                 .setCostPrice(goodsDTO.getCostPrice())
+                .setPostage(goodsDTO.getPostage())
                 .setCategoryId(goodsDTO.getCategoryId())
                 .setImages(goodsDTO.getImages())
                 .setVideo(goodsDTO.getVideo())

@@ -68,6 +68,14 @@ public class GoodsService {
         if (goodsPageDTO.getIsNew() != null) {
             qw.eq(Goods::getIsNew, goodsPageDTO.getIsNew() == 0 ? 0 : 1);
         }
+        // 是否为免邮
+        if (goodsPageDTO.getIsPostage() != null) {
+            if (goodsPageDTO.getIsPostage().equals(1)) {
+                qw.eq(Goods::getPostage, 0);
+            } else {
+                qw.lt(Goods::getPostage, 0);
+            }
+        }
         // 销量排序
         if (goodsPageDTO.getSaleSort() != null) {
             qw.orderBy(true, goodsPageDTO.getSaleSort() == 0, Goods::getSales);

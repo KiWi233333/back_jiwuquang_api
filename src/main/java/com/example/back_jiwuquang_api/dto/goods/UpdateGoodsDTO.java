@@ -41,6 +41,9 @@ public class UpdateGoodsDTO {
     @ApiModelProperty(value = "原价")
     private BigDecimal costPrice;
 
+    @ApiModelProperty(value = "运费")
+    private BigDecimal postage;
+
     @ApiModelProperty(value = "分类id")
     private String categoryId;
 
@@ -81,6 +84,7 @@ public class UpdateGoodsDTO {
                 .setDescription(p.getDescription())
                 .setPrice(p.getPrice())
                 .setCostPrice(p.getCostPrice())
+                .setPostage(p.getPostage())
                 .setCategoryId(p.getCategoryId())
                 .setImages(p.getImages())
                 .setVideo(p.getVideo())

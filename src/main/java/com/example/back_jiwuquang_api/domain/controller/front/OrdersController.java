@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import java.util.Objects;
+
 import static com.example.back_jiwuquang_api.domain.constant.JwtConstant.HEADER_NAME;
 import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_ID_KEY;
 
@@ -85,6 +87,9 @@ public class OrdersController {
         String userId = request.getAttribute(USER_ID_KEY).toString();
         return ordersService.getOrderAllInfo( userId, id);
     }
+
+
+
     /********************* 添加 提交 *************************/
     @ApiOperation(value = "提交订单", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
@@ -94,15 +99,18 @@ public class OrdersController {
                              @Valid @RequestBody InsertOrderDTO insertOrderDTO,
                              BindingResult res) {
         if (res.hasErrors()) {
-            return Result.fail(res.getFieldError().getDefaultMessage());
+            return Result.fail(Objects.requireNonNull(res.getFieldError()).getDefaultMessage());
         }
         // 业务
         String userId = request.getAttribute(USER_ID_KEY).toString();
         return ordersService.addOrderByDTO(insertOrderDTO, userId);
     }
 
-    /********************* 删除 取消 *************************/
 
+
+
+
+    /********************* 删除 取消 *************************/
 
     @ApiOperation(value = "删除订单", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
@@ -114,140 +122,4 @@ public class OrdersController {
         return ordersService.deleteOrderById(userId, id);
     }
 
-
-//    @ApiOperation(value = "获取待付款订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/unpaid/{page}/{size}")
-//    Result getOrderUnpaidPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                   HttpServletRequest request,
-//                                   @ApiParam("页码") @PathVariable int page,
-//                                   @ApiParam("每页个数") @PathVariable int size,
-//                                   @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                   BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }   // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 0);
-//    }
-//
-//
-//    @ApiOperation(value = "获取待发货订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/undelivered/{page}/{size}")
-//    Result getOrderUnDeliverPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                      HttpServletRequest request,
-//                                      @ApiParam("页码") @PathVariable int page,
-//                                      @ApiParam("每页个数") @PathVariable int size,
-//                                      @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                      BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }  // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 1);
-//    }
-//
-//
-//    @ApiOperation(value = "获取已发货订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/delivered/{page}/{size}")
-//    Result getOrderDeliverPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                    HttpServletRequest request,
-//                                    @ApiParam("页码") @PathVariable int page,
-//                                    @ApiParam("每页个数") @PathVariable int size,
-//                                    @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                    BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }  // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 2);
-//    }
-//
-//
-//    @ApiOperation(value = "获取待收货订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/unreceive/{page}/{size}")
-//    Result getOrderUnReceivePageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                      HttpServletRequest request,
-//                                      @ApiParam("页码") @PathVariable int page,
-//                                      @ApiParam("每页个数") @PathVariable int size,
-//                                      @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                      BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }  // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 3);
-//    }
-//
-//
-//    @ApiOperation(value = "获取已收货订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/receive/{page}/{size}")
-//    Result getOrderReceivePageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                    HttpServletRequest request,
-//                                    @ApiParam("页码") @PathVariable int page,
-//                                    @ApiParam("每页个数") @PathVariable int size,
-//                                    @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                    BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }  // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 4);
-//    }
-//
-//
-//
-//
-//    @ApiOperation(value = "获取已评价订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/comment/{page}/{size}")
-//    Result getOrderCommentPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                    HttpServletRequest request,
-//                                    @ApiParam("页码") @PathVariable int page,
-//                                    @ApiParam("每页个数") @PathVariable int size,
-//                                    @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                    BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }  // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 5);
-//    }
-//
-//
-//    @ApiOperation(value = "获取已取消订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/cancel/{page}/{size}")
-//    Result getOrderCancelPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                   HttpServletRequest request,
-//                                   @ApiParam("页码") @PathVariable int page,
-//                                   @ApiParam("每页个数") @PathVariable int size,
-//                                   @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                   BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }  // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 6);
-//    }
-//
-//    @ApiOperation(value = "获取已过期订单（分页）", tags = "订单模块")
-//    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-//    @GetMapping("/expired/{page}/{size}")
-//    Result getOrderAutoCancelPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
-//                                   HttpServletRequest request,
-//                                   @ApiParam("页码") @PathVariable int page,
-//                                   @ApiParam("每页个数") @PathVariable int size,
-//                                   @Valid @RequestBody SelectOrderDTO selectOrderDTO,
-//                                   BindingResult res) {
-//        if (res.hasErrors()) {
-//            return Result.fail(res.getFieldError().getDefaultMessage());
-//        }  // 业务
-//        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return ordersService.getOrderPageByDTO(page, size, selectOrderDTO, userId, 7);
-//    }
 }

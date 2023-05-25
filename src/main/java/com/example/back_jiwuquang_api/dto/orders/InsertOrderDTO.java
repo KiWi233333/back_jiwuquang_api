@@ -1,6 +1,5 @@
 package com.example.back_jiwuquang_api.dto.orders;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
-import java.util.Date;
 import java.util.List;
 
 
@@ -33,6 +31,6 @@ public class InsertOrderDTO {
     @ApiModelProperty(value = "备注")
     String remark;
 
-    @ApiModelProperty(value = "购买项列表")
+    @ApiModelProperty(value = "购买项列表",required = true)
     List<InsertOrderItemDTO> items;
 }

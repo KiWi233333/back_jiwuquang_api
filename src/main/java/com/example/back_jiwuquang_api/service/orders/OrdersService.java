@@ -4,13 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.dto.orders.InsertOrderDTO;
+import com.example.back_jiwuquang_api.dto.orders.InsertOrderItemDTO;
 import com.example.back_jiwuquang_api.dto.orders.SelectOrderDTO;
 import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.pojo.orders.Orders;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersItem;
+import com.example.back_jiwuquang_api.pojo.sys.UserAddress;
+import com.example.back_jiwuquang_api.repository.goods.GoodsSkuMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersItemMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersMapper;
+import com.example.back_jiwuquang_api.repository.sys.UserAddressMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import com.example.back_jiwuquang_api.vo.orders.OrderInfoVO;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -82,9 +87,37 @@ public class OrdersService {
     }
 
     /********************* 添加 提交 *************************/
+    @Autowired
+    GoodsSkuMapper goodsSkuMapper;
+    @Autowired
+    UserAddressMapper userAddressMapper;
 
+    /**
+     * 添加订单
+     *
+     * @param insertOrderDTO 参数
+     * @param userId         用户id
+     * @return Result
+     */
+    @Transactional(rollbackFor = Exception.class)
     public Result addOrderByDTO(InsertOrderDTO insertOrderDTO, String userId) {
-        return Result.ok("提交成功！", insertOrderDTO);
+        // 1、是否存在地址
+        UserAddress address = userAddressMapper.selectById(insertOrderDTO.getAddressId());
+        if (address == null || !address.getUserId().equals(userId)) {
+            return Result.fail(Result.SELECT_ERR, "地址不存在！");
+        }
+        // 2、商品规格是否有库存
+        List<String> skuList = new ArrayList<>();
+        for (InsertOrderItemDTO p : insertOrderDTO.getItems()) {
+            skuList.add(p.getSkuId());
+        }
+        Long skuLen = goodsSkuMapper.selectCount(new LambdaQueryWrapper<GoodsSku>().gt(GoodsSku::getStock, 0).in(GoodsSku::getId, skuList));
+        if (skuLen <= skuList.size()) {
+            return Result.fail(Result.SELECT_ERR, "部分商品下架或库存不足！");
+        }
+        // 3、查询用户id
+
+        return Result.ok("提交成功！", skuLen);
     }
 
 

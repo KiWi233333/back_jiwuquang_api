@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.pojo.shopcart.ShopCart;
 import com.example.back_jiwuquang_api.repository.SpiceBaseMapper;
-import com.example.back_jiwuquang_api.vo.ShopCartPageVO;
+import com.example.back_jiwuquang_api.vo.shopcart.ShopCartPageVO;
 import com.github.yulichang.base.MPJBaseMapper;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import org.apache.ibatis.annotations.Mapper;

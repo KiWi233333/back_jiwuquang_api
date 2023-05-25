@@ -1,6 +1,5 @@
 package com.example.back_jiwuquang_api.domain.config;
 
-import com.example.back_jiwuquang_api.domain.interceptor.LoginInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 
@@ -23,12 +24,13 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 public class InsertOrderItemDTO {
 
-    @ApiModelProperty(value = "商品规格id",required = true)
+    @ApiModelProperty(value = "商品规格id", required = true)
     @NotNull(message = "商品规格id不能为空")
     String skuId;
 
-    @ApiModelProperty(value = "数量",required = true)
+    @ApiModelProperty(value = "数量", required = true)
     @NotNull(message = "数量不能为空")
+    @Min(value = 1, message = "数量>0")
     Integer quantity;
 
     @ApiModelProperty(value = "活动id")

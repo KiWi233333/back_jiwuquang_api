@@ -7,7 +7,7 @@ import com.example.back_jiwuquang_api.pojo.shopcart.ShopCart;
 import com.example.back_jiwuquang_api.repository.shopcart.ShopCartMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
-import com.example.back_jiwuquang_api.vo.ShopCartPageVO;
+import com.example.back_jiwuquang_api.vo.shopcart.ShopCartPageVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

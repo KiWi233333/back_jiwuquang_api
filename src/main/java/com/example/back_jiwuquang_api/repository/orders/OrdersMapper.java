@@ -54,17 +54,17 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
         }
         // sql
         qw.select(
-                        Orders::getId,
-                        Orders::getUserId,
-                        Orders::getAddressId,
-                        Orders::getRemark,
-                        Orders::getOrdersTime,
-                        Orders::getPaidTime,
-                        Orders::getTotalPrice,
-                        Orders::getStatus,
-                        Orders::getCreateTime,
-                        Orders::getUpdateTime
-                )
+                Orders::getId,
+                Orders::getUserId,
+                Orders::getAddressId,
+                Orders::getRemark,
+                Orders::getOrdersTime,
+                Orders::getPaidTime,
+                Orders::getTotalPrice,
+                Orders::getStatus,
+                Orders::getCreateTime,
+                Orders::getUpdateTime
+        )
                 .selectCollection(OrdersItem.class, OrderInfoVO::getOrdersItems, map -> map
                         .result(OrdersItem::getSkuId)
                         .result(OrdersItem::getQuantity)
@@ -86,21 +86,21 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
     }
 
 
-    default Object selectOrderInfo(String userId, String id){
+    default OrderInfoVO selectOrderInfo(String userId, String id) {
         MPJLambdaWrapper<Orders> qw = new MPJLambdaWrapper<>();
         // sql
         qw.select(
-                        Orders::getId,
-                        Orders::getUserId,
-                        Orders::getAddressId,
-                        Orders::getRemark,
-                        Orders::getOrdersTime,
-                        Orders::getPaidTime,
-                        Orders::getTotalPrice,
-                        Orders::getStatus,
-                        Orders::getCreateTime,
-                        Orders::getUpdateTime
-                )
+                Orders::getId,
+                Orders::getUserId,
+                Orders::getAddressId,
+                Orders::getRemark,
+                Orders::getOrdersTime,
+                Orders::getPaidTime,
+                Orders::getTotalPrice,
+                Orders::getStatus,
+                Orders::getCreateTime,
+                Orders::getUpdateTime
+        )
                 .selectCollection(OrdersItem.class, OrderInfoVO::getOrdersItems, map -> map
                         .result(OrdersItem::getSkuId)
                         .result(OrdersItem::getQuantity)
@@ -116,8 +116,8 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
                 .leftJoin(Goods.class, Goods::getId, GoodsSku::getGoodsId);
         // 2、用户id
         qw.eq(Orders::getUserId, userId)
-                .eq(Orders::getId,id);
+                .eq(Orders::getId, id).last("limit 1");
         // 3、result
-        return this.selectJoinOne( OrderInfoVO.class, qw);
+        return this.selectJoinOne(OrderInfoVO.class, qw);
     }
 }

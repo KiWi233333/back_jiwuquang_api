@@ -21,16 +21,18 @@ import lombok.experimental.Accessors;
 public class GoodsPageDTO {
 
 
-    @ApiModelProperty(value = "商品名称",required = false)
+    @ApiModelProperty(value = "商品名称", required = false)
     String name;
-    @ApiModelProperty(value = "分类id",required = false)
+    @ApiModelProperty(value = "分类id", required = false)
     String cid;
-    @ApiModelProperty(value = "是否为新品",required = false)
+    @ApiModelProperty(value = "是否为新品", required = false)
     Integer isNew;
-    @ApiModelProperty(value = "销量排序",notes = "0 asc, 1 desc",required = false)
+    @ApiModelProperty(value = "销量排序", notes = "0 asc, 1 desc", required = false)
     Integer saleSort;
-    @ApiModelProperty(value = "价格排序",notes = "0 asc, 1 desc",required = false)
+    @ApiModelProperty(value = "价格排序", notes = "0 asc, 1 desc", required = false)
     Integer priceSort;
-    @ApiModelProperty(value = "浏览量排序",notes = "0 asc, 1 desc",required = false)
+    @ApiModelProperty(value = "浏览量排序", notes = "0 asc, 1 desc", required = false)
     Integer viewsSort;
+    @ApiModelProperty(value = "是否免邮", notes = "0 否, 1 是", required = false)
+    Integer isPostage;
 }
