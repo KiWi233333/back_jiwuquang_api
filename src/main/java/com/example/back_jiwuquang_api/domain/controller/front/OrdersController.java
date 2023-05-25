@@ -37,10 +37,11 @@ import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_I
 @RestController
 @RequestMapping("/orders")
 public class OrdersController {
-
+    /**
+     * ****************** 查询 ***********************
+     **/
     @Autowired
     OrdersService ordersService;
-    /** ******************* 查询 *********************** **/
 
     @ApiOperation(value = "获取全部订单（分页）", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
@@ -85,9 +86,8 @@ public class OrdersController {
                            @ApiParam("订单id") @PathVariable String id) {
         // 业务
         String userId = request.getAttribute(USER_ID_KEY).toString();
-        return ordersService.getOrderAllInfo( userId, id);
+        return ordersService.getOrderAllInfo(userId, id);
     }
-
 
 
     /********************* 添加 提交 *************************/
@@ -95,19 +95,21 @@ public class OrdersController {
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PostMapping("/")
     Result pullOrderByDTO(@RequestHeader(name = HEADER_NAME) String token,
-                             HttpServletRequest request,
-                             @Valid @RequestBody InsertOrderDTO insertOrderDTO,
-                             BindingResult res) {
+                          HttpServletRequest request,
+                          @Valid @RequestBody InsertOrderDTO insertOrderDTO,
+                          BindingResult res) {
         if (res.hasErrors()) {
             return Result.fail(Objects.requireNonNull(res.getFieldError()).getDefaultMessage());
         }
         // 业务
         String userId = request.getAttribute(USER_ID_KEY).toString();
-        return ordersService.addOrderByDTO(insertOrderDTO, userId);
+        try {
+            return ordersService.addOrderByDTO(insertOrderDTO, userId);
+        } catch (Exception e) {
+            log.warn("提交订单失败，{}", e.getMessage());
+            return Result.fail(Result.INSERT_ERR,  e.getMessage());
+        }
     }
-
-
-
 
 
     /********************* 删除 取消 *************************/

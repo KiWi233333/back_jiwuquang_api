@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 本地MySQL儿
+ Source Server         : Kiwi Community Mall
  Source Server Type    : MySQL
- Source Server Version : 80029
+ Source Server Version : 80028 (8.0.28)
  Source Host           : localhost:3306
  Source Schema         : kiwi_community_mall
 
  Target Server Type    : MySQL
- Target Server Version : 80029
+ Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 25/05/2023 11:21:30
+ Date: 25/05/2023 18:25:59
 */
 
 SET NAMES utf8mb4;
@@ -27,13 +27,13 @@ CREATE TABLE `event`  (
   `details` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '活动详情描述md',
   `images` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '活动图片集(,隔开)',
   `level` tinyint(1) NOT NULL DEFAULT 0 COMMENT '权重 越大权重越高',
-  `start_time` datetime(0) NOT NULL COMMENT '活动开始时间',
-  `end_time` datetime(0) NOT NULL COMMENT '活动结束时间',
+  `start_time` datetime NOT NULL COMMENT '活动开始时间',
+  `end_time` datetime NOT NULL COMMENT '活动结束时间',
   `status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '活动状态，0表示未开始，1表示正在进行，-1表示已结束',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商城活动表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商城活动表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of event
@@ -54,11 +54,11 @@ CREATE TABLE `event_goods`  (
   `event_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '活动id',
   `goods_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品id',
   `event_price` decimal(10, 2) NOT NULL COMMENT '活动价',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
-  INDEX `event_id_i`(`event_id`) USING BTREE,
-  INDEX `goods_id_i`(`goods_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '活动商品关联表' ROW_FORMAT = Dynamic;
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  INDEX `event_id_i`(`event_id` ASC) USING BTREE,
+  INDEX `goods_id_i`(`goods_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '活动商品关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of event_goods
@@ -86,17 +86,17 @@ CREATE TABLE `goods`  (
   `district` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '发货区',
   `is_show` tinyint(1) NULL DEFAULT 0 COMMENT '是否上架',
   `is_new` tinyint(1) NULL DEFAULT 1 COMMENT '是否新品',
-  `sales` bigint(0) NOT NULL DEFAULT 0 COMMENT '销量',
-  `views` bigint(0) NOT NULL DEFAULT 0 COMMENT '浏览量',
-  `warranty_time` int(0) NULL DEFAULT 3 COMMENT '保修时间(day)',
-  `refund_time` int(0) NULL DEFAULT 7 COMMENT '包换时间(day)',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `sales` bigint NOT NULL DEFAULT 0 COMMENT '销量',
+  `views` bigint NOT NULL DEFAULT 0 COMMENT '浏览量',
+  `warranty_time` int NULL DEFAULT 3 COMMENT '保修时间(day)',
+  `refund_time` int NULL DEFAULT 7 COMMENT '包换时间(day)',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `category_index`(`category_id`) USING BTREE,
-  INDEX `name_index`(`name`) USING BTREE,
-  INDEX `description_index`(`description`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  INDEX `category_index`(`category_id` ASC) USING BTREE,
+  INDEX `name_index`(`name` ASC) USING BTREE,
+  INDEX `description_index`(`description` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of goods
@@ -117,14 +117,14 @@ CREATE TABLE `goods_category`  (
   `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分类名称',
   `parent_id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '父id',
   `icon` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '图标',
-  `sort_order` int(0) NULL DEFAULT 0 COMMENT '权重0>',
+  `sort_order` int NULL DEFAULT 0 COMMENT '权重0>',
   `is_show` tinyint(1) NULL DEFAULT 1 COMMENT '是否展示',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `name`(`name`) USING BTREE,
-  INDEX `goods_category_parent_id`(`parent_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  UNIQUE INDEX `name`(`name` ASC) USING BTREE,
+  INDEX `goods_category_parent_id`(`parent_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of goods_category
@@ -152,17 +152,17 @@ CREATE TABLE `goods_sku`  (
   `size` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '大小',
   `color` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '颜色',
   `combo` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '商品版本',
-  `stock` int(0) NOT NULL COMMENT '规格库存',
+  `stock` int NOT NULL COMMENT '规格库存',
   `price` decimal(10, 2) NOT NULL COMMENT '销售价',
   `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '规格详情',
   `cost_price` decimal(10, 2) NOT NULL COMMENT '原价',
   `image` char(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'default_sku.png' COMMENT '规格图片',
-  `is_show` int(0) NOT NULL DEFAULT 0 COMMENT '状态：0-下架；1-正常；2-删除',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `is_show` int NOT NULL DEFAULT 0 COMMENT '状态：0-下架；1-正常；2-删除',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `goods_id_index`(`goods_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  INDEX `goods_id_index`(`goods_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of goods_sku
@@ -189,22 +189,22 @@ CREATE TABLE `orders`  (
   `user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
   `address_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货地址id',
   `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  `orders_time` datetime(0) NOT NULL COMMENT '下单时间',
-  `paid_time` datetime(0) NULL DEFAULT NULL COMMENT '支付时间',
+  `orders_time` datetime NOT NULL COMMENT '下单时间',
+  `paid_time` datetime NULL DEFAULT NULL COMMENT '支付时间',
   `total_price` decimal(10, 2) NOT NULL COMMENT '订单总价',
-  `status` tinyint(0) UNSIGNED NOT NULL DEFAULT 0 COMMENT '订单状态，0表示待付款，1表示已付款，2表示已发货，3表示待收货，4表示已收货，5表示已评价，6表示已取消，7表示已超时取消',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `status` tinyint UNSIGNED NOT NULL DEFAULT 0 COMMENT '订单状态，0表示待付款，1表示已付款，2表示已发货，3表示待收货，4表示已收货，5表示已评价，6表示已取消，7表示已超时取消',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `user_id_i`(`user_id`) USING BTREE,
-  INDEX `address_id_i`(`address_id`) USING BTREE
+  INDEX `user_id_i`(`user_id` ASC) USING BTREE,
+  INDEX `address_id_i`(`address_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
-INSERT INTO `orders` VALUES ('4998270577145333242', '2163652592439853323', '503399947050422323', '包装好！', '2023-05-24 01:20:34', NULL, 488.99, 0, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
-INSERT INTO `orders` VALUES ('4998270577145333243', '2163652592439853323', '503399947050422325', '', '2023-05-24 01:20:34', '2023-05-24 01:20:34', 129.99, 1, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
+INSERT INTO `orders` VALUES ('4998270577145333242', '2163652592439853323', '503399947050422323', '包装好！', '2023-05-25 17:34:53', NULL, 488.99, 0, '2023-05-25 17:34:53', '2023-05-25 17:34:53');
+INSERT INTO `orders` VALUES ('4998270577145333243', '2163652592439853323', '503399947050422325', '', '2023-05-25 17:34:53', '2023-05-25 17:34:53', 129.99, 1, '2023-05-25 17:34:53', '2023-05-25 17:34:53');
 
 -- ----------------------------
 -- Table structure for orders_item
@@ -214,41 +214,42 @@ CREATE TABLE `orders_item`  (
   `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '附订单id',
   `orders_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '主订单id',
   `sku_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品规格id',
-  `quantity` int(0) NOT NULL COMMENT '数量',
+  `quantity` int NOT NULL COMMENT '数量',
   `activity_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '活动id',
   `shop_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '店铺id',
+  `coupon_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '优惠卷id',
   `reduce_price` decimal(10, 2) NOT NULL COMMENT '优惠额度',
   `final_price` decimal(10, 2) NOT NULL COMMENT '子订单最终总价',
-  `create_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `orders_id_i`(`orders_id`) USING BTREE,
-  INDEX `sku_id_i`(`sku_id`) USING BTREE,
-  INDEX `shop_id_i`(`shop_id`) USING BTREE,
-  INDEX `activity_id_i`(`activity_id`) USING BTREE
+  INDEX `orders_id_i`(`orders_id` ASC) USING BTREE,
+  INDEX `sku_id_i`(`sku_id` ASC) USING BTREE,
+  INDEX `shop_id_i`(`shop_id` ASC) USING BTREE,
+  INDEX `activity_id_i`(`activity_id` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单表项目表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of orders_item
 -- ----------------------------
-INSERT INTO `orders_item` VALUES ('5998270577145333242', '4998270577145333242', '8998270577145333231', 1, NULL, NULL, 0.00, 479.00, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
-INSERT INTO `orders_item` VALUES ('5998270577145333243', '4998270577145333242', '8998270577145333237', 1, NULL, NULL, 0.00, 9.99, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
-INSERT INTO `orders_item` VALUES ('5998270577145333244', '4998270577145333243', '8998270577145333234', 1, NULL, NULL, 0.00, 129.00, '2023-05-24 01:20:34', '2023-05-24 01:20:34');
+INSERT INTO `orders_item` VALUES ('5998270577145333242', '4998270577145333242', '8998270577145333231', 1, NULL, NULL, NULL, 0.00, 479.00, '2023-05-25 17:34:53', '2023-05-25 17:34:53');
+INSERT INTO `orders_item` VALUES ('5998270577145333243', '4998270577145333242', '8998270577145333237', 1, NULL, NULL, NULL, 0.00, 9.99, '2023-05-25 17:34:53', '2023-05-25 17:34:53');
+INSERT INTO `orders_item` VALUES ('5998270577145333244', '4998270577145333243', '8998270577145333234', 1, NULL, NULL, NULL, 0.00, 129.00, '2023-05-25 17:34:53', '2023-05-25 17:34:53');
 
 -- ----------------------------
 -- Table structure for recharge_combo
 -- ----------------------------
 DROP TABLE IF EXISTS `recharge_combo`;
 CREATE TABLE `recharge_combo`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
+  `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '套餐名称',
   `discount` float NOT NULL DEFAULT 0 COMMENT '折扣',
   `amount` decimal(10, 2) NOT NULL COMMENT '充值额度',
-  `points` bigint(0) NOT NULL DEFAULT 0 COMMENT '送积分',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `points` bigint NOT NULL DEFAULT 0 COMMENT '送积分',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 10016 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10016 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of recharge_combo
@@ -267,16 +268,16 @@ CREATE TABLE `shop_cart`  (
   `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
   `sku_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品规格id',
-  `quantity` int(0) NOT NULL DEFAULT 0 COMMENT '加购数量',
+  `quantity` int NOT NULL DEFAULT 0 COMMENT '加购数量',
   `activity_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '活动id',
   `shop_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '店铺id',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `sku_id_index`(`sku_id`) USING BTREE,
-  INDEX `activity_id_index`(`activity_id`) USING BTREE,
-  INDEX `user_id_index`(`user_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  INDEX `sku_id_index`(`sku_id` ASC) USING BTREE,
+  INDEX `activity_id_index`(`activity_id` ASC) USING BTREE,
+  INDEX `user_id_index`(`user_id` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of shop_cart
@@ -295,14 +296,14 @@ CREATE TABLE `sys_permission`  (
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限名称',
   `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限路径',
   `intro` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限介绍',
-  `type` bigint(0) NULL DEFAULT NULL COMMENT '权限类别(0全部 1查2增3改4删)',
+  `type` bigint NULL DEFAULT NULL COMMENT '权限类别(0全部 1查2增3改4删)',
   `creator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `parent_id`(`parent_id`) USING BTREE COMMENT '父级权限ID',
-  INDEX `code`(`code`) USING BTREE COMMENT '权限CODE代码'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = Dynamic;
+  INDEX `parent_id`(`parent_id` ASC) USING BTREE COMMENT '父级权限ID',
+  INDEX `code`(`code` ASC) USING BTREE COMMENT '权限CODE代码'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_permission
@@ -338,12 +339,12 @@ CREATE TABLE `sys_role`  (
   `code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色唯一CODE代码',
   `intro` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '角色介绍',
   `type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '角色类型：0用户 1管理员 2客服',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `parent_id`(`parent_id`) USING BTREE COMMENT '父级角色ID',
-  INDEX `code`(`code`) USING BTREE COMMENT '角色CODE代码'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  INDEX `parent_id`(`parent_id` ASC) USING BTREE COMMENT '父级角色ID',
+  INDEX `code`(`code` ASC) USING BTREE COMMENT '角色CODE代码'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role
@@ -363,15 +364,15 @@ INSERT INTO `sys_role` VALUES ('5819236053864939528', NULL, '3级会员', 'ROLE_
 DROP TABLE IF EXISTS `sys_role_permission`;
 CREATE TABLE `sys_role_permission`  (
   `id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限ID',
-  `role_id` bigint(0) NULL DEFAULT NULL COMMENT '角色ID',
-  `permission_id` bigint(0) NULL DEFAULT NULL COMMENT '权限ID',
+  `role_id` bigint NULL DEFAULT NULL COMMENT '角色ID',
+  `permission_id` bigint NULL DEFAULT NULL COMMENT '权限ID',
   `creator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `roleid_id`(`role_id`) USING BTREE COMMENT '角色ID',
-  INDEX `permissionid_id`(`permission_id`) USING BTREE COMMENT '权限ID'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色—权限表' ROW_FORMAT = Dynamic;
+  INDEX `roleid_id`(`role_id` ASC) USING BTREE COMMENT '角色ID',
+  INDEX `permissionid_id`(`permission_id` ASC) USING BTREE COMMENT '权限ID'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色—权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_role_permission
@@ -399,31 +400,31 @@ CREATE TABLE `sys_user`  (
   `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '昵称',
   `gender` enum('男','女','保密') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '保密' COMMENT '性别',
   `avatar` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT 'default.png' COMMENT '头像',
-  `birthday` datetime(0) NULL DEFAULT NULL COMMENT '生日',
-  `user_type` int(0) NOT NULL DEFAULT 0 COMMENT '用户类型(0前台、1后台)',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
-  `last_login_time` datetime(0) NULL DEFAULT NULL COMMENT '最后登录时间',
+  `birthday` datetime NULL DEFAULT NULL COMMENT '生日',
+  `user_type` int NOT NULL DEFAULT 0 COMMENT '用户类型(0前台、1后台)',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_login_time` datetime NULL DEFAULT NULL COMMENT '最后登录时间',
   `last_login_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '最后登录ip',
-  `status` int(0) NOT NULL DEFAULT 1 COMMENT '用户状态',
-  `is_email_verified` int(0) NOT NULL DEFAULT 0 COMMENT '是否邮箱验证',
-  `is_phone_verified` int(0) NOT NULL DEFAULT 0 COMMENT '是否手机号验证',
+  `status` int NOT NULL DEFAULT 1 COMMENT '用户状态',
+  `is_email_verified` int NOT NULL DEFAULT 0 COMMENT '是否邮箱验证',
+  `is_phone_verified` int NOT NULL DEFAULT 0 COMMENT '是否手机号验证',
   PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `username`(`username`) USING BTREE,
-  UNIQUE INDEX `email`(`email`) USING BTREE,
-  UNIQUE INDEX `phone`(`phone`) USING BTREE,
-  INDEX `user_password_index`(`password`) USING BTREE,
-  INDEX `user_username_index`(`username`) USING BTREE,
-  INDEX `user_email_index`(`email`) USING BTREE,
-  INDEX `user_phone_index`(`phone`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  UNIQUE INDEX `username`(`username` ASC) USING BTREE,
+  UNIQUE INDEX `email`(`email` ASC) USING BTREE,
+  UNIQUE INDEX `phone`(`phone` ASC) USING BTREE,
+  INDEX `user_password_index`(`password` ASC) USING BTREE,
+  INDEX `user_username_index`(`username` ASC) USING BTREE,
+  INDEX `user_email_index`(`email` ASC) USING BTREE,
+  INDEX `user_phone_index`(`phone` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('1652246616668012545', 'Lulu2333', '$2a$10$DjJfKH8I5j7EGBdlA5d.CeX/DPjYMyb978hT7EZgv9pnDz3IAkcbe', NULL, '13415000001', '新用户', '保密', 'default.png', NULL, 1, '2023-04-29 09:41:05', '2023-04-29 09:41:05', NULL, NULL, 1, 0, 1);
 INSERT INTO `sys_user` VALUES ('1653240351484801026', 'admin233', '$2a$10$trFdiRCBradkZdD7S.xesupAXTj7xwwD1u3KSrgTaq436EmilDPRa', NULL, '13415048700', '新用户', '保密', 'default.png', NULL, 1, '2023-05-02 11:29:50', '2023-05-20 02:37:42', '2023-05-20 02:37:42', NULL, 1, 0, 1);
-INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', 'default.png', NULL, 0, '2022-03-01 10:00:00', '2023-05-25 11:05:29', '2023-05-25 11:05:29', '192.168.1.1', 1, 1, 1);
+INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', 'default.png', NULL, 0, '2022-03-01 10:00:00', '2023-05-25 18:24:46', '2023-05-25 18:24:46', '192.168.1.1', 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -434,12 +435,12 @@ CREATE TABLE `sys_user_role`  (
   `user_id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户ID',
   `role_id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色ID',
   `creator` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '创建人',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '修改时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `userid_id`(`user_id`) USING BTREE COMMENT '用户ID',
-  INDEX `role_id`(`role_id`) USING BTREE COMMENT '角色ID'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色关联表' ROW_FORMAT = Dynamic;
+  INDEX `userid_id`(`user_id` ASC) USING BTREE COMMENT '用户ID',
+  INDEX `role_id`(`role_id` ASC) USING BTREE COMMENT '角色ID'
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色关联表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_role
@@ -456,7 +457,7 @@ CREATE TABLE `sys_user_salt`  (
   `user_id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `salt` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户密码盐值',
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of sys_user_salt
@@ -473,19 +474,19 @@ CREATE TABLE `user_address`  (
   `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'id',
   `name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货人',
   `user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
-  `is_default` int(0) NOT NULL DEFAULT 0 COMMENT '是否默认',
+  `is_default` int NOT NULL DEFAULT 0 COMMENT '是否默认',
   `province` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '省份',
   `city` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '城市',
   `county` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '区/县',
   `address` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '详细地址',
   `postal_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '邮编',
   `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '手机号',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
-  INDEX `address_user_id`(`user_id`) USING BTREE,
-  INDEX `address_phone`(`phone`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = Dynamic;
+  INDEX `address_user_id`(`user_id` ASC) USING BTREE,
+  INDEX `address_phone`(`phone` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_address
@@ -503,17 +504,17 @@ CREATE TABLE `user_wallet`  (
   `balance` decimal(10, 2) NOT NULL COMMENT '余额',
   `recharge` decimal(10, 2) NOT NULL COMMENT '充值总额',
   `spend` decimal(10, 2) NOT NULL COMMENT '消费总额',
-  `points` bigint(0) NOT NULL DEFAULT 0 COMMENT '总积分',
-  `create_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
-  `update_time` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `points` bigint NOT NULL DEFAULT 0 COMMENT '总积分',
+  `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`user_id`) USING BTREE,
-  INDEX `user_wallet_index`(`balance`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+  INDEX `user_wallet_index`(`balance` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of user_wallet
 -- ----------------------------
-INSERT INTO `user_wallet` VALUES ('1652246616668012545', 0.00, 0.00, 0.00, 0, '2023-04-27 18:22:54', '2023-04-27 18:40:54');
-INSERT INTO `user_wallet` VALUES ('2163652592439853323', 0.00, 0.00, 0.00, 0, '2023-04-28 18:22:54', '2023-04-28 18:40:54');
+INSERT INTO `user_wallet` VALUES ('1652246616668012545', 3000.00, 3000.00, 0.00, 12230, '2023-04-27 18:22:54', '2023-05-25 18:25:43');
+INSERT INTO `user_wallet` VALUES ('2163652592439853323', 4000.00, 4000.00, 0.00, 13000, '2023-04-28 18:22:54', '2023-05-25 18:25:50');
 
 SET FOREIGN_KEY_CHECKS = 1;

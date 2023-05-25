@@ -31,6 +31,9 @@ public class InsertOrderDTO {
     @ApiModelProperty(value = "备注")
     String remark;
 
+    @ApiModelProperty(value = "积分优惠")
+    Integer points;
+
     @ApiModelProperty(value = "购买项列表",required = true)
     List<InsertOrderItemDTO> items;
 }

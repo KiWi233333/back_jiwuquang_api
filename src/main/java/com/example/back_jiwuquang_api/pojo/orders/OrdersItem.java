@@ -55,6 +55,10 @@ public class OrdersItem {
     private BigDecimal reducePrice;
 
     /**
+     * 优惠卷id
+     */
+    private String couponId;
+    /**
      * 子订单总价
      */
     private BigDecimal finalPrice;

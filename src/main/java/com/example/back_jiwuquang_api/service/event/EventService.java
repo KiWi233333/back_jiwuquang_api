@@ -131,7 +131,6 @@ public class EventService {
      * @param id 活动id
      * @return Result
      */
-    @Transactional(rollbackFor = Exception.class)
     public Result deleteEventById(String id) {
         // 1、sql 删除
         if (eventMapper.deleteById(id) <= 0) {

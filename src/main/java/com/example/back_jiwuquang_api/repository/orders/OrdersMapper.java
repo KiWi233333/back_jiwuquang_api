@@ -72,6 +72,7 @@ public interface OrdersMapper extends SpiceBaseMapper<Orders>, MPJBaseMapper<Ord
                         .result(OrdersItem::getFinalPrice)
                         .result(OrdersItem::getActivityId)
                         .result(OrdersItem::getShopId)
+                        .result(OrdersItem::getCouponId)
                         .association(Goods.class, OrderItemVO::getGoods)
                         .association(GoodsSku.class, OrderItemVO::getGoodsSku)
                 )

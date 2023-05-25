@@ -3,13 +3,11 @@ package com.example.back_jiwuquang_api.domain.config;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
-import com.example.back_jiwuquang_api.domain.constant.UserConstant;
 import com.example.back_jiwuquang_api.dto.sys.UserTokenDTO;
 import com.example.back_jiwuquang_api.util.JWTUtil;
 import com.example.back_jiwuquang_api.util.JacksonUtil;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
-import eu.bitwalker.useragentutils.UserAgent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,6 +16,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.back_jiwuquang_api.domain.constant.JwtConstant.REDIS_TOKEN_TIME;
@@ -44,21 +43,39 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         // 1、获取token
         String token = request.getHeader(JwtConstant.HEADER_NAME);
         response.setContentType("application/json;charset=UTF-8");
+
         // 2、获取token
         UserTokenDTO userTokenDTO;
         if (StringUtils.isNotBlank(token)) {// token不为空
             try {
                 // 1、验证用户
+                // 获取对应userAgent
+                String userAgent = request.getHeader("User-Agent");
                 userTokenDTO = JWTUtil.getTokenInfoByToken(token);
-                log.info("登录{}",userTokenDTO);
-                // redis缓存
-                if (redisUtil.getExpire(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId()) <= 0) {
-                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
-                    log.info("身份已全过期！");
+                // redis获取当前token是否有效
+                Map<String, Object> map = redisUtil.hGetAll(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId());
+                if (map.isEmpty()) {
+                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证全过期，请重新登陆！")));
                     return false;
                 }
-                // 获取对应
-                String userAgent = request.getHeader("User-Agent");
+                boolean flag = false;
+                for (String ua : map.keySet()) {
+                    if (map.get(ua).equals(token) && ua.equals(userAgent)) {
+                        flag = true;
+                    }
+                }
+                if (!flag) {
+                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证错误，登录设备有误！")));
+                    log.info("身份验证错误，登录设备有误！");
+                    return false;
+                }
+
+                // redis缓存
+//                if (redisUtil.getExpire(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId()) <= 0) {
+//                    response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
+//                    log.info("身份已全过期！");
+//                    return false;
+//                }
                 if (redisUtil.hGet(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), userAgent) == null) {
                     response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证错误，登录设备有误！")));
                     log.info("身份已全过期！");

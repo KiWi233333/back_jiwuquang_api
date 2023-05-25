@@ -21,7 +21,7 @@ public interface GoodsCategoryMapper extends SpiceBaseMapper<GoodsCategory> {
 
 
     // 低效插入数据
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = RuntimeException.class)
     default boolean saveBatch(List<GoodsCategory> categoryList) {
         try {
             categoryList.forEach(p -> {
@@ -29,7 +29,7 @@ public interface GoodsCategoryMapper extends SpiceBaseMapper<GoodsCategory> {
             });
             return true;
         } catch (Exception e) {
-            return false;
+            throw  new RuntimeException();
         }
     }
 }

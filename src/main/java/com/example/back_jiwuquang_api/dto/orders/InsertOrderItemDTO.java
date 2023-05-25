@@ -1,5 +1,7 @@
 package com.example.back_jiwuquang_api.dto.orders;
 
+import com.example.back_jiwuquang_api.pojo.orders.OrdersItem;
+import com.example.back_jiwuquang_api.vo.orders.OrderItemVO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -42,5 +44,14 @@ public class InsertOrderItemDTO {
     @ApiModelProperty(value = "优惠卷id")
     String couponId;
 
+
+    public static OrdersItem toOrdersItem(InsertOrderItemDTO p) {
+        return new OrdersItem()
+                .setSkuId(p.getSkuId())
+                .setQuantity(p.getQuantity())
+                .setCouponId(p.getCouponId())
+                .setActivityId(p.getActivityId())
+                .setShopId(p.getShopId());
+    }
 
 }
