@@ -111,13 +111,14 @@ public class OrdersService {
         for (InsertOrderItemDTO p : insertOrderDTO.getItems()) {
             skuList.add(p.getSkuId());
         }
-        Long skuLen = goodsSkuMapper.selectCount(new LambdaQueryWrapper<GoodsSku>().gt(GoodsSku::getStock, 0).in(GoodsSku::getId, skuList));
-        if (skuLen <= skuList.size()) {
+        List<GoodsSku> list = goodsSkuMapper.selectList(new LambdaQueryWrapper<GoodsSku>().select(GoodsSku::getStock).gt(GoodsSku::getStock, 0).in(GoodsSku::getId, skuList));
+        if (list.size() <= skuList.size()) {
             return Result.fail(Result.SELECT_ERR, "部分商品下架或库存不足！");
         }
-        // 3、查询用户id
+        // 3、减少库存
+        // 4、生成订单
 
-        return Result.ok("提交成功！", skuLen);
+        return Result.ok("提交成功！", list);
     }
 
 
