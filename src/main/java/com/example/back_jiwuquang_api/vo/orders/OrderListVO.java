@@ -34,16 +34,23 @@ public class OrderListVO {
 
     private String addressId;
 
-    private Date ordersTime;
+    /**
+     * 花费
+     */
+    private BigDecimal spendPrice;
 
+
+    /**
+     * 总价
+     */
     private BigDecimal totalPrice;
 
     private Integer status;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     @ApiModelProperty("订单项列表")

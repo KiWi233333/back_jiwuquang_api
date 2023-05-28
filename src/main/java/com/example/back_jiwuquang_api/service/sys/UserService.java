@@ -100,15 +100,9 @@ public class UserService {
     }
 
 
-    // 获取和缓存用户token
+    // 获取和缓存用户token 缓存
     private String getUserToken(UserTokenDTO userTokenDTO, String ua) {
-        // 1、获取缓存 Token
-//        String token = (String) redisUtil.hGet(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), ua);
-        // 2、创建token
-//        if (token == null) {
         String token = JWTUtil.createToken(userTokenDTO);
-//        }
-        // 3、缓存 token + 用户登录信息
         redisUtil.hPut(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), ua, token, JwtConstant.REDIS_TOKEN_TIME, TimeUnit.MINUTES);// 30分钟
         return token;
     }

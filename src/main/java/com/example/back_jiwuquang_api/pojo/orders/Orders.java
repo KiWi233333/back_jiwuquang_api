@@ -36,26 +36,35 @@ public class Orders {
      * 备注
      */
     private String remark;
+    /**
+     * 支付金额
+     */
+    private BigDecimal spendPrice;
 
-    @TableField(value = "orders_time", fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date ordersTime;
-
+    /**
+     * 总价
+     */
     private BigDecimal totalPrice;
 
+    /**
+     * 订单状态，0表示待付款，1:已付款，2:已发货，3:已收货，4:已评价，5:已取消，6:已超时取消，7:发起退款，8:退款成功并取消
+     */
     private Integer status;
 
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
-    private Date createTime;
-
-    /**支付时间 */
+    /**
+     * 支付时间
+     */
     @TableField(value = "paid_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date paidTime;
 
+    @TableField(value = "create_time", fill = FieldFill.INSERT)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
+
+
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
 }

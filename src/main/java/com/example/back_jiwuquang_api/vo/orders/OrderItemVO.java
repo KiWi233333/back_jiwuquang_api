@@ -3,10 +3,9 @@ package com.example.back_jiwuquang_api.vo.orders;
 import com.baomidou.mybatisplus.annotation.*;
 import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
+import com.example.back_jiwuquang_api.pojo.sys.UserAddress;
 import com.example.back_jiwuquang_api.vo.EventGoodsVO;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.github.yulichang.annotation.FieldMapping;
-import io.swagger.annotations.ApiModelProperty;
+import com.example.back_jiwuquang_api.vo.user.UserAddressVO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +29,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class OrderItemVO {
 
+
     private String skuId;
 
     private Integer quantity;
@@ -41,6 +41,8 @@ public class OrderItemVO {
     private String activityId;
 
     private String shopId;
+
+    private UserAddressVO address;
 
     private OrderGoodsVO goods;
 

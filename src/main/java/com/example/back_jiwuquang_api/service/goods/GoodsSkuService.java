@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_SKU_MAPS;
+//import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_SKU_MAPS;
 
 /**
  * 商品规格业务层
@@ -46,23 +46,23 @@ public class GoodsSkuService {
     public Result getGoodsSkuByGoodsById(String gid) {
         List<GoodsSku> goodsSkuList = new ArrayList<>();
         // 1、redis 并构建
-        Map<String, Object> map = redisUtil.hGetAll(GOODS_SKU_MAPS + gid);
-        if (!map.isEmpty()) {
-            for (String key : map.keySet()) {
-                goodsSkuList.add((GoodsSku) map.get(key));
-            }
-            return Result.ok("获取成功！", goodsSkuList);
-        }
+//        Map<String, Object> map = redisUtil.hGetAll(GOODS_SKU_MAPS + gid);
+//        if (!map.isEmpty()) {
+//            for (String key : map.keySet()) {
+//                goodsSkuList.add((GoodsSku) map.get(key));
+//            }
+//            return Result.ok("获取成功！", goodsSkuList);
+//        }
         // 2、数据库查询
         goodsSkuList = goodsSkuMapper.selectList(new QueryWrapper<GoodsSku>().lambda().eq(GoodsSku::getGoodsId, gid));
         if (goodsSkuList.isEmpty()) return Result.fail("商品规格为空！");
         log.info("getGoodsSkuByGoods ok!");
-        map = new HashMap<>();
+        Map map = new HashMap<>();
         for (GoodsSku goodsSku : goodsSkuList) {
             map.put(goodsSku.getId(), goodsSku);
         }
         // 3、缓存
-        redisUtil.hPutAll(GOODS_SKU_MAPS + gid, map);
+//        redisUtil.hPutAll(GOODS_SKU_MAPS + gid, map);
         return Result.ok("获取成功！", goodsSkuList);
     }
 
@@ -86,7 +86,7 @@ public class GoodsSkuService {
         // 2、插入操作
         if (goodsSkuMapper.insert(goodsSku) <= 0) return Result.fail("添加规格失败！");
         // 3、添加redis缓存
-        redisUtil.hPut(GOODS_SKU_MAPS + goodsSkuDTO.getGoodsId(), goodsSku.getId(), goodsSku);
+//        redisUtil.delete(GOODS_SKU_MAPS + goodsSkuDTO.getGoodsId());
         return Result.ok("添加成功！", null);
     }
 
@@ -104,7 +104,7 @@ public class GoodsSkuService {
         GoodsSku goodsSku = UpdateGoodsSkuDTO.toGoodsSku(updateGoodsSku).setId(skuId);
         if (goodsSkuMapper.updateById(goodsSku) <= 0) return Result.fail("修改失败！");
         // 2、删除对应缓存
-        redisUtil.delete(GOODS_SKU_MAPS + goodsId);
+//        redisUtil.delete(GOODS_SKU_MAPS + goodsId);
         // 3、success
         return Result.ok("修改成功！", null);
     }
@@ -125,7 +125,7 @@ public class GoodsSkuService {
         if (flag <= 0)
             return Result.fail("删除失败，没有此规格！");
         // 2、删除对应缓存
-        redisUtil.hDelete(GOODS_SKU_MAPS + goodsId, skuId);
+//        redisUtil.hDelete(GOODS_SKU_MAPS + goodsId, skuId);
         // 3、success
         return Result.ok("删除成功！", flag);
     }
@@ -144,7 +144,7 @@ public class GoodsSkuService {
                 .in(GoodsSku::getId, ids));
         if (flag <= 0) return Result.fail("删除失败，没有此规格！");
         // 2、删除缓存
-        redisUtil.delete(GOODS_SKU_MAPS + goodsId);
+//        redisUtil.delete(GOODS_SKU_MAPS + goodsId);
         // 3、success
         return Result.ok("删除成功！", flag);
     }

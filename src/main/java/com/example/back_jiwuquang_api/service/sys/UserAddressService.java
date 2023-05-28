@@ -32,7 +32,6 @@ import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_SKU_MAPS;
 import static com.example.back_jiwuquang_api.domain.constant.UserConstant.*;
 
 /**

@@ -19,8 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_INFO_MAPS;
-import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_SKU_MAPS;
+import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_INFO_MAPS; 
 
 /**
  * 描述
@@ -161,9 +160,8 @@ public class GoodsService {
         // 删除商品 和 删除商品规格
         if (goodsMapper.deleteById(id) > 0 &&
                 goodsSkuMapper.delete(new QueryWrapper<GoodsSku>().eq("goods_id", id)) >= 0) {
-            // 删除 商品和规格 缓存
+            // 删除 商品  缓存
             redisUtil.hDelete(GOODS_INFO_MAPS, id);
-            redisUtil.delete(GOODS_SKU_MAPS + id);
             return Result.ok("删除成功！", null);
         } else {
             return Result.fail("删除失败！");

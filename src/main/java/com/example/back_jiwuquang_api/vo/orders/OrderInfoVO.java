@@ -1,6 +1,7 @@
 package com.example.back_jiwuquang_api.vo.orders;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.example.back_jiwuquang_api.pojo.sys.UserAddress;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -34,16 +35,16 @@ public class OrderInfoVO {
     @ApiModelProperty("用户id")
     private String userId;
 
-    @ApiModelProperty("地址id")
-    private String addressId;
+    @ApiModelProperty("地址信息")
+    private UserAddress userAddress;
 
-    @ApiModelProperty(value = "状态", notes = "0:待付款，1:已付款，2:已发货，3:待收货，4:已收货，5:已评价，6:已取消，7:已超时取消")
+    @ApiModelProperty(value = "状态", notes = "0:待付款,1:已付款,2:已发货,3:待收货,4:已收货,5:已评价,6:已取消,7:已超时取消,8:发起退款,9:退款成功并取消")
     private Integer status;
 
     @ApiModelProperty("备注")
     private String remark;
 
-    private Date ordersTime;
+    private BigDecimal spendPrice;
 
     private BigDecimal totalPrice;
 

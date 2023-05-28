@@ -65,17 +65,17 @@ public class UserWalletService {
     /**
      * 根据id获取钱包信息
      *
-     * @param id
+     * @param userId
      * @return
      */
-    public Result getUserWalletById(String id) {
+    public Result getUserWalletById(String userId) {
         // 1、获取
-        UserWallet userWallet = getWalletById(id);
+        UserWallet userWallet = getWalletById(userId);
         // 2、判断
         if (userWallet != null) {
-            return Result.ok("获取成功",userWallet);
+            return Result.ok("获取成功", userWallet);
         } else {
-            return Result.fail("获取失败！");
+            return Result.fail(Result.SELECT_ERR, "获取失败！");
         }
     }
 
@@ -104,7 +104,7 @@ public class UserWalletService {
             }
         }
         if (!list.isEmpty())
-            return Result.ok("获取成功",list);
+            return Result.ok("获取成功", list);
 
         return Result.fail("获取失败！");
     }
@@ -178,5 +178,6 @@ public class UserWalletService {
             return null;
         }
     }
+
 
 }

@@ -11,26 +11,23 @@ import java.util.List;
 
 
 /**
- * 提交订单 DTO
+ * 修改订单 DTO
  *
  * @className: SelectOrderDTO
  * @author: Kiwi23333
- * @description: 提交订单 DTO
+ * @description: 修改订单 DTO
  * @date: 2023/5/22 19:07
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class InsertOrderDTO {
+public class UpdateOrderDTO {
 
-    @ApiModelProperty(value = "地址id", required = true)
-    @NotBlank(message = "地址不能为空！")
+    @ApiModelProperty(value = "地址id")
     String addressId;
 
     @ApiModelProperty(value = "备注")
     String remark;
 
-    @ApiModelProperty(value = "购买项列表",required = true)
-    List<InsertOrderItemDTO> items;
 }

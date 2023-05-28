@@ -19,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.math.BigDecimal;
+
 @SpringBootTest
 @Slf4j
 class ServiceTest {
@@ -130,5 +132,13 @@ class ServiceTest {
     void selectEventGoodsList() {
         System.out.println(eventMapper.selectEventGoodsList("2018072309121200101"));
     }
+
+
+
+    @Test
+    void userWalletMapper() {
+        System.out.println(userWalletMapper.addWallet("2163652592439853323",new BigDecimal("2000.00"),new BigDecimal("1000.00")));
+    }
+
 
 }

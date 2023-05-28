@@ -22,7 +22,6 @@ public class FillMetaHandler implements MetaObjectHandler {
         Date date = new Date();
         this.setFieldValByName("updateTime", date, metaObject);
         this.setFieldValByName("createTime", date, metaObject);
-        this.setFieldValByName("ordersTime", date, metaObject);
     }
 
     @Override

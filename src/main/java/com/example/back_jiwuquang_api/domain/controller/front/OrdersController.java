@@ -2,7 +2,9 @@ package com.example.back_jiwuquang_api.domain.controller.front;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.dto.orders.InsertOrderDTO;
+import com.example.back_jiwuquang_api.dto.orders.PayOrderDTO;
 import com.example.back_jiwuquang_api.dto.orders.SelectOrderDTO;
+import com.example.back_jiwuquang_api.dto.orders.UpdateOrderDTO;
 import com.example.back_jiwuquang_api.pojo.orders.Orders;
 import com.example.back_jiwuquang_api.service.event.EventService;
 import com.example.back_jiwuquang_api.service.orders.OrdersService;
@@ -27,7 +29,7 @@ import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_I
 /**
  * 订单模块
  *
- * @className: EventController
+ * @className: OrdersController
  * @author: Kiwi23333
  * @description: 订单模块
  * @date: 2023/4/30 22:27
@@ -90,6 +92,18 @@ public class OrdersController {
     }
 
 
+
+    @ApiOperation(value = "获取发货信息", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @GetMapping("/delivery/{id}")
+    Result getOrderDeliveryInfo(@RequestHeader(name = HEADER_NAME) String token,
+                           HttpServletRequest request,
+                           @ApiParam("订单id") @PathVariable String id) {
+        // 业务
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        return ordersService.getOrderDeliveryByOrderId(userId, id);
+    }
+
     /********************* 添加 提交 *************************/
     @ApiOperation(value = "提交订单", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
@@ -107,13 +121,90 @@ public class OrdersController {
             return ordersService.addOrderByDTO(insertOrderDTO, userId);
         } catch (Exception e) {
             log.warn("提交订单失败，{}", e.getMessage());
-            return Result.fail(Result.INSERT_ERR,  e.getMessage());
+            return Result.fail(Result.INSERT_ERR, e.getMessage());
+        }
+    }
+
+
+    /********************* 支付、修改 *************************/
+
+    @ApiOperation(value = "修改订单", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PutMapping("/{id}")
+    Result updateOrderByDTO(HttpServletRequest request,
+                            @RequestHeader(name = HEADER_NAME) String token,
+                            @PathVariable String id,
+                            @Valid @RequestBody UpdateOrderDTO updateOrderDTO,
+                            BindingResult res) {
+        if (res.hasErrors()) {
+            return Result.fail(Objects.requireNonNull(res.getFieldError()).getDefaultMessage());
+        }
+        // 业务
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        try {
+            return ordersService.updateOrderByDTO(id, userId, updateOrderDTO);
+        } catch (Exception e) {
+            log.warn("修改订单失败，{}", e.getMessage());
+            return Result.fail(Result.UPDATE_ERR, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation(value = "支付订单", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PutMapping("/pay/{id}")
+    Result updateOrderByDTO(HttpServletRequest request,
+                            @PathVariable String id,
+                            @RequestHeader(name = HEADER_NAME) String token,
+                            @Valid @RequestBody PayOrderDTO payOrderDTO,
+                            BindingResult res) {
+        if (res.hasErrors()) {
+            return Result.fail(Objects.requireNonNull(res.getFieldError()).getDefaultMessage());
+        }
+        // 业务
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        try {
+            return ordersService.payOrderDTO(id, userId, payOrderDTO);
+        } catch (Exception e) {
+            log.warn("orders支付订单失败，{}", e.getMessage());
+            return Result.fail(Result.UPDATE_ERR, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation(value = "取消订单", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PutMapping("/cancel/{id}")
+    Result cancelOrderById(@RequestHeader(name = HEADER_NAME) String token,
+                           HttpServletRequest request,
+                           @ApiParam("订单id") @PathVariable String id) {
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        try {
+            return ordersService.cancelOrderById(userId, id);
+        } catch (Exception e) {
+            log.warn("orders订单取消失败，{}", e.getMessage());
+            return Result.fail(Result.UPDATE_ERR, e.getMessage());
+        }
+    }
+
+
+    @ApiOperation(value = "申请退款", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PutMapping("/refund/{id}")
+    Result refundOrderById(@RequestHeader(name = HEADER_NAME) String token,
+                           HttpServletRequest request,
+                           @ApiParam("订单id") @PathVariable String id) {
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        try {
+            return ordersService.sendRefundOrderById(userId, id);
+        } catch (Exception e) {
+            log.warn("orders订单退款申请失败，{}", e.getMessage());
+            return Result.fail(Result.UPDATE_ERR, e.getMessage());
         }
     }
 
 
     /********************* 删除 取消 *************************/
-
     @ApiOperation(value = "删除订单", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @DeleteMapping("/{id}")
@@ -123,5 +214,6 @@ public class OrdersController {
         String userId = request.getAttribute(USER_ID_KEY).toString();
         return ordersService.deleteOrderById(userId, id);
     }
+
 
 }
