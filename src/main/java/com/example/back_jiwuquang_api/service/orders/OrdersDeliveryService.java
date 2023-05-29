@@ -1,7 +1,7 @@
 package com.example.back_jiwuquang_api.service.orders;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.back_jiwuquang_api.dto.orders.InseDeliveryDTO;
+import com.example.back_jiwuquang_api.dto.orders.DeliveryDTO;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersDelivery;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +46,14 @@ public class OrdersDeliveryService {
     }
 
     /********************* 添加 *************************/
-    public int insertDelivery(InseDeliveryDTO dto) {
+    /**
+     * 添加订单发货单
+     * @param dto  DeliveryDTO
+     * @return int
+     */
+    public int insertDelivery(DeliveryDTO dto) {
         // sql
-        OrdersDelivery delivery = InseDeliveryDTO.toOrdersDelivery(dto);
+        OrdersDelivery delivery = DeliveryDTO.toOrdersDelivery(dto);
         int count = deliveryMapper.insert(delivery);
         // 缓存
         if (count != 0) redisUtil.hPut(ORDERS_DELIVERY_MAPS_KEY, dto.getOrdersId(), delivery);
@@ -56,9 +61,15 @@ public class OrdersDeliveryService {
     }
 
     /********************* 修改 **************************/
+    public int updateDelivery(DeliveryDTO dto) {
+        // sql
+        OrdersDelivery delivery = DeliveryDTO.toAddOrdersDelivery(dto);
+        int count = deliveryMapper.updateById(delivery);
+        // 缓存
+        if (count != 0) redisUtil.hPut(ORDERS_DELIVERY_MAPS_KEY, dto.getOrdersId(), delivery);
+        return count;
+    }
 
-
-    /********************* 删除 *************************/
 
 
 }

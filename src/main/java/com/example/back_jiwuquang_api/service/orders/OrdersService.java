@@ -16,7 +16,6 @@ import com.example.back_jiwuquang_api.pojo.pay.UserWallet;
 import com.example.back_jiwuquang_api.pojo.sys.UserAddress;
 import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
 import com.example.back_jiwuquang_api.repository.goods.GoodsSkuMapper;
-import com.example.back_jiwuquang_api.repository.orders.OrdersDeliveryMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersItemMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersMapper;
 import com.example.back_jiwuquang_api.repository.pay.UserWalletMapper;
@@ -200,7 +199,9 @@ public class OrdersService {
 
         // 7、提交成功
         redisUtil.delete(ORDERS_PAGES_KEY + userId);// 订单详情
-        return Result.ok("提交成功！", orders.getId());
+        redisUtil.hDelete(ORDERS_MAPS_KEY + userId, orders.getId());
+//        onDelayQuene();//
+        return Result.ok("提交成功，请在30分钟内付款！", orders.getId());
     }
 
     /********************* 修改订单 *************************/
@@ -342,7 +343,7 @@ public class OrdersService {
         for (OrderItemVO p : orders.getOrdersItems()) {
             // 3、恢复库存
             upCount += goodsSkuMapper.addSkuStock(p.getSkuId(), p.getQuantity());
-            // 4、退回卷
+            // 4、退回商品优惠卷
             /****/
         }
 
@@ -539,7 +540,7 @@ public class OrdersService {
      * @return Result
      */
     @Transactional(rollbackFor = RuntimeException.class)
-    public Result addDeliveryByOrderId(String userId, String orderId, InseDeliveryDTO dto) {
+    public Result addDeliveryByOrderId(String userId, String orderId, DeliveryDTO dto) {
         // 1、查询订单状态
         // 1)缓存
         Orders orders = (Orders) redisUtil.hGet(ORDERS_MAPS_KEY + userId, orderId);

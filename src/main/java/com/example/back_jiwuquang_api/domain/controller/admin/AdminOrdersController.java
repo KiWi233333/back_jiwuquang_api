@@ -1,6 +1,6 @@
 package com.example.back_jiwuquang_api.domain.controller.admin;
 
-import com.example.back_jiwuquang_api.dto.orders.InseDeliveryDTO;
+import com.example.back_jiwuquang_api.dto.orders.DeliveryDTO;
 import com.example.back_jiwuquang_api.dto.orders.SelectAllUserOrderDTO;
 import com.example.back_jiwuquang_api.service.orders.OrdersService;
 import com.example.back_jiwuquang_api.util.Result;
@@ -69,7 +69,7 @@ public class AdminOrdersController {
     Result addDeliveryByOrderId(@RequestHeader(name = HEADER_NAME) String token,
                                 @ApiParam("订单id") @PathVariable String id,
                                 @ApiParam("用户id") @PathVariable String userId,
-                                @Valid @RequestBody InseDeliveryDTO dto) {
+                                @Valid @RequestBody DeliveryDTO dto) {
         return ordersService.addDeliveryByOrderId(userId, id,dto);
     }
 

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 
 /**
@@ -25,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
-public class InseDeliveryDTO {
+public class DeliveryDTO {
 
     @TableId(type = IdType.ASSIGN_ID)
     private String id;
@@ -45,8 +44,17 @@ public class InseDeliveryDTO {
     private String deliverAddress;
 
 
-    public static OrdersDelivery toOrdersDelivery(InseDeliveryDTO dto) {
+    public static OrdersDelivery toOrdersDelivery(DeliveryDTO dto) {
         return new OrdersDelivery()
+                .setOrdersId(dto.getOrdersId())
+                .setDeliveryNum(dto.getDeliveryNum())
+                .setSendAddress(dto.getSendAddress())
+                .setDeliverAddress(dto.getDeliverAddress());
+    }
+
+    public static OrdersDelivery toAddOrdersDelivery(DeliveryDTO dto) {
+        return new OrdersDelivery()
+                .setId(dto.getId())
                 .setOrdersId(dto.getOrdersId())
                 .setDeliveryNum(dto.getDeliveryNum())
                 .setSendAddress(dto.getSendAddress())
