@@ -1,12 +1,7 @@
 package com.example.back_jiwuquang_api.domain.controller.front;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.back_jiwuquang_api.dto.orders.InsertOrderDTO;
-import com.example.back_jiwuquang_api.dto.orders.PayOrderDTO;
-import com.example.back_jiwuquang_api.dto.orders.SelectOrderDTO;
-import com.example.back_jiwuquang_api.dto.orders.UpdateOrderDTO;
-import com.example.back_jiwuquang_api.pojo.orders.Orders;
-import com.example.back_jiwuquang_api.service.event.EventService;
+import com.example.back_jiwuquang_api.dto.orders.*;
+import com.example.back_jiwuquang_api.service.orders.OrdersCommentService;
 import com.example.back_jiwuquang_api.service.orders.OrdersService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.Api;
@@ -21,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.example.back_jiwuquang_api.domain.constant.JwtConstant.HEADER_NAME;
@@ -91,14 +87,12 @@ public class OrdersController {
         return ordersService.getOrderAllInfo(userId, id);
     }
 
-
-
     @ApiOperation(value = "获取发货信息", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @GetMapping("/delivery/{id}")
     Result getOrderDeliveryInfo(@RequestHeader(name = HEADER_NAME) String token,
-                           HttpServletRequest request,
-                           @ApiParam("订单id") @PathVariable String id) {
+                                HttpServletRequest request,
+                                @ApiParam("订单id") @PathVariable String id) {
         // 业务
         String userId = request.getAttribute(USER_ID_KEY).toString();
         return ordersService.getOrderDeliveryByOrderId(userId, id);
@@ -171,6 +165,20 @@ public class OrdersController {
         }
     }
 
+    @ApiOperation(value = "确认收货", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PutMapping("/delivered/{id}")
+    Result deliveredOrderById(@RequestHeader(name = HEADER_NAME) String token,
+                              HttpServletRequest request,
+                              @ApiParam("订单id") @PathVariable String id) {
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        try {
+            return ordersService.deliveredOrderById(userId, id);
+        } catch (Exception e) {
+            log.warn("orders确认收货失败，{}", e.getMessage());
+            return Result.fail(Result.UPDATE_ERR, e.getMessage());
+        }
+    }
 
     @ApiOperation(value = "取消订单", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
@@ -213,6 +221,27 @@ public class OrdersController {
                            @ApiParam("订单id") @PathVariable String id) {
         String userId = request.getAttribute(USER_ID_KEY).toString();
         return ordersService.deleteOrderById(userId, id);
+    }
+
+    /********************* 删除 取消 *************************/
+
+
+    @Autowired
+    OrdersCommentService commentService;
+
+    @ApiOperation(value = "评价订单", tags = "订单模块")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PostMapping("/comment")
+    Result addOrdersCommentByOrderItemId(@RequestHeader(name = HEADER_NAME) String token,
+                                         HttpServletRequest request,
+                                         @Valid @RequestBody List<InsertOrderCommentDTO> dtoList,
+                                         BindingResult res) {
+        if (res.hasErrors()) {
+            return Result.fail(Objects.requireNonNull(res.getFieldError()).getDefaultMessage());
+        }
+        String userId = request.getAttribute(USER_ID_KEY).toString();
+        // 业务
+        return commentService.addOrdersCommentByOrderItemId(userId, dtoList);
     }
 
 

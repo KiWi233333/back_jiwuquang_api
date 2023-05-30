@@ -359,6 +359,30 @@ public class OrdersService {
 
 
     /**
+     * 确认收货
+     *
+     * @param userId  用户id
+     * @param orderId 订单orderId
+     * @return Result
+     */
+    public Result deliveredOrderById(String userId, String orderId) {
+        // 1、查看是否存订单是否存在！（待收货）
+        OrderInfoVO orders = ordersMapper.selectOrderInfo(userId, orderId, OrdersStatus.DELIVERED.getVal());
+        if (orders == null) {
+            return Result.fail(Result.SELECT_ERR, "查无发货订单！");
+        }
+        // 2、sql确认收货
+        int flag = ordersMapper.updateById(new Orders().setId(orderId).setStatus(OrdersStatus.RECEIVED.getVal()));
+        if (flag < 0) {
+            return Result.fail(Result.UPDATE_ERR, "确认收货失败！");
+        }
+        // 3、redis删除缓存
+        redisUtil.delete(ORDERS_PAGES_KEY + userId);
+        redisUtil.hDelete(ORDERS_MAPS_KEY + userId, orderId);
+        return Result.ok("确认成功！", null);
+    }
+
+    /**
      * 申请退款
      *
      * @param userId 用户id
@@ -527,8 +551,13 @@ public class OrdersService {
      * @return Result
      */
     public Result getOrderDeliveryByOrderId(String userId, String orderId) {
-        OrdersDelivery orderDelivery = deliveryService.selectByOrderId(orderId);
-        return Result.ok("获取成功！", orderDelivery);
+        // 1、service
+        OrdersDelivery delivery = deliveryService.selectByOrderId(orderId);
+        if (delivery == null) {
+            return Result.fail(Result.SELECT_ERR, "订单还没有发货信息！");
+        }
+        // 2、success
+        return Result.ok("获取成功！", delivery);
     }
 
     /**
@@ -544,12 +573,12 @@ public class OrdersService {
         // 1、查询订单状态
         // 1)缓存
         Orders orders = (Orders) redisUtil.hGet(ORDERS_MAPS_KEY + userId, orderId);
-        if (orders == null || !orders.getStatus().equals(OrdersStatus.DELIVERED.getVal())) {
+        if (orders == null || !orders.getStatus().equals(OrdersStatus.PAID.getVal())) {
             // 2)sql
             orders = ordersMapper.selectOne(new LambdaQueryWrapper<Orders>()
                     .select(Orders::getId)
                     .eq(Orders::getId, orderId)
-                    .eq(Orders::getId, orderId).eq(Orders::getStatus, OrdersStatus.DELIVERED.getVal()));
+                    .eq(Orders::getId, orderId).eq(Orders::getStatus, OrdersStatus.PAID.getVal()));
         }
         if (orders == null) {
             return Result.fail(Result.SELECT_ERR, "发货失败，订单状态已更新！");
@@ -567,10 +596,10 @@ public class OrdersService {
                         .eq(Orders::getId, orderId)
                         .eq(Orders::getUserId, userId)) < 0
         ) {
-            throw  new RuntimeException("订单状态修改失败！");
+            throw new RuntimeException("订单状态修改失败！");
         }
         // result
-        return Result.ok("添加成功！", count);
+        return Result.ok("添加发货成功！", count);
     }
 
 

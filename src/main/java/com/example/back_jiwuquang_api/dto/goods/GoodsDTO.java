@@ -33,25 +33,25 @@ import java.util.Date;
 public class GoodsDTO {
 
 
-    @ApiModelProperty(value = "商品名称",required = true)
+    @ApiModelProperty(value = "商品名称", required = true)
     @NotBlank(message = "商品名称不能为空")
     private String name;
 
     @ApiModelProperty(value = "商品详情")
     private String description;
 
-    @ApiModelProperty(value = "销售价",required = true)
+    @ApiModelProperty(value = "销售价", required = true)
     @NotNull(message = "销售价不能为空")
     private BigDecimal price;
 
-    @ApiModelProperty(value = "原价",required = true)
+    @ApiModelProperty(value = "原价", required = true)
     @NotNull(message = "原价不能为空")
     private BigDecimal costPrice;
 
     @ApiModelProperty(value = "运费")
     private BigDecimal postage;
 
-    @ApiModelProperty(value = "分类id",required = true)
+    @ApiModelProperty(value = "分类id", required = true)
     @NotBlank(message = "分类id不能为空")
     private String categoryId;
 
@@ -84,7 +84,7 @@ public class GoodsDTO {
     private String district;
 
 
-    public static Goods toGoods (GoodsDTO goodsDTO) {
+    public static Goods toGoods(GoodsDTO goodsDTO) {
         return new Goods().setName(goodsDTO.getName())
                 .setDescription(goodsDTO.getDescription())
                 .setPrice(goodsDTO.getPrice())

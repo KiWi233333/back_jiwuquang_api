@@ -216,6 +216,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
+                    <includeSystemScope>true</includeSystemScope>
                     <mainClass>com.example.back_jiwuquang_api.BackJiWuQuangApiApplication</mainClass>
                 </configuration>
                 <executions>

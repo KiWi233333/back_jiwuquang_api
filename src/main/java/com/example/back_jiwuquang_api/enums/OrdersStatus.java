@@ -34,6 +34,7 @@ public enum OrdersStatus {
     DELAY_CANCELED("已超时取消", 6),// 6:已超时取消
     REFUND("发起退款", 7),// 7:发起退款
     REFUND_SUCCESS("退款成功并取消", 8),// 8:退款成功并取消
+
     MIN("范围0", 0),//
     MAX("范围8", 8);
     private final String key;

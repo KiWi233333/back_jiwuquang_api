@@ -17,7 +17,7 @@ import java.util.Date;
  */
 @Data
 @Accessors(chain = true)
-@TableName("user_address")
+@TableName("sys_user_address")
 public class UserAddress {
 
 
