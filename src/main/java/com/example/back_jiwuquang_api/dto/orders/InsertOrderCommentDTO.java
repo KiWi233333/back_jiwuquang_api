@@ -31,7 +31,7 @@ public class InsertOrderCommentDTO {
     @ApiModelProperty(value = "内容", required = true)
     private String content;
     
-    @ApiModelProperty(value = "内容")
+    @ApiModelProperty(value = "图片集合")
     private String images;
 
     @ApiModelProperty(value = "星级（0-5）", required = true)
