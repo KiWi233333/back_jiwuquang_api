@@ -217,7 +217,6 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.example.back_jiwuquang_api.BackJiWuQuangApiApplication</mainClass>
-                    <skip>true</skip>
                 </configuration>
                 <executions>
                     <execution>

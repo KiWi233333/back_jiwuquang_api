@@ -1,6 +1,8 @@
 package com.example.back_jiwuquang_api.domain.config;
 
 import com.example.back_jiwuquang_api.domain.config.interceptor.Interceptor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 import java.util.ArrayList;
 
 
+@Slf4j
 @Configuration
 @EnableWebMvc // 解决spring>2.6.0版本 适配Swagger
 @EnableSwagger2 // 开启Swagger
@@ -98,5 +101,7 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         "/admin/login/**"// 管理员登录
                 )
         ; // 排除登录请求
+
+        log.info("登录拦截器注册！");
     }
 }
