@@ -409,7 +409,7 @@ public class UserService {
         try {
             userVO = (UserVO) result.getData();
         } catch (Exception e) {
-            return Result.fail("修改头像失败！");
+            return Result.fail("查无该用户！");
         }
         String imgKey = fileOSSUpDownUtil.updateImage(file, userVO.getAvatar());
         if (StringUtil.isNullOrEmpty(imgKey)) return Result.fail("图片文件上传失败！");

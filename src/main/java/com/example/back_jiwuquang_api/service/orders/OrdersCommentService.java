@@ -52,7 +52,7 @@ public class OrdersCommentService {
         // 1、查询缓存
         OrdersComment comment = (OrdersComment) redisUtil.hGet(ORDERS_COMMENT_MAPS_KEY, orderItemId);
         if (comment != null) {
-            return Result.ok("查询成功！", comment);
+            return Result.ok(comment);
         }
         // 2、查询数据库
         LambdaQueryWrapper<OrdersComment> qw = new LambdaQueryWrapper<>();
@@ -62,7 +62,7 @@ public class OrdersCommentService {
         if (comment == null) {
             return Result.ok("子订单评价不存在！", null);
         }
-        return Result.ok("查询成功！", comment);
+        return Result.ok(comment);
     }
 
     /**
@@ -79,10 +79,10 @@ public class OrdersCommentService {
             return Result.ok("查询成功！", commentList);
         }
         // 2、查询数据库
-        MPJLambdaWrapper<OrdersItem> qw = new MPJLambdaWrapper<>()
-                .eq(OrdersItem::getOrdersId, orderId)
-                .leftJoin(OrdersComment.class, OrdersItem::getId, OrdersComment::getOrdersItemId);
-
+//        MPJLambdaWrapper<OrdersItem> qw = new MPJLambdaWrapper<OrdersItem>()
+//                .eq(OrdersItem::getOrdersId, orderId)
+//                .leftJoin(OrdersComment.class, OrdersItem::getId, OrdersComment::getOrdersItemId);
+//        ordersCommentMapper.selectJoinList(OrdersComment.class,qw);
         if (commentList == null) {
             return Result.ok("子订单评价不存在！", null);
         }
@@ -106,9 +106,8 @@ public class OrdersCommentService {
         if (count != paramList.size()) {
             throw new RuntimeException("部分订单评价添加失败！");
         }
-        // 3、删除缓存
-//        redisUtil.hDelete(GOODS_COMMENT_MAPS_KEY);
-
+        // 3、删除评价缓存
+        redisUtil.hDelete(ORDERS_COMMENT_MAPS_KEY, userId);
         return Result.ok("发表评价成功！", null);
     }
 

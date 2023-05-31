@@ -1,6 +1,8 @@
 package com.example.back_jiwuquang_api.domain.controller;
 
 import com.example.back_jiwuquang_api.domain.config.FileOSSConfig;
+import com.example.back_jiwuquang_api.service.ResService;
+import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -65,16 +67,29 @@ public class ResController {
         }
     }
 
+@Autowired
+    ResService resService;
+
 
     @ApiOperation(value = "用户上传图片（单个）", tags = "资源模块")
     @ApiParam(name = "file", value = "图片文件")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PostMapping("/user/file")
-    void toUpLoadImage(@RequestHeader(name = HEADER_NAME) String token,
+    Result toUpLoadImage(@RequestHeader(name = HEADER_NAME) String token,
                        @RequestParam(name = "file") MultipartFile file,
                        HttpServletRequest request)  {
-        String userId = request.getAttribute(USER_ID_KEY).toString();
-//        return usersService.updateUserAvatar(file, );
+        return resService.uploadImage(file);
+    }
+
+
+    @ApiOperation(value = "用户上传图片（单个）", tags = "资源模块")
+    @ApiParam(name = "file", value = "图片文件")
+    @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
+    @PostMapping("/admin/file")
+    Result toUpLoadImageAdmin(@RequestHeader(name = HEADER_NAME) String token,
+                              @RequestParam(name = "file") MultipartFile file,
+                              HttpServletRequest request)  {
+        return resService.uploadImage(file);
     }
 
 }
