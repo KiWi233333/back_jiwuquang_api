@@ -15,6 +15,7 @@ target/
 
 ### IntelliJ IDEA ###
 .idea
+.fastRequest
 *.iws
 *.iml
 *.ipr

@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -20,11 +21,11 @@ import java.util.Date;
  * @description: 订单评价表实体类
  * @date: 2023/5/30 21:19
  */
-@TableName("orders_comment")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Accessors(chain = true)
+@TableName("orders_comment")
 public class OrdersComment {
 
     @TableId("id")
@@ -32,7 +33,10 @@ public class OrdersComment {
 
     private String userId;
 
-    private String ordersId;
+    /**
+     * 订单项目id
+     */
+    private String ordersItemId;
 
     private String skuId;
 
@@ -42,7 +46,19 @@ public class OrdersComment {
 
     private String content;
 
-    private Integer rate;
+    /**
+     * 图片名称集合
+     */
+    private String images;
+    /**
+     * 视频名称
+     */
+    private String video;
+
+    /**
+     * 星级别
+     */
+    private BigDecimal rate;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

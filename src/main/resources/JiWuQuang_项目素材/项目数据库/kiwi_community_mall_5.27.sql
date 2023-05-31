@@ -500,10 +500,10 @@ INSERT INTO `sys_user_salt` VALUES ('1653240351484801026', '/eaV/OB2FaO4KQ==');
 INSERT INTO `sys_user_salt` VALUES ('2163652592439853323', '4wechxge23ex21');
 
 -- ----------------------------
--- Table structure for user_address
+-- Table structure for sys_user_address
 -- ----------------------------
-DROP TABLE IF EXISTS `user_address`;
-CREATE TABLE `user_address`  (
+DROP TABLE IF EXISTS `sys_user_address`;
+CREATE TABLE `sys_user_address`  (
                                  `id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'id',
                                  `name` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '收货人',
                                  `user_id` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户id',
@@ -522,11 +522,11 @@ CREATE TABLE `user_address`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户收货地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of user_address
+-- Records of sys_user_address
 -- ----------------------------
-INSERT INTO `user_address` VALUES ('503399947050422323', '张三', '2163652592439853323', 0, '江苏省', '南京市', '玄武区', '中山路123号', '210000', '13416231111', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
-INSERT INTO `user_address` VALUES ('503399947050422324', 'kiwi233', '1652246616668012545', 0, '江苏省', '南京市', '白下区', '长白路456号', '210000', '13912113421', '2023-05-16 18:40:10', '2023-05-16 18:40:30');
-INSERT INTO `user_address` VALUES ('503399947050422325', '猕猴桃', '2163652592439853323', 1, '广东省', '汕头市', '潮阳区', '谷饶石门', '515159', '13912113421', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
+INSERT INTO `sys_user_address` VALUES ('503399947050422323', '张三', '2163652592439853323', 0, '江苏省', '南京市', '玄武区', '中山路123号', '210000', '13416231111', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
+INSERT INTO `sys_user_address` VALUES ('503399947050422324', 'kiwi233', '1652246616668012545', 0, '江苏省', '南京市', '白下区', '长白路456号', '210000', '13912113421', '2023-05-16 18:40:10', '2023-05-16 18:40:30');
+INSERT INTO `sys_user_address` VALUES ('503399947050422325', '猕猴桃', '2163652592439853323', 1, '广东省', '汕头市', '潮阳区', '谷饶石门', '515159', '13912113421', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
 
 -- ----------------------------
 -- Table structure for user_bills

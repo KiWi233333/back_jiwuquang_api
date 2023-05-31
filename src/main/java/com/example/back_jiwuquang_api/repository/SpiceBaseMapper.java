@@ -12,7 +12,7 @@ import java.util.List;
  * @description: 封装自己的base-mapper,包含批量操作
  * @date: 2023/5/5 21:28
  */
-public interface SpiceBaseMapper<T> extends BaseMapper<T> {
+public interface SpiceBaseMapper<T> extends BaseMapper<T>{
 
     /**
      * 批量插入
