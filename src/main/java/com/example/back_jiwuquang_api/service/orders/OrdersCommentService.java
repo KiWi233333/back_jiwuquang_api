@@ -3,14 +3,17 @@ package com.example.back_jiwuquang_api.service.orders;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.back_jiwuquang_api.dto.orders.DeliveryDTO;
 import com.example.back_jiwuquang_api.dto.orders.InsertOrderCommentDTO;
+import com.example.back_jiwuquang_api.pojo.orders.Orders;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersComment;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersDelivery;
+import com.example.back_jiwuquang_api.pojo.orders.OrdersItem;
 import com.example.back_jiwuquang_api.repository.orders.OrdersCommentMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersDeliveryMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersItemMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.example.back_jiwuquang_api.domain.constant.OrdersConstant.ORDERS_COMMENT_MAPS_KEY;
 import static com.example.back_jiwuquang_api.domain.constant.OrdersConstant.ORDERS_DELIVERY_MAPS_KEY;
 
 @Service
@@ -30,25 +34,59 @@ public class OrdersCommentService {
     @Autowired
     OrdersMapper ordersMapper;
     @Autowired
+    OrdersItemMapper ordersItemMapper;
+    @Autowired
     RedisUtil redisUtil;
 
 
     /******************** 查询  *********************/
+
+
     /**
-     * 查询订单评价
+     * 查询子订单评价
      *
      * @param userId      用户id
      * @param orderItemId 订单单项id
      **/
-    public Result getOrderCommentsByOrderId(String userId, String orderItemId) {
-        LambdaQueryWrapper<OrdersComment> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(OrdersComment::getUserId, userId);
-        queryWrapper.eq(OrdersComment::getOrdersItemId, orderItemId);
-        List<OrdersComment> ordersCommentList = ordersCommentMapper.selectList(queryWrapper);
-        if (ordersCommentList.size() == 0) {
-            return Result.ok("订单评价不存在！", null);
+    public Result getOrderCommentByOrderItemId(String userId, String orderItemId) {
+        // 1、查询缓存
+        OrdersComment comment = (OrdersComment) redisUtil.hGet(ORDERS_COMMENT_MAPS_KEY, orderItemId);
+        if (comment != null) {
+            return Result.ok("查询成功！", comment);
         }
-        return Result.ok("查询成功！", ordersCommentList);
+        // 2、查询数据库
+        LambdaQueryWrapper<OrdersComment> qw = new LambdaQueryWrapper<>();
+        qw.eq(OrdersComment::getUserId, userId);
+        qw.eq(OrdersComment::getOrdersItemId, orderItemId);
+        comment = ordersCommentMapper.selectOne(qw);
+        if (comment == null) {
+            return Result.ok("子订单评价不存在！", null);
+        }
+        return Result.ok("查询成功！", comment);
+    }
+
+    /**
+     * 查询总订单评价
+     *
+     * @param userId  用户id
+     * @param orderId 订单id
+     * @return Result
+     */
+    public Result getOrderCommentsByOrderId(String userId, String orderId) {
+        // 1、查询缓存
+        List<OrdersComment> commentList = (List<OrdersComment>) redisUtil.hGet(ORDERS_COMMENT_MAPS_KEY, orderId);
+        if (commentList != null) {
+            return Result.ok("查询成功！", commentList);
+        }
+        // 2、查询数据库
+        MPJLambdaWrapper<OrdersItem> qw = new MPJLambdaWrapper<>()
+                .eq(OrdersItem::getOrdersId, orderId)
+                .leftJoin(OrdersComment.class, OrdersItem::getId, OrdersComment::getOrdersItemId);
+
+        if (commentList == null) {
+            return Result.ok("子订单评价不存在！", null);
+        }
+        return Result.ok("查询成功！", commentList);
     }
 
     /********************* 添加 *************************/
