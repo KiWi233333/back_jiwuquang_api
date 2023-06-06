@@ -159,12 +159,12 @@ public class GoodsService {
     public Result deleteGoodsById(String id) {
         // 删除商品 和 删除商品规格
         if (goodsMapper.deleteById(id) > 0 &&
-                goodsSkuMapper.delete(new QueryWrapper<GoodsSku>().eq("goods_id", id)) >= 0) {
+                goodsSkuMapper.delete(new LambdaQueryWrapper<GoodsSku>().eq(GoodsSku::getGoodsId, id)) >= 0) {
             // 删除 商品  缓存
             redisUtil.hDelete(GOODS_INFO_MAPS, id);
             return Result.ok("删除成功！", null);
         } else {
-            return Result.fail("删除失败！");
+            throw new RuntimeException("删除失败！");
         }
     }
 }

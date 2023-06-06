@@ -1,20 +1,23 @@
 package com.example.back_jiwuquang_api.service.orders;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.example.back_jiwuquang_api.dto.orders.DeliveryDTO;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.dto.orders.InsertOrderCommentDTO;
-import com.example.back_jiwuquang_api.pojo.orders.Orders;
+import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersComment;
-import com.example.back_jiwuquang_api.pojo.orders.OrdersDelivery;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersItem;
+import com.example.back_jiwuquang_api.pojo.sys.User;
 import com.example.back_jiwuquang_api.repository.orders.OrdersCommentMapper;
-import com.example.back_jiwuquang_api.repository.orders.OrdersDeliveryMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersItemMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
+import com.example.back_jiwuquang_api.vo.orders.OrdersCommentVO;
+import com.example.back_jiwuquang_api.vo.shopcart.ShopCartPageVO;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.extern.slf4j.Slf4j;
+import okhttp3.internal.Internal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.example.back_jiwuquang_api.domain.constant.OrdersConstant.ORDERS_COMMENT_MAPS_KEY;
-import static com.example.back_jiwuquang_api.domain.constant.OrdersConstant.ORDERS_DELIVERY_MAPS_KEY;
+import static com.example.back_jiwuquang_api.domain.constant.OrdersConstant.ORDERS_COMMENT_PAGES_KEY;
 
 @Service
 @Slf4j
@@ -79,15 +82,49 @@ public class OrdersCommentService {
             return Result.ok("查询成功！", commentList);
         }
         // 2、查询数据库
-//        MPJLambdaWrapper<OrdersItem> qw = new MPJLambdaWrapper<OrdersItem>()
-//                .eq(OrdersItem::getOrdersId, orderId)
-//                .leftJoin(OrdersComment.class, OrdersItem::getId, OrdersComment::getOrdersItemId);
-//        ordersCommentMapper.selectJoinList(OrdersComment.class,qw);
+        MPJLambdaWrapper<OrdersComment> qw = new MPJLambdaWrapper<OrdersComment>()
+                .eq(OrdersItem::getOrdersId, orderId)
+                .eq(OrdersComment::getUserId, userId)
+                .selectAll(OrdersComment.class)
+                .leftJoin(OrdersItem.class, OrdersItem::getId, OrdersComment::getOrdersItemId);
+        commentList = ordersCommentMapper.selectJoinList(OrdersComment.class, qw);
         if (commentList == null) {
             return Result.ok("子订单评价不存在！", null);
+        } else {
+            // 缓存
+            redisUtil.hPut(ORDERS_COMMENT_MAPS_KEY, orderId, commentList);
         }
         return Result.ok("查询成功！", commentList);
     }
+
+
+    /**
+     * 获取商品的评价分页表
+     *
+     * @param page 页码
+     * @param size 个数
+     * @param gid  商品id
+     * @return Result<IPage < OrdersCommentVO>>
+     */
+    public Result getCommentsByGId(int page, int size, String gid) {
+        // 1、查询缓存
+        IPage<OrdersCommentVO> commentsPages = (IPage<OrdersCommentVO>) redisUtil.hGet(ORDERS_COMMENT_PAGES_KEY + page + size, gid);
+        if (commentsPages != null) {
+            return Result.ok("查询成功！", commentsPages);
+        }
+        // 2、查询数据库
+        MPJLambdaWrapper<OrdersComment> qw = new MPJLambdaWrapper<OrdersComment>()
+                .select(User::getNickname)
+                .selectAll(OrdersComment.class)
+                .leftJoin(User.class, User::getId, OrdersComment::getUserId);
+        commentsPages = ordersCommentMapper.selectJoinPage(new Page<OrdersCommentVO>(page, size), OrdersCommentVO.class, qw);
+        // 3、缓存
+        if (commentsPages != null) {
+            redisUtil.hPut(ORDERS_COMMENT_PAGES_KEY + page + size, gid, commentsPages);
+        }
+        return Result.ok("获取成功！", commentsPages);
+    }
+
 
     /********************* 添加 *************************/
     /**

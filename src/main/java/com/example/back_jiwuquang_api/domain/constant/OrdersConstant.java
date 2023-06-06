@@ -16,4 +16,6 @@ public class OrdersConstant {
     public static final String ORDERS_DELIVERY_MAPS_KEY = "orders:delivery:maps:";//
     /** 订单评价 **/
     public static final String ORDERS_COMMENT_MAPS_KEY = "orders:comment:maps:";//
+    /** 订单商品评价 **/
+    public static final String ORDERS_COMMENT_PAGES_KEY = "orders:comment:pages:";//
 }

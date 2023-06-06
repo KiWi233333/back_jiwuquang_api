@@ -31,6 +31,8 @@ public class MailService {
     private String emailCodeTemplate;
 
 
+    public static final String  LOGO_TEXT = "极物圈";
+
 
     /**
      * 发送验证码文件
@@ -43,13 +45,14 @@ public class MailService {
     public void sendCodeMail(String to,String theme, String type, String code) throws MessagingException {
         MimeMessage mimeMessage =mailSender.createMimeMessage();
         MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
         mimeMessageHelper.setFrom(from);
         mimeMessageHelper.setTo(to);
-        mimeMessageHelper.setSubject(theme);
+        mimeMessageHelper.setSubject(LOGO_TEXT +"，登录验证码是："+code);
         // 利用 Thymeleaf 模板构建 html 文本
         Context ctx = new Context();
         Map<String, String> map = new HashMap<>();
-        map.put("title",theme);
+        map.put("title",LOGO_TEXT +"，登录验证码是："+code);
         map.put("type",type);
         map.put("email",to);
         map.put("code",code);
