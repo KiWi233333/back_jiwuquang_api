@@ -106,7 +106,11 @@ public class UserController {
             // 处理校验错误信息
             return Result.fail(res.getFieldError().getDefaultMessage());
         } else {
-            return usersService.toRegister(userRegisterDTO);
+            try {
+                return usersService.toRegister(userRegisterDTO);
+            } catch (RuntimeException e) {
+                return Result.fail(e.getMessage());
+            }
         }
     }
 
@@ -122,9 +126,6 @@ public class UserController {
             return usersService.getRegisterCodeByEmail(key);
         }
     }
-
-
-
 
 
 }

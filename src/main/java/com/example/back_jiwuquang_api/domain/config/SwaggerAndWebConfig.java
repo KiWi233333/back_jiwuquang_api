@@ -101,7 +101,6 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         "/admin/login/**"// 管理员登录
                 )
         ; // 排除登录请求
-
         log.info("登录拦截器注册！");
     }
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.dto.orders.InsertOrderCommentDTO;
-import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersComment;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersItem;
 import com.example.back_jiwuquang_api.pojo.sys.User;
@@ -14,10 +13,8 @@ import com.example.back_jiwuquang_api.repository.orders.OrdersMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import com.example.back_jiwuquang_api.vo.orders.OrdersCommentVO;
-import com.example.back_jiwuquang_api.vo.shopcart.ShopCartPageVO;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.internal.Internal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,6 +96,21 @@ public class OrdersCommentService {
 
 
     /**
+     * 查询评价详情
+     * @param id 评价id
+     * @return Result
+     */
+    public Result getCommentListByCommentId(String id) {
+//        MPJAbstractLambdaWrapper qw = new MPJAbstractLambdaWrapper<OrdersCommentVO>()
+//
+//
+//        ordersCommentMapper.selectJoinOne(qw)
+
+        return Result.ok("发表评价成功！", null);
+    }
+
+
+    /**
      * 获取商品的评价分页表
      *
      * @param page 页码
@@ -147,6 +159,5 @@ public class OrdersCommentService {
         redisUtil.hDelete(ORDERS_COMMENT_MAPS_KEY, userId);
         return Result.ok("发表评价成功！", null);
     }
-
 
 }

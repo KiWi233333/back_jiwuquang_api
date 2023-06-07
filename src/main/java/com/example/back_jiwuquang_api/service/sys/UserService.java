@@ -193,7 +193,7 @@ public class UserService {
      * @param u UserRegisterDTO对象
      * @return Result
      */
-    @Transactional(rollbackFor = Exception.class) // 开启事务
+    @Transactional(rollbackFor = RuntimeException.class) // 开启事务
     public Result toRegister(UserRegisterDTO u) {
         User user = new User();
         Date date = new Date();
@@ -221,7 +221,8 @@ public class UserService {
         }
         // 插入用户、盐值、钱包信息 （3）
         if (userMapper.insert(user) <= 0 || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt)) || userWalletService.initUserWallet(user.getId()) <= 0) {
-            return Result.fail("注册失败!");
+            log.warn("Error registering 注册失败！");
+            throw new RuntimeException("注册失败！");
         } else {
             // 缓存数据
             if (u.getType() == 0) redisUtil.set(PHONE_MAPS_KEY + user.getPhone(), user.getPhone());

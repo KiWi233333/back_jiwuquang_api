@@ -16,4 +16,8 @@ public class GoodsConstant {
 
 //    /** 商品规格**/ 涉及实时性质，维护成本过高
 //    public static final String GOODS_SKU_MAPS = "goods:sku:maps:";//
+    /** 商品点赞/收藏 **/
+    public static final String GOODS_ACTION_MAPS = "goods:action:maps:";//
+    public static final Integer GOODS_ACTION_COLLECT_TYPE = 1;//
+    public static final Integer GOODS_ACTION_TIP_TYPE = 0;//
 }
