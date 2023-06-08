@@ -1,7 +1,6 @@
 package com.example.back_jiwuquang_api.domain.config;
 
 import com.example.back_jiwuquang_api.domain.config.interceptor.Interceptor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -82,6 +81,7 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
     // 拦截器
     @Autowired
     Interceptor interceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(interceptor) // 注册拦截器
@@ -93,14 +93,14 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         "/user/login/**",// 登录
                         "/user/register/**",// 注册
                         "/user/wallet/combo",// 充值套餐
-                        "/category/**",// 分类
-                        "/goods/**", // 商品
+                        "/goods/category/**",// 分类
+                        "/goods/list/**", // 商品分页
+                        "/goods/item/**", // 商品详情
                         "/goods/sku/**",
                         "/event/**", // 前台活动
                         // 后台
                         "/admin/login/**"// 管理员登录
-                )
-        ; // 排除登录请求
+                );
         log.info("登录拦截器注册！");
     }
 }

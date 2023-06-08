@@ -13,13 +13,14 @@ import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
 import com.example.back_jiwuquang_api.repository.goods.GoodsSkuMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
+import com.example.back_jiwuquang_api.vo.goods.GoodsInfoVO;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_INFO_MAPS; 
+import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_INFO_MAPS;
 
 /**
  * 描述
@@ -103,16 +104,16 @@ public class GoodsService {
     public Result getGoodsInfoById(String id) {
         // 1、redis
         if (StringUtil.isNullOrEmpty(id)) return Result.fail("商品id不能为空！");
-        Goods goods;
-        goods = (Goods) redisUtil.hGet(GOODS_INFO_MAPS, id);
-        if (goods != null) return Result.ok(goods);
+        GoodsInfoVO goodsInfo;
+        goodsInfo = (GoodsInfoVO) redisUtil.hGet(GOODS_INFO_MAPS, id);
+        if (goodsInfo != null) return Result.ok(goodsInfo);
         // 2、数据库
-        goods = goodsMapper.selectById(id);
-        if (goods != null) {
-            redisUtil.hPut(GOODS_INFO_MAPS, id, goods);// 缓存
-            return Result.ok("获取成功！", goods);
+        goodsInfo = goodsMapper.selectInfoById(id);
+        if (goodsInfo == null) {
+            return Result.fail("查无该商品！");
         }
-        return Result.fail("查无该商品！");
+        redisUtil.hPut(GOODS_INFO_MAPS, id, goodsInfo);// 缓存
+        return Result.ok("获取成功！", goodsInfo);
     }
 
     /**
@@ -167,7 +168,6 @@ public class GoodsService {
             throw new RuntimeException("删除失败！");
         }
     }
-
 
 
 }

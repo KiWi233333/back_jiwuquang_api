@@ -1,9 +1,7 @@
 package com.example.back_jiwuquang_api.service.goods;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.back_jiwuquang_api.dto.goods.GoodsCategoryDTO;
-import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsCategory;
 import com.example.back_jiwuquang_api.repository.goods.GoodsCategoryMapper;
 import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
@@ -11,7 +9,6 @@ import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -30,8 +27,6 @@ import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS
 @Slf4j
 public class GoodsCategoryService {
 
-    @Autowired
-    RedisTemplate redisTemplate;
     @Autowired
     GoodsCategoryMapper goodsCategoryMapper;
 

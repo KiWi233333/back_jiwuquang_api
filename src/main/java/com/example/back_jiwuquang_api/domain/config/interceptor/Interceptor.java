@@ -3,22 +3,22 @@ package com.example.back_jiwuquang_api.domain.config.interceptor;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
-import com.example.back_jiwuquang_api.dto.sys.UserCheckDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserTokenDTO;
+import com.example.back_jiwuquang_api.domain.annotation.Auth;
 import com.example.back_jiwuquang_api.util.JWTUtil;
 import com.example.back_jiwuquang_api.util.JacksonUtil;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.HandlerMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +43,13 @@ public class Interceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
+
+        // 检测是否有用户身份注解
+//        Method method = ((HandlerMethod) handler).getMethod();
+//
+//        if (!method.isAnnotationPresent(Auth.class)){
+//            return true;
+//        }
         log.info("-----------------身份验证中------------------");
         // 1、获取token
         String token = request.getHeader(JwtConstant.HEADER_NAME);

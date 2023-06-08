@@ -2,6 +2,8 @@ package com.example.back_jiwuquang_api;
 
 import com.example.back_jiwuquang_api.enums.Gender;
 import com.example.back_jiwuquang_api.pojo.sys.User;
+import com.example.back_jiwuquang_api.repository.comm.CommCategoryMapper;
+import com.example.back_jiwuquang_api.repository.goods.GoodsCategoryMapper;
 import com.example.back_jiwuquang_api.util.BcryptPwdUtil;
 import com.example.back_jiwuquang_api.util.CheckValidUtil;
 import com.example.back_jiwuquang_api.util.FileUtil;
@@ -12,9 +14,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 @SpringBootTest
 @Slf4j
@@ -96,4 +103,30 @@ class UtilTests {
         String a = "wew12e3.png";
         System.out.println(FileUtil.isImage(a));
     }
+
+
+
+
+    @Autowired
+    ResourceLoader resourceLoader;
+
+    @Value("${emailTemplate}")
+    private String emailTemplatePath;
+
+    @Test
+     void readConfig() throws IOException {
+        Resource resource = resourceLoader.getResource(emailTemplatePath);
+        System.out.println(resource);
+    }
+
+    @Autowired
+    GoodsCategoryMapper goodsCategoryMapper;
+    @Autowired
+    CommCategoryMapper categoryMapperg;
+@Test
+    void selectALlCategoryTree() {
+    System.out.println(goodsCategoryMapper.selectALlCategoryTree());
+    System.out.println(categoryMapperg.selectALlCategoryTree());
+    }
+
 }

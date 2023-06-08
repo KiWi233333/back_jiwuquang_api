@@ -15,21 +15,8 @@ public interface GoodsCategoryMapper extends SpiceBaseMapper<GoodsCategory> {
     default List<GoodsCategory> selectALlCategoryTree() {
         List<GoodsCategory> list;
         // 构建树结构
-        list = GoodsCategory.buildNestedCategories(this.selectList(null), null);
+        list = GoodsCategory.buildTree(this.selectList(null), null);
         return list;
     }
 
-
-    // 低效插入数据
-    @Transactional(rollbackFor = RuntimeException.class)
-    default boolean saveBatch(List<GoodsCategory> categoryList) {
-        try {
-            categoryList.forEach(p -> {
-                this.insert(p);
-            });
-            return true;
-        } catch (Exception e) {
-            throw  new RuntimeException();
-        }
-    }
 }

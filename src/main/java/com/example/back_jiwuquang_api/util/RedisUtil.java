@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 @SuppressWarnings("all")
 @Accessors(chain = true)
-public class RedisUtil {
+public class RedisUtil<K, V> {
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -484,7 +484,7 @@ public class RedisUtil {
      * @param value
      * @return
      */
-    public Long lRightPushAll(String key, Collection<String> value) {
+    public Long lRightPushAll(String key, Collection<V>  value) {
         return redisTemplate.opsForList().rightPushAll(key, value);
     }
 

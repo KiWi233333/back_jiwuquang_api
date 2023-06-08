@@ -1,6 +1,9 @@
 package com.example.back_jiwuquang_api.service.other;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -15,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class MailService {
 
     @Resource
@@ -24,9 +28,12 @@ public class MailService {
 
     @Value("${spring.mail.username}")
     private String from;
+
+    @Autowired
+    ResourceLoader resourceLoader;
+
     @Value("${emailTemplate}")
     private String emailTemplatePath;
-
     @Value("${emailCodeTemplate}")
     private String emailCodeTemplate;
 

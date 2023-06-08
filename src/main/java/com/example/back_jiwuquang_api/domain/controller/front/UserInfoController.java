@@ -45,7 +45,7 @@ public class UserInfoController {
     @GetMapping("/info")
     Result getUserInfo(@RequestHeader(HEADER_NAME) String token, HttpServletRequest request) {
         // 获取拦截请求后获取的id
-        return usersService.getUserInfoById(request.getAttribute(USER_ID_KEY).toString());
+        return usersService.getUserInfoById(String.valueOf(request.getAttribute(USER_ID_KEY)));
     }
 
     @ApiOperation(value = "修改密码", tags = "用户基本信息模块")
@@ -59,7 +59,7 @@ public class UserInfoController {
         // 处理验证错误
         if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
         if (updatePwdDto.getNewPassword().equals(updatePwdDto.getOldPassword())) return Result.fail("新旧密码一致");
-        return usersService.updatePwdByOldNewPwd(updatePwdDto, request.getAttribute(USER_ID_KEY).toString(), token);
+        return usersService.updatePwdByOldNewPwd(updatePwdDto, String.valueOf(request.getAttribute(USER_ID_KEY)), token);
     }
 
 
@@ -73,7 +73,7 @@ public class UserInfoController {
             HttpServletRequest request) {
         // 处理验证错误
         if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
-        return usersService.updateUserInfo(updateUserInfoDTO, request.getAttribute(USER_ID_KEY).toString());
+        return usersService.updateUserInfo(updateUserInfoDTO, String.valueOf(request.getAttribute(USER_ID_KEY)));
     }
 
 
@@ -98,7 +98,7 @@ public class UserInfoController {
         // 处理验证错误
         if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
         // 业务
-        return usersService.updateUserPhone(updatePhoneDTO, request.getAttribute(USER_ID_KEY).toString());
+        return usersService.updateUserPhone(updatePhoneDTO, String.valueOf(request.getAttribute(USER_ID_KEY)));
     }
 
     @ApiOperation(value = "更换邮箱", tags = "用户基本信息模块")
@@ -112,7 +112,7 @@ public class UserInfoController {
         // 处理验证错误
         if (result.hasErrors()) return Result.fail(Objects.requireNonNull(result.getFieldError()).getDefaultMessage());
         // 业务
-        return usersService.updateUserEmail(updateEmailDTO, request.getAttribute(USER_ID_KEY).toString());
+        return usersService.updateUserEmail(updateEmailDTO, String.valueOf(request.getAttribute(USER_ID_KEY)));
     }
 
 
@@ -123,7 +123,7 @@ public class UserInfoController {
     Result updateUserAvatar(@RequestHeader(name = HEADER_NAME) String token,
                             @RequestParam(name = "file") MultipartFile file,
                             HttpServletRequest request) {
-        return usersService.updateUserAvatar(file, request.getAttribute(USER_ID_KEY).toString());
+        return usersService.updateUserAvatar(file, String.valueOf(request.getAttribute(USER_ID_KEY)));
     }
 
 
@@ -144,7 +144,7 @@ public class UserInfoController {
     @GetMapping("/address")
     Result getUserAddressPage(@RequestHeader(name = HEADER_NAME) String token,
                               HttpServletRequest request) {
-        String userId = request.getAttribute(USER_ID_KEY).toString();
+        String userId = String.valueOf(request.getAttribute(USER_ID_KEY));
         // 查询
         return userAddressService.getUserAddressByUserId(userId);
     }
@@ -159,7 +159,7 @@ public class UserInfoController {
         if (res.hasErrors()) {
             return Result.fail(res.getFieldError().getDefaultMessage());
         }
-        String userId = request.getAttribute(USER_ID_KEY).toString();
+        String userId = String.valueOf(request.getAttribute(USER_ID_KEY));
         // 添加
         return userAddressService.addUserAddress(userAddressDTO, userId);
     }
@@ -175,7 +175,7 @@ public class UserInfoController {
         if (res.hasErrors()) {
             return Result.fail(res.getFieldError().getDefaultMessage());
         }
-        String userId = request.getAttribute(USER_ID_KEY).toString();
+        String userId = String.valueOf(request.getAttribute(USER_ID_KEY));
         // 修改
         return userAddressService.updateAddressById(userAddressDTO, id, userId);
     }
@@ -186,7 +186,7 @@ public class UserInfoController {
     Result deleteAddressById(@RequestHeader(name = HEADER_NAME) String token,
                              @PathVariable String id,
                              HttpServletRequest request) {
-        String userId = request.getAttribute(USER_ID_KEY).toString();
+        String userId = String.valueOf(request.getAttribute(USER_ID_KEY));
         // 修改
         return userAddressService.deleteAddressById(id, userId);
     }
@@ -197,7 +197,7 @@ public class UserInfoController {
     Result deleteAddressById(@RequestHeader(name = HEADER_NAME) String token,
                              @RequestBody IdsList idsList,
                              HttpServletRequest request) {
-        String userId = request.getAttribute(USER_ID_KEY).toString();
+        String userId = String.valueOf(request.getAttribute(USER_ID_KEY));
         // 修改
         return userAddressService.deleteAddressByIds(idsList.getIds(), userId);
     }
@@ -209,7 +209,7 @@ public class UserInfoController {
                              @RequestParam int isDefault,
                              @PathVariable String id,
                              HttpServletRequest request) {
-        String userId = request.getAttribute(USER_ID_KEY).toString();
+        String userId = String.valueOf(request.getAttribute(USER_ID_KEY));
         if (isDefault != 0 && isDefault != 1) {
             return Result.fail("默认值为0或1");
         }

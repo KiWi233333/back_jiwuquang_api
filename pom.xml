@@ -198,8 +198,44 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <!--多环境配置-->
+    <profiles>
+        <profile>
+            <!--环境的唯一ID-->
+            <id>dev</id>
+            <properties>
+                <!--定义环境的属性，此处的标签是自定义的。比如<env>dev</env> 也是可以的 -->
+                <!--这个标签要在application.yml配置中用到-->
+                <profile.active>dev</profile.active>
+            </properties>
+            <!--默认环境-->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <profile.active>prod</profile.active>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
+        <!--   配置多环境     -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <!--资源包括：application.properties 和 application-${profile.active}.properties-->
+                <includes>
+                    <include>application.properties</include>
+                    <include>application-qi-niu.properties</include>
+                    <include>templates/**</include>
+                    <include>application-${profile.active}.properties</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
