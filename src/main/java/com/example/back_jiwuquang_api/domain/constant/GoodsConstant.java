@@ -14,8 +14,6 @@ public class GoodsConstant {
     /** 商品分类 **/
     public static final String GOODS_CATEGORY_LIST = "goods:category:list:";// 用户列表
 
-//    /** 商品规格**/ 涉及实时性质，维护成本过高
-//    public static final String GOODS_SKU_MAPS = "goods:sku:maps:";//
     /** 商品点赞/收藏 **/
     public static final String GOODS_ACTION_COLLECT_LIST = "goods:action:collect:list:";//
     public static final String GOODS_ACTION_TIP_LIST = "goods:action:collect:list:";//

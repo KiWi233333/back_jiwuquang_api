@@ -97,6 +97,8 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         "/goods/list/**", // 商品分页
                         "/goods/item/**", // 商品详情
                         "/goods/sku/**",
+                        "/community/post/list/**", // 社区帖子
+                        "/community/category/list/**", // 社区分类
                         "/event/**", // 前台活动
                         // 后台
                         "/admin/login/**"// 管理员登录
