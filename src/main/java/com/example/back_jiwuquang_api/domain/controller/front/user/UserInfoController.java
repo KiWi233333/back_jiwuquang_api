@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.domain.controller.front;
+package com.example.back_jiwuquang_api.domain.controller.front.user;
 
 import com.example.back_jiwuquang_api.dto.goods.GoodsPageDTO;
 import com.example.back_jiwuquang_api.dto.other.IdsList;

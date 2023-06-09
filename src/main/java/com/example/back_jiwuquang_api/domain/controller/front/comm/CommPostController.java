@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.domain.controller.front;
+package com.example.back_jiwuquang_api.domain.controller.front.comm;
 
 import com.example.back_jiwuquang_api.dto.comm.SelectCommPostDTO;
 import com.example.back_jiwuquang_api.impl.comm.CommPostServiceImpl;
@@ -39,4 +39,7 @@ public class CommPostController {
                               @RequestBody SelectCommPostDTO selectCommPostDTO) {
         return commPostServiceImpl.getCommPostByPage(selectCommPostDTO, cid, page, size);
     }
+
+
+
 }

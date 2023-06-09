@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.domain.controller.front;
+package com.example.back_jiwuquang_api.domain.controller.front.goods;
 
 import com.example.back_jiwuquang_api.service.orders.OrdersCommentService;
 import com.example.back_jiwuquang_api.util.Result;

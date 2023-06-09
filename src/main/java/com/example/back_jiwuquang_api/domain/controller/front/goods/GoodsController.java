@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.domain.controller.front;
+package com.example.back_jiwuquang_api.domain.controller.front.goods;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.back_jiwuquang_api.dto.goods.GoodsPageDTO;

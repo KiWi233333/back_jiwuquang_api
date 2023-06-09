@@ -1,4 +1,4 @@
-package com.example.back_jiwuquang_api.domain.controller.front;
+package com.example.back_jiwuquang_api.domain.controller.front.event;
 
 import com.example.back_jiwuquang_api.dto.sys.WalletRechargeDTO;
 import com.example.back_jiwuquang_api.service.event.EventService;
