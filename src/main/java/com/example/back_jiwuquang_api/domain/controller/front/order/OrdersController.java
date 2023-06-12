@@ -43,7 +43,7 @@ public class OrdersController {
 
     @ApiOperation(value = "获取全部订单（分页）", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-    @GetMapping("/{page}/{size}")
+    @PostMapping("/{page}/{size}")
     Result getOrderPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
                              HttpServletRequest request,
                              @ApiParam("页码") @PathVariable int page,
@@ -60,7 +60,7 @@ public class OrdersController {
 
     @ApiOperation(value = "获取订单（分页）", tags = "订单模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
-    @GetMapping("/{status}/{page}/{size}")
+    @PostMapping("/{status}/{page}/{size}")
     Result getOrderPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
                              HttpServletRequest request,
                              @ApiParam("页码") @PathVariable int page,

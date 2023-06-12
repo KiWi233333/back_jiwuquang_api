@@ -38,7 +38,7 @@ public class AdminGoodsController {
     GoodsService goodsService;
 
     @ApiOperation(value = "分页获取商品", tags = "商品管理模块")
-    @GetMapping("/{page}/{size}")
+    @PostMapping("/{page}/{size}")
     Result getGoodsListByPage(@ApiParam("页码") @PathVariable int page,
                               @ApiParam("每页个数") @PathVariable int size,
                               @RequestBody GoodsPageDTO goodsPageDTO) {

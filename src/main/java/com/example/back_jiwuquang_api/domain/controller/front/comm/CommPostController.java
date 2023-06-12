@@ -32,7 +32,7 @@ public class CommPostController {
     CommPostServiceImpl commPostServiceImpl;
 
     @ApiOperation(value = "获取社区帖子（分页）", tags = "社区模块")
-    @GetMapping("/list/{cid}/{page}/{size}")
+    @PostMapping("/list/{cid}/{page}/{size}")
     Result getGoodsListByPage(@ApiParam("帖子分类id") @PathVariable String cid,
                               @ApiParam("页码") @PathVariable int page,
                               @ApiParam("每页个数") @PathVariable int size,

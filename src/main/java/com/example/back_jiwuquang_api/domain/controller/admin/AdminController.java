@@ -60,7 +60,7 @@ public class AdminController {
 
     @ApiOperation(value = "分页获取用户列表", tags = "用户模块")
     @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
-    @GetMapping(value = "/user/{page}/{size}")
+    @PostMapping(value = "/user/{page}/{size}")
     Result getUserInfoPage(@RequestHeader(name = HEADER_NAME) String token,
                            @ApiParam("页码") @PathVariable Integer page,
                            @ApiParam("每页个数") @PathVariable Integer size,

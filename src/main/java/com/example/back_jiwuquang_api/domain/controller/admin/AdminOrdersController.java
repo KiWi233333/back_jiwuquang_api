@@ -41,7 +41,7 @@ public class AdminOrdersController {
 
     @ApiOperation(value = "获取订单（分页）", tags = "订单管理")
     @ApiImplicitParam(name = HEADER_NAME, value = "管理员token", required = true)
-    @GetMapping("/list/{page}/{size}")
+    @PostMapping("/list/{page}/{size}")
     Result getOrderPageByDTO(@RequestHeader(name = HEADER_NAME) String token,
                              @ApiParam("页码") @PathVariable int page,
                              @ApiParam("每页个数") @PathVariable int size,
