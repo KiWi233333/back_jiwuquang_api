@@ -302,9 +302,8 @@ public class OrdersService {
         if (payOrderDTO.getPoints() != 0) {
             billsService.saveBills(userId, 0, BillsStatus.POINT_OUT.getVal(), id, 1, BigDecimal.valueOf(payOrderDTO.getPoints()), null);
         }
-
         if (payOrderDTO.getVoucherId() != null) {
-            /**用户代金卷**/
+            /**用户代金卷消费**/
         }
 
         // 5、修改订单
