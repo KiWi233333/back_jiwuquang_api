@@ -2,6 +2,7 @@ package com.example.back_jiwuquang_api.repository.shopcart;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.pojo.shopcart.ShopCart;
 import com.example.back_jiwuquang_api.repository.SpiceBaseMapper;
@@ -21,9 +22,12 @@ public interface ShopCartMapper extends SpiceBaseMapper<ShopCart>, MPJBaseMapper
         // 倒叙查询插入时间
         // 购物车表
         mpj.select(ShopCart::getId, ShopCart::getSkuId, ShopCart::getQuantity, ShopCart::getActivityId, ShopCart::getShopId, ShopCart::getActivityId, ShopCart::getCreateTime, ShopCart::getUpdateTime)
+                // 商品表
+                .select(Goods::getName)
                 // 商品规格表
-                .select(GoodsSku::getGoodsId, GoodsSku::getSize, GoodsSku::getColor, GoodsSku::getCombo, GoodsSku::getStock, GoodsSku::getPrice, GoodsSku::getCostPrice)
+                .select(GoodsSku::getGoodsId, GoodsSku::getSize, GoodsSku::getColor, GoodsSku::getCombo, GoodsSku::getStock, GoodsSku::getPrice, GoodsSku::getCostPrice,GoodsSku::getImage,GoodsSku::getDescription)
                 .leftJoin(GoodsSku.class, GoodsSku::getId, ShopCart::getSkuId)
+                .leftJoin(Goods.class, Goods::getId, GoodsSku::getGoodsId)
                 .orderByDesc(ShopCart::getCreateTime)
                 .eq(ShopCart::getUserId, userId);
         // IPage selectJoinPage

@@ -5,9 +5,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.domain.annotation.Auth;
 import com.example.back_jiwuquang_api.dto.orders.InsertOrderCommentDTO;
+import com.example.back_jiwuquang_api.pojo.goods.Goods;
+import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersComment;
 import com.example.back_jiwuquang_api.pojo.orders.OrdersItem;
 import com.example.back_jiwuquang_api.pojo.sys.User;
+import com.example.back_jiwuquang_api.repository.goods.GoodsSkuMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersCommentMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersItemMapper;
 import com.example.back_jiwuquang_api.repository.orders.OrdersMapper;
@@ -98,6 +101,7 @@ public class OrdersCommentService {
 
     /**
      * 查询评价详情
+     *
      * @param id 评价id
      * @return Result
      */
@@ -107,9 +111,12 @@ public class OrdersCommentService {
 //
 //        ordersCommentMapper.selectJoinOne(qw)
 
-        return Result.ok("发表评价成功！", null);
+        return Result.ok(null);
     }
 
+
+    @Autowired
+    GoodsSkuMapper goodsSkuMapper;
 
     /**
      * 获取商品的评价分页表
@@ -127,10 +134,14 @@ public class OrdersCommentService {
         }
         // 2、查询数据库
         MPJLambdaWrapper<OrdersComment> qw = new MPJLambdaWrapper<OrdersComment>()
-                .select(User::getNickname)
+                .eq(GoodsSku::getGoodsId,gid) // 商品id
+                .select(User::getNickname,User::getAvatar)
                 .selectAll(OrdersComment.class)
+                .leftJoin(GoodsSku.class,GoodsSku::getId,OrdersComment::getSkuId)
                 .leftJoin(User.class, User::getId, OrdersComment::getUserId);
         commentsPages = ordersCommentMapper.selectJoinPage(new Page<OrdersCommentVO>(page, size), OrdersCommentVO.class, qw);
+
+
         // 3、缓存
         if (commentsPages != null) {
             redisUtil.hPut(ORDERS_COMMENT_PAGES_KEY + page + size, gid, commentsPages);

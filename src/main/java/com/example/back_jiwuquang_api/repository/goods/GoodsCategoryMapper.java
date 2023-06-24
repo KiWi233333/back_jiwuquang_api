@@ -3,13 +3,14 @@ package com.example.back_jiwuquang_api.repository.goods;
 
 import com.example.back_jiwuquang_api.pojo.goods.GoodsCategory;
 import com.example.back_jiwuquang_api.repository.SpiceBaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Mapper
-public interface GoodsCategoryMapper extends SpiceBaseMapper<GoodsCategory> {
+public interface GoodsCategoryMapper extends SpiceBaseMapper<GoodsCategory>, MPJBaseMapper<GoodsCategory> {
 
     // 查询全部分类：生成树结构
     default List<GoodsCategory> selectALlCategoryTree() {

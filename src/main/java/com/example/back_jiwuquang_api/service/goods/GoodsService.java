@@ -17,6 +17,7 @@ import com.example.back_jiwuquang_api.vo.goods.GoodsInfoVO;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -170,4 +171,13 @@ public class GoodsService {
     }
 
 
+    /**
+     * 获取商品热搜
+     *
+     * @return Result
+     */
+    public Result getSearchHots() {
+
+        return Result.ok("获取成功！", null);
+    }
 }

@@ -36,6 +36,10 @@ public class OrdersCommentVO {
      * 昵称
      */
     private String nickName;
+    /**
+     * 头像
+     */
+    private String avatar;
 
 
 

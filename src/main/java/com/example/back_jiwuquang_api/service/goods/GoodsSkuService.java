@@ -57,10 +57,10 @@ public class GoodsSkuService {
         goodsSkuList = goodsSkuMapper.selectList(new QueryWrapper<GoodsSku>().lambda().eq(GoodsSku::getGoodsId, gid));
         if (goodsSkuList.isEmpty()) return Result.fail("商品规格为空！");
         log.info("getGoodsSkuByGoods ok!");
-        Map map = new HashMap<>();
-        for (GoodsSku goodsSku : goodsSkuList) {
-            map.put(goodsSku.getId(), goodsSku);
-        }
+//        Map map = new HashMap<>();
+//        for (GoodsSku goodsSku : goodsSkuList) {
+//            map.put(goodsSku.getId(), goodsSku);
+//        }
         // 3、缓存
 //        redisUtil.hPutAll(GOODS_SKU_MAPS + gid, map);
         return Result.ok("获取成功！", goodsSkuList);
@@ -149,5 +149,16 @@ public class GoodsSkuService {
         return Result.ok("删除成功！", flag);
     }
 
+    /**
+     * 获取商品规格
+     * @param ids ids
+     * @return Result
+     */
+    public Result getGoodsSkuByGoodsByIds(List<String> ids) {
+        List<GoodsSku> goodsSkuList  = goodsSkuMapper.selectBatchIds(ids);
+        log.info("getGoodsSkuByGoods sku ok!");
+        Map map = new HashMap<>();
+        return Result.ok("获取成功！", goodsSkuList);
+    }
 }
 

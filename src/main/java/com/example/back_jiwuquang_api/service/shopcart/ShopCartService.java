@@ -3,6 +3,7 @@ package com.example.back_jiwuquang_api.service.shopcart;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.example.back_jiwuquang_api.dto.shopcart.AddShopCartDTO;
+import com.example.back_jiwuquang_api.dto.shopcart.UpdateShopCartDTO;
 import com.example.back_jiwuquang_api.pojo.shopcart.ShopCart;
 import com.example.back_jiwuquang_api.repository.shopcart.ShopCartMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
@@ -52,14 +53,12 @@ public class ShopCartService {
         if (shopCartPage == null) {
             shopCartPage = shopCartMapper.selectShopCartPage(page, size, userId);
         }
-        if (shopCartPage == null) {
+        if (shopCartPage != null) {
             log.info("{} shop cart null", userId);
-            return Result.fail("购物车为空！");
-        } else {
             // 2、缓存
             redisUtil.hPut(SHOP_CART_MAPS + userId, page + "" + size, shopCartPage);
-            return Result.ok("获取成功！", shopCartPage);
         }
+        return Result.ok("获取成功！", shopCartPage);
     }
 
 
@@ -74,7 +73,7 @@ public class ShopCartService {
         ShopCart shopCart = AddShopCartDTO.toShopCart(addShopCartDTO).setUserId(userId);
         // 查看是否存在
         ShopCart selectCart = shopCartMapper.selectOne(new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getSkuId, addShopCartDTO.getSkuId()));
-        // 存在更新数量+1
+        // 存在更新数量
         if (selectCart != null) {// 更新
             int count = shopCartMapper.update(new ShopCart()
                             .setId(selectCart.getId())
@@ -96,15 +95,17 @@ public class ShopCartService {
     /**
      * 修改购物车
      *
-     * @param id     规格id
-     * @param nums   数量
-     * @param userId 用户id
+     * @param id 购物车id
      * @return Result
      */
-    public Result updateShopCartByDto(String id, Integer nums, String userId) {
+    public Result updateShopCartByDto(String id, UpdateShopCartDTO dto, String userId) {
         // sql updateShopCart
-        if (shopCartMapper.update(new ShopCart().setId(id).setQuantity(nums),
-                new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getUserId, userId)) <= 0)
+        LambdaQueryWrapper<ShopCart> qw = new LambdaQueryWrapper<ShopCart>()
+                .eq(ShopCart::getUserId, userId)
+                .eq(ShopCart::getId, id);
+        ShopCart shopCart = new ShopCart().setId(dto.getSkuId()).setQuantity(dto.getQuantity());
+        int count = shopCartMapper.update(shopCart, qw);
+        if (count < 0)
             return Result.fail("修改失败！");
         // 清除缓存
         redisUtil.delete(SHOP_CART_MAPS + userId);

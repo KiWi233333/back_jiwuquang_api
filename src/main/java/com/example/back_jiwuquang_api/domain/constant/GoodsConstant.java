@@ -12,7 +12,8 @@ public class GoodsConstant {
     public static final String GOODS_INFO_MAPS = "goods:info:maps:";//
 
     /** 商品分类 **/
-    public static final String GOODS_CATEGORY_LIST = "goods:category:list:";// 用户列表
+    public static final String GOODS_CATEGORY_LIST = "goods:category:list:";// 全部分类信息
+    public static final String GOODS_CATEGORY_GOODS = "goods:category:goods:";// 商品的分类信息
 
     /** 商品点赞/收藏 **/
     public static final String GOODS_ACTION_COLLECT_LIST = "goods:action:collect:list:";//

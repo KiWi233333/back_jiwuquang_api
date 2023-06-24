@@ -69,8 +69,8 @@ public class GoodsCategory {
     /**
      * 递归 生成的树
      *
-     * @param list 分类集合
-     * @param parentId   父id
+     * @param list     分类集合
+     * @param parentId 父id
      * @return 树形集合
      */
 
@@ -89,6 +89,17 @@ public class GoodsCategory {
     }
 
 
+    public static GoodsCategory buildTreeByOne(List<GoodsCategory> list, String parentId) {
+        // 下一级目录
+        for (GoodsCategory category : list) {
+            // id 相等
+            if (Objects.equals(category.getParentId(), parentId)) {
+                List<GoodsCategory> children = buildTree(list, category.getId());
+                category.setChildren(children);
+            }
+        }
+        return list.get(0);
+    }
 
 
     // vo 转换为 po

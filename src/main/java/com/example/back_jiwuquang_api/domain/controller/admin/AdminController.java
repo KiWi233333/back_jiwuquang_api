@@ -5,6 +5,7 @@ import com.example.back_jiwuquang_api.dto.sys.UpdateUserAllInfoDTO;
 import com.example.back_jiwuquang_api.dto.sys.UpdateUserInfoDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserInfoPageDTO;
 import com.example.back_jiwuquang_api.service.sys.UserService;
+import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -93,6 +94,22 @@ public class AdminController {
     @DeleteMapping(value = "/user/logout/{userId}")
     Result toUserLogout(@RequestHeader(name = HEADER_NAME) String token, @PathVariable String userId) {
         return usersService.loginOutById(userId);
+    }
+
+
+    @Autowired
+    RedisUtil redisUtil;
+
+    @ApiOperation(value = "清除缓存", tags = "系统模块")
+    @ApiImplicitParam(name = "token", value = "管理员 token", required = true)
+    @DeleteMapping(value = "/redis/cache")
+    Result clearRedisCache(@RequestHeader(name = HEADER_NAME) String token) {
+        try {
+            redisUtil.flushDb();
+            return Result.ok("删除成功！", null);
+        } catch (Exception e) {
+            return Result.fail("删除失败！");
+        }
     }
 
 

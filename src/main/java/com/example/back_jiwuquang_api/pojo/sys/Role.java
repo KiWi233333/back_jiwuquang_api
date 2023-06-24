@@ -26,15 +26,14 @@ public class Role {
         private String id;
 
         /**
-         * 角色ID
+         * 父id
          */
-        private Long roleId;
+        private String parentId;
 
         /**
-         * 权限ID
+         * 权限名称
          */
-        private Long permissionId;
-
+        private String name;
         /**
          * 权限唯一CODE代码
          */
@@ -45,10 +44,6 @@ public class Role {
          */
         private Integer type;
 
-        /**
-         * 权限名称
-         */
-        private String name;
 
         /**
          * 权限介绍

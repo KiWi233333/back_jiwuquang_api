@@ -2,7 +2,10 @@ package com.example.back_jiwuquang_api.pojo.sys;
 
 import com.baomidou.mybatisplus.annotation.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.Date;
 
@@ -16,6 +19,9 @@ import java.util.Date;
  */
 @Data
 @TableName("sys_user_role")
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class UserRole {
 
     /**

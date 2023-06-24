@@ -70,10 +70,10 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
     // 跨域
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**")
-                //放行哪些原始域
-                .allowedOrigins("*")
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+        registry.addMapping("/**") // 所有接口
+                .allowCredentials(true) // 是否发送 Cookie
+                .allowedOriginPatterns("*") // 支持域
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // 支持方法
                 .allowedHeaders("*")
                 .exposedHeaders("*");
     }
@@ -92,12 +92,16 @@ public class SwaggerAndWebConfig implements WebMvcConfigurer { // 覆写addResou
                         // 前台
                         "/user/login/**",// 登录
                         "/user/register/**",// 注册
+                        "/user/exist/**",// 用户查询
                         "/user/wallet/combo",// 充值套餐
-                        "/goods/category/**",// 分类
+                        "/goods/category/list/**",// 分类
+                        "/goods/category/one/**",// 分类单个
                         "/goods/list/**", // 商品分页
                         "/goods/item/**", // 商品详情
+                        "/goods/comments/**", // 商品评论列表
                         "/goods/sku/**",
                         "/community/post/list/**", // 社区帖子
+                        "/community/user", // 社区用户
                         "/community/category/list/**", // 社区分类
                         "/event/**", // 前台活动
                         // 后台

@@ -2,19 +2,23 @@ package com.example.back_jiwuquang_api.service.sys;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.back_jiwuquang_api.domain.constant.JwtConstant;
+import com.example.back_jiwuquang_api.dto.comm.SelectCommUserDTO;
 import com.example.back_jiwuquang_api.dto.sys.*;
 import com.example.back_jiwuquang_api.enums.UserStatus;
 import com.example.back_jiwuquang_api.pojo.sys.User;
-import com.example.back_jiwuquang_api.pojo.sys.UserAddress;
 import com.example.back_jiwuquang_api.repository.sys.UserMapper;
+import com.example.back_jiwuquang_api.repository.sys.UserRoleMapper;
 import com.example.back_jiwuquang_api.service.other.MailService;
 import com.example.back_jiwuquang_api.util.*;
-import com.example.back_jiwuquang_api.vo.UserVO;
+import com.example.back_jiwuquang_api.vo.user.CommUserVO;
+import com.example.back_jiwuquang_api.vo.user.UserVO;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.netty.util.internal.StringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +49,8 @@ public class UserService {
     MailService mailService;
     @Autowired
     UserWalletService userWalletService;
-
+    @Autowired
+    UserRoleService userRoleService;
     @Resource
     RedisUtil redisUtil;
     /** -------------------User 登录相关操作--------------------- **/
@@ -184,6 +189,8 @@ public class UserService {
         return userMapper.updateById(user) == 1;
     }
 
+    @Autowired
+    UserRoleMapper userRoleMapper;
 
     /** -------------------注册相关操作--------------------- */
 
@@ -203,7 +210,7 @@ public class UserService {
         // 2、判断注册类型（手机|邮箱） 和 验证 验证码真伪
         String rCode;
         // 用户基本信息
-        user.setUsername(u.getUsername()).setPassword(u.getPassword()).setCreateTime(date).setUpdateTime(date).setNickname("新用户").setAvatar("default.png");
+        user.setUsername(u.getUsername()).setPassword(u.getPassword()).setCreateTime(date).setUpdateTime(date).setNickname("新用户").setAvatar("");
         if (u.getType() == 0) {// 手机号注册
             rCode = String.valueOf(redisUtil.get(PHONE_CHECK_CODE_KEY + u.getPhone()));
             if (StringUtil.isNullOrEmpty(rCode) || !rCode.equals(u.getCode())) {// 判断是否一致
@@ -220,7 +227,10 @@ public class UserService {
             user.setEmail(u.getEmail()).setIsEmailVerified(1);
         }
         // 插入用户、盐值、钱包信息 （3）
-        if (userMapper.insert(user) <= 0 || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt)) || userWalletService.initUserWallet(user.getId()) <= 0) {
+        if (userMapper.insert(user) <= 0
+                || Boolean.TRUE.equals(!userSaltService.addUserSalt(user.getId(), user.getPassword(), randSalt))
+                || userRoleService.addUserRoleCustomer(user.getId()) <= 0
+                || userWalletService.initUserWallet(user.getId()) <= 0) {
             log.warn("Error registering 注册失败！");
             throw new RuntimeException("注册失败！");
         } else {
@@ -412,13 +422,19 @@ public class UserService {
         } catch (Exception e) {
             return Result.fail("查无该用户！");
         }
-        String imgKey = fileOSSUpDownUtil.updateImage(file, userVO.getAvatar());
-        if (StringUtil.isNullOrEmpty(imgKey)) return Result.fail("图片文件上传失败！");
-        User user = new User().setAvatar(imgKey).setId(userId);
+        String imageName;
+        if (StringUtil.isNullOrEmpty(userVO.getAvatar()) || userVO.getAvatar().equals("default.png")) {
+            imageName = fileOSSUpDownUtil.uploadImage(file);
+        } else {
+            imageName = fileOSSUpDownUtil.updateImage(file, userVO.getAvatar());
+        }
+
+        if (StringUtil.isNullOrEmpty(imageName)) return Result.fail("图片文件上传失败！");
+        User user = new User().setAvatar(imageName).setId(userId);
         if (userMapper.updateById(user) <= 0) return Result.fail("修改头像失败！");
         // 清除缓存
         redisUtil.delete(USER_KEY + userId);
-        return Result.ok("修改头像成功！", null);
+        return Result.ok("修改头像成功！", imageName);
     }
 
 
@@ -621,4 +637,50 @@ public class UserService {
         // 3、成功
         return Result.ok("获取成功", userAgentList);
     }
+
+
+    /**
+     * 查询社区用户
+     *
+     * @param dto  参数
+     * @param page 当前页码
+     * @param size 每页数量
+     * @return Result
+     */
+    public Result getCommUserList(SelectCommUserDTO dto, int page, int size) {
+
+        Page<User> pages = new Page<>(page, size); // 创建分页对象，指定当前页码和每页记录数
+        LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<>(); // 创建查询条件
+        qw.eq(User::getUserType, 0);
+        // 按名称查找
+        if (dto.getNickname() != null) {
+            qw.like(User::getNickname, dto.getNickname()).or().like(User::getNickname, dto.getNickname());
+        }
+        // 按邮箱查找
+        if (dto.getEmail() != null) {
+            qw.like(User::getEmail, dto.getEmail()).or().like(User::getEmail, dto.getEmail());
+        }
+        // 按类型排序
+        if (dto.getGender() != null) {
+            qw.eq(User::getGender, dto.getGender());
+        }
+        // 是否为最近活跃排序
+        if (dto.getTimeSort() != null) {
+            qw.orderBy(true, dto.getTimeSort() == 0, User::getLastLoginTime);
+        }
+        qw.select(User::getNickname,User::getStatus,User::getGender,User::getAvatar,User::getBirthday,User::getCreateTime);
+        IPage<User> userPage = userMapper.selectPage(pages, qw); // 调用Mapper接口方法进行分页查询
+
+        // 对查询结果进行转换
+        List<CommUserVO> userVOs = new ArrayList<>();
+        for (User user : userPage.getRecords()) {
+            CommUserVO userVO = new CommUserVO();
+            BeanUtils.copyProperties(user, userVO);
+            userVOs.add(userVO);
+        }
+        IPage<CommUserVO> userVOPage = new Page<>(userPage.getCurrent(), userPage.getSize(), userPage.getTotal());
+        BeanUtils.copyProperties(userPage, userVOPage, "records");
+        return Result.ok("获取成功！", userVOPage);
+    }
+
 }

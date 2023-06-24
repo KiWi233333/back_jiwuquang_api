@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.HandlerMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,11 +36,11 @@ import static com.example.back_jiwuquang_api.domain.constant.UserConstant.USER_R
  */
 @Slf4j
 @Component
+@CrossOrigin
 public class Interceptor implements HandlerInterceptor {
 
     @Autowired
     RedisUtil redisUtil;
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 

@@ -2,6 +2,7 @@ package com.example.back_jiwuquang_api.domain.controller.front.shopcart;
 
 import com.example.back_jiwuquang_api.dto.other.IdsList;
 import com.example.back_jiwuquang_api.dto.shopcart.AddShopCartDTO;
+import com.example.back_jiwuquang_api.dto.shopcart.UpdateShopCartDTO;
 import com.example.back_jiwuquang_api.service.shopcart.ShopCartService;
 import com.example.back_jiwuquang_api.util.Result;
 import io.swagger.annotations.*;
@@ -58,17 +59,16 @@ public class ShopCartController {
     }
 
 
-
     @ApiOperation(value = "修改购物车", tags = "购物车模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @PutMapping("/{id}")
     Result updateShopCartByDto(@RequestHeader(name = HEADER_NAME) String token,
-                               @PathVariable String id,
-                               @RequestParam Integer nums,
+                               @ApiParam("购物车id") @PathVariable String id,
+                               @RequestBody UpdateShopCartDTO dto,
                                HttpServletRequest request) {
-        if (nums==0) return  Result.fail("修改失败，数量不能小于1！");
+        if (dto.getQuantity() == 0) return Result.fail("修改失败，数量不能小于1！");
         String userId = request.getAttribute(USER_ID_KEY).toString();
-        return shopCartService.updateShopCartByDto(id,nums, userId);
+        return shopCartService.updateShopCartByDto(id, dto, userId);
     }
 
     @ApiOperation(value = "删除购物车（单个）", tags = "购物车模块")
@@ -81,6 +81,7 @@ public class ShopCartController {
         String userId = request.getAttribute(USER_ID_KEY).toString();
         return shopCartService.deleteShopCartById(id, userId);
     }
+
     @ApiOperation(value = "删除购物车（批量）", tags = "购物车模块")
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @DeleteMapping("/some")
@@ -96,10 +97,10 @@ public class ShopCartController {
     @ApiImplicitParam(name = HEADER_NAME, value = "用户token", required = true)
     @DeleteMapping("/all")
     Result deleteShopCartByAll(@RequestHeader(name = HEADER_NAME) String token,
-                                HttpServletRequest request) {
+                               HttpServletRequest request) {
         // 业务
         String userId = request.getAttribute(USER_ID_KEY).toString();
-        return shopCartService.clearShopCartByUserId( userId);
+        return shopCartService.clearShopCartByUserId(userId);
     }
 
 }

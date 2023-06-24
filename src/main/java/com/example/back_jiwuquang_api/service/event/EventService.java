@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -49,13 +52,24 @@ public class EventService {
             // 3、缓存
             if (!list.isEmpty()) {
                 for (EventGoodsVO goodsVO : list) {
-                    map.put(goodsVO.getId(),goodsVO);
+                    map.put(goodsVO.getId(), goodsVO);
                 }
-                redisUtil.hPutAll(EVENT_GOODS_MAPS_KEY + id,map);
+                redisUtil.hPutAll(EVENT_GOODS_MAPS_KEY + id, map);
             }
+            // 缓存时间当天最后一时刻
+            Date target = toDateWithZone();
+            redisUtil.expireAt(EVENT_GOODS_MAPS_KEY + id, target);
         }
         return Result.ok("获取成功！", list);
     }
+
+    private static Date toDateWithZone() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime endOfDay = now.withHour(23).withMinute(59).withSecond(59).withNano(0);
+        ZoneOffset offset = ZoneOffset.of("+0800");
+        return Date.from(endOfDay.toInstant(offset));
+    }
+
 
     /**
      * 获取所有活动列表
@@ -71,6 +85,9 @@ public class EventService {
         if (list == null) {
             list = eventMapper.selectList(new LambdaQueryWrapper<Event>().orderByDesc(Event::getCreateTime));
             redisUtil.set(EVENT_LIST_KEY, list);
+            // 缓存时间当天最后一时刻
+            Date target = toDateWithZone();
+            redisUtil.expireAt(EVENT_LIST_KEY, target);
         }
 
         if (list == null || list.isEmpty()) {
@@ -98,7 +115,7 @@ public class EventService {
         }
         // 2、删除缓存
         redisUtil.delete(EVENT_LIST_KEY);
-        return Result.ok("添加成功！",null);
+        return Result.ok("添加成功！", null);
     }
 
     /**
@@ -118,7 +135,7 @@ public class EventService {
             return Result.fail(Result.UPDATE_ERR, "修改失败！");
         }
         redisUtil.delete(EVENT_LIST_KEY);
-        return Result.ok("修改成功！",null);
+        return Result.ok("修改成功！", null);
     }
 
 

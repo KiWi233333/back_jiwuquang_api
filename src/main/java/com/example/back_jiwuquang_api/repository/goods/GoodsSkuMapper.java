@@ -2,6 +2,7 @@ package com.example.back_jiwuquang_api.repository.goods;
 
 import com.example.back_jiwuquang_api.pojo.goods.GoodsSku;
 import com.example.back_jiwuquang_api.repository.SpiceBaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
@@ -15,7 +16,7 @@ import org.apache.ibatis.annotations.Update;
  * @date: 2023/5/6 2:01
  */
 @Mapper
-public interface GoodsSkuMapper extends SpiceBaseMapper<GoodsSku> {
+public interface GoodsSkuMapper extends SpiceBaseMapper<GoodsSku>, MPJBaseMapper<GoodsSku> {
     // 自增库存 更新
     @Update("UPDATE goods_sku SET stock = stock + #{addNum} WHERE id = #{skuId}")
     int addSkuStock(@Param("skuId")String skuId,@Param("addNum") Integer addNum);

@@ -27,6 +27,9 @@ public class ShopCartPageVO {
     @ApiModelProperty("购物车id")
     private String id;
 
+    @ApiModelProperty("商品名称")
+    private String name;
+
     @ApiModelProperty("规格id")
     private String skuId;
 

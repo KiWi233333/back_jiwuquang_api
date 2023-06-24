@@ -50,7 +50,13 @@ public class UserWalletService {
             if (StringUtil.isNullOrEmpty(userId)) {
                 return 0;
             }
-            UserWallet userWallet = new UserWallet().setUserId(userId);
+            BigDecimal inits = new BigDecimal('0');
+            UserWallet userWallet = new UserWallet()
+                    .setUserId(userId)
+                    .setBalance(inits)
+                    .setPoints(500L)
+                    .setRecharge(inits)
+                    .setSpend(inits);
             flag = userWalletMapper.insert(userWallet);
             if (flag > 0) {
                 redisUtil.set(USER_WALLET_KEY + userId, userWallet);

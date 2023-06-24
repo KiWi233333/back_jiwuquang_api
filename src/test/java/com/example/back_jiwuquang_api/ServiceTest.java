@@ -1,6 +1,7 @@
 package com.example.back_jiwuquang_api;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.back_jiwuquang_api.dto.comm.SelectCommUserDTO;
 import com.example.back_jiwuquang_api.dto.sys.UserRegisterDTO;
 import com.example.back_jiwuquang_api.pojo.sys.UserSalt;
 import com.example.back_jiwuquang_api.repository.event.EventMapper;
@@ -141,4 +142,12 @@ class ServiceTest {
     }
 
 
+    @Test
+    void getCategoryByOne(){
+        System.out.println(goodsCategoryService.getGoodsCateTreeByGid("204215909657392295"));
+    }
+   @Test
+    void getCommUser () {
+       System.out.println(usersService.getCommUserList(new SelectCommUserDTO().setNickname("K"),1,10).getData());
+   }
 }

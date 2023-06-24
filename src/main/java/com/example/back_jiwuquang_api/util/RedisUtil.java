@@ -965,4 +965,8 @@ public class RedisUtil<K, V> {
     }
 
 
+    public void flushDb() {
+        Set<String> keys = redisTemplate.keys("*");
+        redisTemplate.delete(keys);
+    }
 }

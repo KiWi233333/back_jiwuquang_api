@@ -1,18 +1,25 @@
 package com.example.back_jiwuquang_api.service.goods;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.example.back_jiwuquang_api.dto.goods.GoodsCategoryDTO;
+import com.example.back_jiwuquang_api.pojo.goods.Goods;
 import com.example.back_jiwuquang_api.pojo.goods.GoodsCategory;
 import com.example.back_jiwuquang_api.repository.goods.GoodsCategoryMapper;
 import com.example.back_jiwuquang_api.repository.goods.GoodsMapper;
 import com.example.back_jiwuquang_api.util.RedisUtil;
 import com.example.back_jiwuquang_api.util.Result;
+import com.example.back_jiwuquang_api.vo.goods.GoodsCategoryVO;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
+import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_CATEGORY_GOODS;
 import static com.example.back_jiwuquang_api.domain.constant.GoodsConstant.GOODS_CATEGORY_LIST;
 
 /**
@@ -35,6 +42,7 @@ public class GoodsCategoryService {
 
     /**
      * 获取所有分类
+     *
      * @return Result
      */
     public Result getAllCategoryTree() {
@@ -43,12 +51,12 @@ public class GoodsCategoryService {
         if (list == null || list.isEmpty()) {
             list = goodsCategoryMapper.selectALlCategoryTree();
         } else {
-            return Result.ok("获取成功",list);
+            return Result.ok("获取成功", list);
         }
         // 缓存
         if (!list.isEmpty()) {
             redisUtil.set(GOODS_CATEGORY_LIST, list);
-            return Result.ok("获取成功",list);
+            return Result.ok("获取成功", list);
         } else {
             return Result.fail("获取失败！");
         }
@@ -72,7 +80,7 @@ public class GoodsCategoryService {
             redisUtil.delete(GOODS_CATEGORY_LIST);
             return Result.ok("添加成功！", null);
         } catch (Exception e) {
-            log.info("Exception while {}",e.getMessage());
+            log.info("Exception while {}", e.getMessage());
             return Result.fail("添加失败，已有重复！");
         }
     }
@@ -95,7 +103,7 @@ public class GoodsCategoryService {
         }
         // 3、清空缓存
         redisUtil.delete(GOODS_CATEGORY_LIST);
-        return Result.ok("添加成功，"+categoryList.size()+"条数据", categoryList.size());
+        return Result.ok("添加成功，" + categoryList.size() + "条数据", categoryList.size());
     }
 
     /**
@@ -128,9 +136,9 @@ public class GoodsCategoryService {
         // 1、数据库删除操作
         count = goodsCategoryMapper.delete(
                 new QueryWrapper<GoodsCategory>().lambda()
-                .in(GoodsCategory::getId, ids)
-                .or()
-                .in(GoodsCategory::getParentId, ids));
+                        .in(GoodsCategory::getId, ids)
+                        .or()
+                        .in(GoodsCategory::getParentId, ids));
         if (count == 0) {
             // 2、redis 删除操作
             redisUtil.delete(GOODS_CATEGORY_LIST);
@@ -139,4 +147,22 @@ public class GoodsCategoryService {
             return Result.ok("删除成功！", count);
         }
     }
+
+    public Result getGoodsCateTreeByGid(String gid) {
+        // 缓存
+        GoodsCategoryVO vo = (GoodsCategoryVO) redisUtil.get(GOODS_CATEGORY_GOODS + gid);
+        // 数据库取
+        if (vo == null) {
+            // 查询商品的分类
+            MPJLambdaWrapper<GoodsCategory> mp = new MPJLambdaWrapper<>();
+            mp.eq(Goods::getId, gid)
+                    .select(GoodsCategory::getId, GoodsCategory::getName, GoodsCategory::getIcon, GoodsCategory::getParentId)
+                    .leftJoin(Goods.class, Goods::getCategoryId, GoodsCategory::getId);
+            vo = goodsCategoryMapper.selectJoinOne(GoodsCategoryVO.class, mp);
+//            缓存
+            redisUtil.set(GOODS_CATEGORY_GOODS + gid, vo);
+        }
+        return Result.ok(vo);
+    }
+
 }

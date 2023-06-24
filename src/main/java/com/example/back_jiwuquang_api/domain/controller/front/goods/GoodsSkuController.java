@@ -1,5 +1,6 @@
 package com.example.back_jiwuquang_api.domain.controller.front.goods;
 
+import com.example.back_jiwuquang_api.dto.other.IdsList;
 import com.example.back_jiwuquang_api.service.goods.GoodsCategoryService;
 import com.example.back_jiwuquang_api.service.goods.GoodsSkuService;
 import com.example.back_jiwuquang_api.util.Result;
@@ -14,6 +15,7 @@ import javax.validation.Valid;
 /**
  * 商品模块
  * 商品规格模块
+ *
  * @className: GoodsController
  * @author: Kiwi23333
  * @description: TODO描述
@@ -33,6 +35,15 @@ public class GoodsSkuController {
         if (gid.equals("")) return Result.fail("商品id不能为空！");
         // 业务
         return goodsSkuService.getGoodsSkuByGoodsById(gid);
+    }
+
+
+    @ApiOperation(value = "获取商品规格(规格ids)", tags = "商品规格模块")
+    @PostMapping("/sku")
+    Result getGoodsSkuListByIds(@RequestBody IdsList idsList) {
+        if (idsList.getIds().isEmpty()) return Result.fail("参数不能为空！");
+        // 业务
+        return goodsSkuService.getGoodsSkuByGoodsByIds(idsList.getIds());
     }
 
 

@@ -48,6 +48,13 @@ public class GoodsController {
     }
 
 
+    @ApiOperation(value = "查询商品热搜", tags = "商品信息模块")
+    @GetMapping("/search/hots")
+    Result getSearchHots() {
+        return goodsService.getSearchHots();
+    }
+
+
     /******************************* 商品点赞、收藏 类 ************************************/
     @Autowired
     GoodsActionService goodsActionService;
