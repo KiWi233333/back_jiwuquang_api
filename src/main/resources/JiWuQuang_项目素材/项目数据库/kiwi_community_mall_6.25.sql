@@ -11,7 +11,7 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 25/06/2023 18:35:56
+ Date: 26/06/2023 01:37:36
 */
 
 SET NAMES utf8mb4;
@@ -158,34 +158,6 @@ INSERT INTO `comm_post_comment` VALUES ('3163652592439853308', '2163652592439853
 INSERT INTO `comm_post_comment` VALUES ('3163652592439853324', '2163652592439853322', '2163652592439853323', NULL, '这篇文章让我受益匪浅，感谢作者', NULL, 12, 8, '2022-01-04 16:00:00', '2022-01-04 16:00:00');
 INSERT INTO `comm_post_comment` VALUES ('3163652592439853326', '2163652592439853325', '2163652592439853323', '3163652592439853324', '非常感谢作者的分享，对我的工作有很大帮助', NULL, 18, 10, '2022-01-06 20:00:00', '2022-01-06 20:00:00');
 INSERT INTO `comm_post_comment` VALUES ('3365259243985332305', '2163652592439853324', '2163652592439853323', '3163652592439853231', '我觉得这篇文章还有些不足之处，希望作者能够改进', NULL, 6, 1, '2022-01-05 18:00:00', '2022-01-05 18:00:00');
-
--- ----------------------------
--- Table structure for customer
--- ----------------------------
-DROP TABLE IF EXISTS `customer`;
-CREATE TABLE `customer`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `username` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '账号',
-  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
-  `customer_name` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '顾客姓名',
-  `sex` enum('F','M') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT 'F' COMMENT '性别',
-  `birthday` date NULL DEFAULT NULL COMMENT '生日日期',
-  `hobby` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '' COMMENT '兴趣',
-  `consumption_amount` decimal(11, 2) UNSIGNED NULL DEFAULT NULL COMMENT '消费金额',
-  `menber_balance` decimal(11, 2) UNSIGNED NULL DEFAULT NULL COMMENT '会员余额',
-  `photo` varbinary(250) NULL DEFAULT NULL COMMENT '照片',
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱',
-  `address` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '地址',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1004 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '顾客信息表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of customer
--- ----------------------------
-INSERT INTO `customer` VALUES (1, 'zhangsan', '$2a$10$Jfxk2hSEQa3RH0UlqPGK/uoI7hzXcL5t6P1JxlKKxH.B1q1llQfXi', '张三', 'M', '1990-01-01', 'music', 859.00, 0.00, NULL, NULL, '');
-INSERT INTO `customer` VALUES (2, 'lisi', '$2a$10$Jfxk2hSEQa3RH0UlqPGK/uoI7hzXcL5t6P1JxlKKxH.B1q1llQfXi', '李四', 'F', '2019-12-31', 'ball', 0.00, 0.00, '', '510000', '');
-INSERT INTO `customer` VALUES (5, 'lisi2', '$2a$10$Jfxk2hSEQa3RH0UlqPGK/uoI7hzXcL5t6P1JxlKKxH.B1q1llQfXi', '李四', 'F', '2023-04-03', '', 0.00, 0.00, '', 'lin@gdsdxy.cn', '');
-INSERT INTO `customer` VALUES (1001, 'kiwi2333', '$2a$10$Jfxk2hSEQa3RH0UlqPGK/uoI7hzXcL5t6P1JxlKKxH.B1q1llQfXi', '张三', 'M', '2000-01-01', '运动', 0.00, 0.00, 0x6161, '510000', '广东广州');
 
 -- ----------------------------
 -- Table structure for event
@@ -380,51 +352,6 @@ INSERT INTO `goods_sku` VALUES ('8998270577145333242', '104215909657394693', '25
 INSERT INTO `goods_sku` VALUES ('9082847909657392295', '204215909657392295', '40%配列', '海军蓝', NULL, 300, 1488.00, '小巧轻薄，便携灵活的旋钮+矮轴键入体验', 1488.00, 'goods_manta1.webp', 1, '2023-06-14 15:04:47', '2023-06-14 15:04:47');
 INSERT INTO `goods_sku` VALUES ('9082847909657392296', '204215909657392295', '40%配列', '浪花银', NULL, 300, 1488.00, '小巧轻薄，便携灵活的旋钮+矮轴键入体验', 1488.00, 'goods_manta4.jpg', 1, '2023-06-14 15:04:47', '2023-06-22 16:30:16');
 INSERT INTO `goods_sku` VALUES ('9082847909657392297', '204215909657392294', 'Alice配列', '杏仁白', NULL, 300, 688.00, '', 1488.00, 'goods_aclice4.webp', 1, '2023-06-14 15:04:47', '2023-06-22 16:30:17');
-
--- ----------------------------
--- Table structure for goods_type
--- ----------------------------
-DROP TABLE IF EXISTS `goods_type`;
-CREATE TABLE `goods_type`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '商品类型名称',
-  `memo` varchar(300) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '商品类型信息表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of goods_type
--- ----------------------------
-INSERT INTO `goods_type` VALUES (1, '图书', '');
-
--- ----------------------------
--- Table structure for item
--- ----------------------------
-DROP TABLE IF EXISTS `item`;
-CREATE TABLE `item`  (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `order_id` int NULL DEFAULT NULL COMMENT '订单标识',
-  `goods_id` int NULL DEFAULT NULL COMMENT '商品标识',
-  `supplier_id` int NULL DEFAULT NULL COMMENT '供应商标识',
-  `quantity` int NULL DEFAULT NULL COMMENT '单个订单商品数量',
-  `unit_price` decimal(11, 2) UNSIGNED NULL DEFAULT NULL COMMENT '单价',
-  `total_price` decimal(11, 2) UNSIGNED NULL DEFAULT NULL COMMENT '单个订单商品总额',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '订单详细表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of item
--- ----------------------------
-INSERT INTO `item` VALUES (1, 1, 5, 3, 1, 0.00, 44.00);
-INSERT INTO `item` VALUES (2, 1, 4, 1, 1, 0.00, 99.00);
-INSERT INTO `item` VALUES (3, 1, 2, 2, 1, 0.00, 69.00);
-INSERT INTO `item` VALUES (4, 2, 4, 1, 1, 0.00, 99.00);
-INSERT INTO `item` VALUES (5, 2, 2, 2, 1, 0.00, 69.00);
-INSERT INTO `item` VALUES (6, 3, 2, 2, 1, 0.00, 69.00);
-INSERT INTO `item` VALUES (7, 3, 1, 1, 2, 0.00, 158.00);
-INSERT INTO `item` VALUES (8, 4, 5, 3, 1, 0.00, 44.00);
-INSERT INTO `item` VALUES (9, 4, 4, 1, 1, 0.00, 99.00);
-INSERT INTO `item` VALUES (10, 4, 3, 2, 1, 0.00, 109.00);
 
 -- ----------------------------
 -- Table structure for orders

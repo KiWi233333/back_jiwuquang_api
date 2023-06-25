@@ -72,7 +72,7 @@ public class ShopCartService {
     public Result addShopCart(AddShopCartDTO addShopCartDTO, String userId) {
         ShopCart shopCart = AddShopCartDTO.toShopCart(addShopCartDTO).setUserId(userId);
         // 查看是否存在
-        ShopCart selectCart = shopCartMapper.selectOne(new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getSkuId, addShopCartDTO.getSkuId()).eq(ShopCart::getUserId,userId));
+        ShopCart selectCart = shopCartMapper.selectOne(new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getSkuId, addShopCartDTO.getSkuId()).eq(ShopCart::getUserId, userId));
         // 存在更新数量
         if (selectCart != null) {// 更新
             int count = shopCartMapper.update(new ShopCart()
@@ -100,6 +100,7 @@ public class ShopCartService {
      * @param id 购物车id
      * @return Result
      */
+
     public Result updateShopCartByDto(String id, UpdateShopCartDTO dto, String userId) {
         // sql updateShopCart
         LambdaQueryWrapper<ShopCart> qw = new LambdaQueryWrapper<ShopCart>()
