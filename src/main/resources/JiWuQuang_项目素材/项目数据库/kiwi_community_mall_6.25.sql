@@ -11,7 +11,7 @@
  Target Server Version : 80028 (8.0.28)
  File Encoding         : 65001
 
- Date: 24/06/2023 17:22:38
+ Date: 25/06/2023 18:35:56
 */
 
 SET NAMES utf8mb4;
@@ -271,13 +271,13 @@ CREATE TABLE `goods`  (
 -- Records of goods
 -- ----------------------------
 INSERT INTO `goods` VALUES ('104215909657394688', 'K75机械键盘', 'goods_k75_des1.png,goods_k75_des2.png,goods_k75_des3.png', '7998270576900033219', 479.00, 499.00, 0.00, 'goods_k75.png,goods_k75_1.png,goods_k75_2.png', 'goods1_mps20230609_020201.mp4', '广东省', '广州市', '越秀区', 1, 0, 2310, 2310, 3, 7, '2023-05-12 21:46:08', '2023-06-18 12:56:44');
-INSERT INTO `goods` VALUES ('104215909657394689', 'Razer雷蛇毒蝰迷你版', 'goods2_des.png', '7998270576900033219', 129.00, 159.00, 0.00, 'goods2_des.png,goods2_sku.png,goods2_sku2.png', '', '广东省', '广州市', '天河区', 1, 0, 2322, 2322, 3, 7, '2023-05-12 21:46:08', '2023-06-20 05:00:04');
+INSERT INTO `goods` VALUES ('104215909657394689', 'Razer雷蛇毒蝰迷你版', 'goods2_des.png', '7998270576900033219', 119.00, 159.00, 0.00, 'goods2_des.png,goods2_sku.png,goods2_sku2.png', '', '广东省', '广州市', '天河区', 1, 0, 2322, 2322, 3, 7, '2023-05-12 21:46:08', '2023-06-24 17:40:05');
 INSERT INTO `goods` VALUES ('104215909657394690', '小新pro16 2022', '联想笔记本电脑小新Pro16 2022游戏轻薄本(8核标压R7-6800H 16G 512G 2.5K 120Hz RTX3050Ti独显)灰 商务办公', '7998270576922333220', 2999.00, 3999.00, 0.00, 'xiaoxingpro16_1.png', 'xiaoxingpro16.mp4', '广东省', '广州市', '黄浦区', 1, 0, 2872, 2872, 3, 7, '2023-05-12 21:46:08', '2023-06-20 04:39:57');
 INSERT INTO `goods` VALUES ('104215909657394691', 'FBB 视物所 Stone Age 定制数据线', '航插数据线 Stone Age 配色', '7998270576989233223', 40.00, 49.99, 0.00, 'hcxddxdaa.png,hcxddxdaa2.png', '', '广东省', '广州市', '天河区', 1, 0, 2872, 2872, 3, 7, '2023-05-12 21:46:08', '2023-06-24 17:19:13');
 INSERT INTO `goods` VALUES ('104215909657394692', 'Type AppleDC充电器', '这是一个充电器的商品详情', '7998270577011533224', 129.99, 139.99, 3.00, 'applecdq.png', '', '广东省', '广州市', '黄浦区', 1, 1, 2020, 2020, 3, 7, '2023-05-12 21:46:08', '2023-06-20 05:09:25');
 INSERT INTO `goods` VALUES ('104215909657394693', 'HuaWeiP40', '这是一个HuaWei的商品详情', '7998270577123033229', 3999.00, 4999.00, 0.00, 'huaweip401.png,huaweip402.png', '', '广东省', '广州市', '天河区', 1, 1, 2872, 2872, 3, 7, '2023-05-12 21:46:08', '2023-06-20 05:04:50');
 INSERT INTO `goods` VALUES ('204215909657392293', 'SP SA Strong Spirit 陆军', '## SP SA Strong Spirit 陆军 \r\n![这是图片](goods_spsa_des.webp \"SP SA Strong Spirit 陆军\")\r\n', '7998270576877733323', 899.00, 899.00, 0.00, 'goods_spsa1.webp,goods_spsa2.webp,goods_spsa3.webp,goods_spsa_des.webp', NULL, '广东省', '广州市', '天河区', 1, 1, 1299, 1299, 3, 7, '2023-06-14 14:52:51', '2023-06-18 12:56:44');
-INSERT INTO `goods` VALUES ('204215909657392294', 'KiWi K8 Alice alice配列 杏仁', '## KiWi K8 Alice alice配列 杏仁', '7998270576900033219', 1488.00, 1488.00, 0.00, 'goods_aclice1.webp,goods_aclice2.webp,goods_aclice3.webp,goods_aclice4.webp', NULL, '广东省', '广州市', '黄浦区', 1, 1, 3029, 3029, 3, 7, '2023-06-14 15:07:04', '2023-06-18 12:56:44');
+INSERT INTO `goods` VALUES ('204215909657392294', 'KiWi K8 Alice alice配列 杏仁', '## KiWi K8 Alice alice配列 杏仁', '7998270576900033219', 688.00, 788.00, 0.00, 'goods_aclice1.webp,goods_aclice2.webp,goods_aclice3.webp,goods_aclice4.webp', NULL, '广东省', '广州市', '黄浦区', 1, 1, 3029, 3029, 3, 7, '2023-06-14 15:07:04', '2023-06-24 17:38:36');
 INSERT INTO `goods` VALUES ('204215909657392295', 'Sirius 天狼星 Manta 矮轴 40% 蓝牙双模机械键盘套件', '## Sirius 天狼星 Manta 矮轴 40% 蓝牙双模机械键盘套件 ', '7998270576900033219', 1488.00, 1488.00, 0.00, 'goods_manta1.webp,goods_manta2.webp,goods_manta3.jpg,goods_manta4.jpg', NULL, '广东省', '广州市', '黄浦区', 1, 1, 4233, 4233, 3, 7, '2023-06-14 15:00:53', '2023-06-18 12:56:44');
 
 -- ----------------------------
@@ -297,7 +297,11 @@ CREATE TABLE `goods_action`  (
 -- ----------------------------
 -- Records of goods_action
 -- ----------------------------
-INSERT INTO `goods_action` VALUES ('1672294459772477441', '2163652592439853323', '204215909657392294', 1, '2023-06-24 01:24:04');
+INSERT INTO `goods_action` VALUES ('1672554946555392001', '2163652592439853323', '104215909657394689', 1, '2023-06-24 18:39:08');
+INSERT INTO `goods_action` VALUES ('1672656904230281218', '2163652592439853323', '204215909657392295', 1, '2023-06-25 01:24:17');
+INSERT INTO `goods_action` VALUES ('1672656932839628801', '2163652592439853323', '204215909657392294', 1, '2023-06-25 01:24:24');
+INSERT INTO `goods_action` VALUES ('1672656956579389442', '2163652592439853323', '104215909657394693', 1, '2023-06-25 01:24:30');
+INSERT INTO `goods_action` VALUES ('1672827768426999810', '2163652592439853323', '104215909657394690', 1, '2023-06-25 12:43:14');
 
 -- ----------------------------
 -- Table structure for goods_category
@@ -582,9 +586,10 @@ CREATE TABLE `shop_cart`  (
 -- ----------------------------
 -- Records of shop_cart
 -- ----------------------------
-INSERT INTO `shop_cart` VALUES ('1672287756922363906', '2163652592439853323', '9082847909657392297', 9, NULL, NULL, '2023-06-24 00:57:26', '2023-06-24 16:36:31');
-INSERT INTO `shop_cart` VALUES ('1672287917711007745', '2163652592439853323', '9082847909657392295', 2, NULL, NULL, '2023-06-24 00:58:04', '2023-06-24 01:17:53');
-INSERT INTO `shop_cart` VALUES ('3263652592439853323', '2163652592439853323', '8998270577145333236', 6, NULL, NULL, '2023-05-13 18:16:05', '2023-06-24 01:16:12');
+INSERT INTO `shop_cart` VALUES ('1672542478869323777', '1672541592562556929', '9082847909657392297', 9, NULL, NULL, '2023-06-24 17:49:36', '2023-06-25 17:23:59');
+INSERT INTO `shop_cart` VALUES ('1672678707405271042', '2163652592439853323', '8998270577145333241', 1, NULL, NULL, '2023-06-25 02:50:55', '2023-06-25 14:17:59');
+INSERT INTO `shop_cart` VALUES ('1672827741944164354', '2163652592439853323', '8998270577145333236', 4, NULL, NULL, '2023-06-25 12:43:08', '2023-06-25 16:17:44');
+INSERT INTO `shop_cart` VALUES ('1672893031268757506', '1672892799952891905', '9082847909657392295', 2, NULL, NULL, '2023-06-25 17:02:34', '2023-06-25 17:02:43');
 
 -- ----------------------------
 -- Table structure for sys_permission
@@ -725,10 +730,12 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('1652246616668012545', 'Lulu2333', '$2a$10$DjJfKH8I5j7EGBdlA5d.CeX/DPjYMyb978hT7EZgv9pnDz3IAkcbe', NULL, '13415000001', '新用户', '保密', '', NULL, 1, '2023-04-29 09:41:05', '2023-06-18 00:28:58', NULL, NULL, 1, 0, 1);
 INSERT INTO `sys_user` VALUES ('1653240351484801026', 'admin233', '$2a$10$trFdiRCBradkZdD7S.xesupAXTj7xwwD1u3KSrgTaq436EmilDPRa', NULL, '13415048700', '新用户', '保密', '', NULL, 1, '2023-05-02 11:29:50', '2023-06-18 00:29:06', '2023-06-14 16:43:30', NULL, 1, 0, 1);
-INSERT INTO `sys_user` VALUES ('1666275306549604354', 'huya2333', '$2a$10$4uXuEtoFNmWoyfxoNGSPSuPwWzrrToRteDcCNaZp6R/0ymeu4gA3C', NULL, '13415000002', '新用户', '保密', '', NULL, 0, '2023-06-07 10:46:06', '2023-06-18 00:29:06', NULL, NULL, 1, 0, 1);
+INSERT INTO `sys_user` VALUES ('1666275306549604354', 'huya2333', '$2a$10$4uXuEtoFNmWoyfxoNGSPSuPwWzrrToRteDcCNaZp6R/0ymeu4gA3C', NULL, '13415000002', '新用户', '保密', '', NULL, 0, '2023-06-07 10:46:06', '2023-06-25 17:19:09', '2023-06-25 17:19:09', NULL, 1, 0, 1);
 INSERT INTO `sys_user` VALUES ('1670096328636944385', 'Zxcvvfg', '$2a$10$e3VWHnD.ugtJM0vt2r6iz.BUQNOhzUckYDH28j.eO3FzrKK9/Chve', NULL, '13412233479', '新用户', '保密', '04b47d044eee4902aa1cc9041ffdea9e.png', NULL, 0, '2023-06-17 23:49:28', '2023-06-23 10:54:25', '2023-06-17 23:49:32', NULL, 1, 0, 1);
 INSERT INTO `sys_user` VALUES ('1670124400689999874', 'kiwi233', '$2a$10$ofgdkcHa3FU0WgC9FrqvzOX74LD/uV63ExcAjobTEHWkYTRXIUrfm', NULL, '13415000023', '新用户', '保密', '356a7cb268884f9996fdaaa597eb109d.png', NULL, 0, '2023-06-18 01:41:01', '2023-06-23 10:54:18', '2023-06-18 03:41:52', NULL, 1, 0, 1);
-INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', '3baf4d47980f44df8d4c9066a3c2102e.png', NULL, 0, '2022-03-01 10:00:00', '2023-06-24 17:14:31', '2023-06-24 17:14:31', '192.168.1.1', 1, 1, 1);
+INSERT INTO `sys_user` VALUES ('1672541592562556929', 'zhangsan', '$2a$10$KnxQRGu.V4x7Rqwd.m80a.vwCwergwS3kSs5DfBX4ELnGhkXg146S', NULL, '13415000022', '新用户', '保密', '7b49c1661497415d800fb674dcd1220d.jpg', NULL, 0, '2023-06-24 17:46:05', '2023-06-25 17:22:20', '2023-06-25 17:22:20', NULL, 1, 0, 1);
+INSERT INTO `sys_user` VALUES ('1672892799952891905', 'ZF2333', '$2a$10$WpkmG3auzcWrQcgNssabLeMgza0corRW3LPjeKx.g.57P5pDIi4VK', NULL, '13415000033', '新用户', '保密', 'b416502c564e4254b57b8dbcd863903d.png', NULL, 0, '2023-06-25 17:01:39', '2023-06-25 17:04:40', '2023-06-25 17:04:40', NULL, 1, 0, 1);
+INSERT INTO `sys_user` VALUES ('2163652592439853323', 'Kiwi2333', '$2a$10$s68J2cbazN3oL9Ag8tFO5.GtzVF5Ns26fgTqrgLC1hD2oxKuCP30y', '1329634286@qq.com', '13415000000', 'Kiwi2333', '男', '3baf4d47980f44df8d4c9066a3c2102e.png', NULL, 0, '2022-03-01 10:00:00', '2023-06-25 17:22:14', '2023-06-25 17:22:14', '192.168.1.1', 1, 1, 1);
 
 -- ----------------------------
 -- Table structure for sys_user_address
@@ -743,7 +750,7 @@ CREATE TABLE `sys_user_address`  (
   `city` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '城市',
   `county` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '区/县',
   `address` varchar(120) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '详细地址',
-  `postal_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '邮编',
+  `postal_code` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮编',
   `phone` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '手机号',
   `create_time` datetime NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
@@ -755,7 +762,8 @@ CREATE TABLE `sys_user_address`  (
 -- ----------------------------
 -- Records of sys_user_address
 -- ----------------------------
-INSERT INTO `sys_user_address` VALUES ('503399947050422323', '张三', '2163652592439853323', 0, '江苏省', '南京市', '玄武区', '中山路123号', '210000', '13416231111', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
+INSERT INTO `sys_user_address` VALUES ('1672900686569811970', '张三', '1672541592562556929', 1, '北京市', '市辖区', '东城区', '天寿路', '110101', '13415000000', '2023-06-25 17:32:59', '2023-06-25 17:32:59');
+INSERT INTO `sys_user_address` VALUES ('1672900739996856321', '张三', '1672541592562556929', 1, '北京市', '市辖区', '东城区', '天寿路', '110101', '13415000000', '2023-06-25 17:33:12', '2023-06-25 17:33:12');
 INSERT INTO `sys_user_address` VALUES ('503399947050422324', 'kiwi233', '1652246616668012545', 0, '江苏省', '南京市', '白下区', '长白路456号', '210000', '13912113421', '2023-05-16 18:40:10', '2023-05-16 18:40:30');
 INSERT INTO `sys_user_address` VALUES ('503399947050422325', '猕猴桃', '2163652592439853323', 1, '广东省', '汕头市', '潮阳区', '谷饶石门', '515159', '13912113421', '2023-05-16 18:40:10', '2023-05-16 22:28:04');
 
@@ -781,6 +789,8 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES ('1669928450705035265', '1669928450642120706', '5819236053864939525', NULL, '2023-06-17 12:42:23', '2023-06-17 12:42:23');
 INSERT INTO `sys_user_role` VALUES ('1670096328666304514', '1670096328636944385', '5819236053864939525', NULL, '2023-06-17 23:49:28', '2023-06-17 23:49:28');
 INSERT INTO `sys_user_role` VALUES ('1670124400790663170', '1670124400689999874', '5819236053864939525', NULL, '2023-06-18 01:41:01', '2023-06-18 01:41:01');
+INSERT INTO `sys_user_role` VALUES ('1672541592604499969', '1672541592562556929', '5819236053864939525', NULL, '2023-06-24 17:46:05', '2023-06-24 17:46:05');
+INSERT INTO `sys_user_role` VALUES ('1672892800015806465', '1672892799952891905', '5819236053864939525', NULL, '2023-06-25 17:01:39', '2023-06-25 17:01:39');
 INSERT INTO `sys_user_role` VALUES ('4032058398348884480', '1653240351484801026', '5819236053864939521', '超级管理员', '2023-05-06 01:44:29', '2023-05-06 01:44:29');
 INSERT INTO `sys_user_role` VALUES ('4032058398348884481', '1652246616668012545', '5819236053864939524', '用户管理员', '2023-05-06 01:44:29', '2023-05-06 01:44:29');
 INSERT INTO `sys_user_role` VALUES ('4032058398348884482', '2163652592439853323', '5819236053864939525', '用户管理员', '2023-05-06 01:44:29', '2023-05-06 01:44:29');
@@ -803,6 +813,8 @@ INSERT INTO `sys_user_salt` VALUES ('1653240351484801026', '/eaV/OB2FaO4KQ==');
 INSERT INTO `sys_user_salt` VALUES ('1666275306549604354', 'Q/DtH9DdYCRRHw==');
 INSERT INTO `sys_user_salt` VALUES ('1670096328636944385', 'IcFgFSaTreNHAw==');
 INSERT INTO `sys_user_salt` VALUES ('1670124400689999874', '7pToUC6BRBxynw==');
+INSERT INTO `sys_user_salt` VALUES ('1672541592562556929', '+LoGJvkFmapozA==');
+INSERT INTO `sys_user_salt` VALUES ('1672892799952891905', 'zBG0bGNRmp4XWg==');
 INSERT INTO `sys_user_salt` VALUES ('2163652592439853323', '4wechxge23ex21');
 
 -- ----------------------------
@@ -861,6 +873,8 @@ INSERT INTO `user_wallet` VALUES ('1666275306549604354', 0.00, 0.00, 0.00, 200, 
 INSERT INTO `user_wallet` VALUES ('1666278297176412162', 0.00, 0.00, 0.00, 0, '2023-06-07 10:57:59', '2023-06-07 10:57:59');
 INSERT INTO `user_wallet` VALUES ('1670096328636944385', 48.00, 48.00, 48.00, 500, '2023-06-17 23:49:28', '2023-06-17 23:49:28');
 INSERT INTO `user_wallet` VALUES ('1670124400689999874', 48.00, 48.00, 48.00, 500, '2023-06-18 01:41:01', '2023-06-18 01:41:01');
+INSERT INTO `user_wallet` VALUES ('1672541592562556929', 48.00, 48.00, 48.00, 500, '2023-06-24 17:46:05', '2023-06-24 17:46:05');
+INSERT INTO `user_wallet` VALUES ('1672892799952891905', 48.00, 48.00, 48.00, 500, '2023-06-25 17:01:39', '2023-06-25 17:01:39');
 INSERT INTO `user_wallet` VALUES ('2163652592439853323', 5685.00, 4000.00, 0.00, 25010, '2023-04-28 18:22:54', '2023-05-27 18:25:55');
 
 SET FOREIGN_KEY_CHECKS = 1;

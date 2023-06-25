@@ -648,7 +648,6 @@ public class UserService {
      * @return Result
      */
     public Result getCommUserList(SelectCommUserDTO dto, int page, int size) {
-
         Page<User> pages = new Page<>(page, size); // 创建分页对象，指定当前页码和每页记录数
         LambdaQueryWrapper<User> qw = new LambdaQueryWrapper<>(); // 创建查询条件
         qw.eq(User::getUserType, 0);

@@ -108,12 +108,13 @@ public class UserAddressService {
      * @return Result
      */
     public Result updateAddressById(UserAddressDTO userAddressDTO, String id, String userId) {
-        UserAddress userAddress = UserAddressDTO.toUserAddress(userAddressDTO).setId(id).setUserId(userId);
+        UserAddress userAddress = UserAddressDTO.toUserAddress(userAddressDTO)
+                .setUserId(userId);
         LambdaQueryWrapper<UserAddress> qw = new LambdaQueryWrapper<UserAddress>()
                 .eq(UserAddress::getUserId, userId)
                 .eq(UserAddress::getId, id);
         // 1、sql
-        if (userAddress.getIsDefault().equals(1)) {
+        if (userAddressDTO.getIsDefault().equals(1)) {
             userAddressMapper.update(new UserAddress().setIsDefault(0), new LambdaQueryWrapper<UserAddress>()
                     .eq(UserAddress::getUserId, userId));
         }
@@ -121,7 +122,7 @@ public class UserAddressService {
             return Result.fail("修改失败！");
         }
         // 2、删除全部缓存
-        redisUtil.hDelete(USER_ADDRESS_PAGE_KEY + userId, id);
+        redisUtil.delete(USER_ADDRESS_PAGE_KEY + userId);
         return Result.ok("修改成功！", null);
     }
 
@@ -186,7 +187,7 @@ public class UserAddressService {
         if (flag <= 0) {
             return Result.fail("删除失败！");
         }
-        return Result.ok("删除成功！",flag);
+        return Result.ok("删除成功！", flag);
 
     }
 }

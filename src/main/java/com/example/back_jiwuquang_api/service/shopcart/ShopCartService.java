@@ -72,7 +72,7 @@ public class ShopCartService {
     public Result addShopCart(AddShopCartDTO addShopCartDTO, String userId) {
         ShopCart shopCart = AddShopCartDTO.toShopCart(addShopCartDTO).setUserId(userId);
         // 查看是否存在
-        ShopCart selectCart = shopCartMapper.selectOne(new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getSkuId, addShopCartDTO.getSkuId()));
+        ShopCart selectCart = shopCartMapper.selectOne(new LambdaQueryWrapper<ShopCart>().eq(ShopCart::getSkuId, addShopCartDTO.getSkuId()).eq(ShopCart::getUserId,userId));
         // 存在更新数量
         if (selectCart != null) {// 更新
             int count = shopCartMapper.update(new ShopCart()
@@ -84,7 +84,9 @@ public class ShopCartService {
                 return Result.fail("添加失败！");
             }
         } else {// 添加
-            if (shopCartMapper.insert(shopCart) <= 0) return Result.fail("添加失败！");
+            if (shopCartMapper.insert(shopCart) <= 0) {
+                return Result.fail("添加失败！");
+            }
         }
         // 清除缓存
         redisUtil.delete(SHOP_CART_MAPS + userId);

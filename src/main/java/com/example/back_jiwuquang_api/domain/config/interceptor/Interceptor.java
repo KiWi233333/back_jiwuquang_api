@@ -91,13 +91,13 @@ public class Interceptor implements HandlerInterceptor {
                 }
             }
             if (!flag) {
-                response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证错误，登录设备有误！")));
+                response.getWriter().write(JacksonUtil.toJSON(Result.fail(Result.TOKEN_ERR,"身份验证错误，登录设备有误！")));
                 log.info("身份验证错误，登录设备有误！");
                 return false;
             }
             //  3）验证是否过期
             if (redisUtil.hGet(USER_REFRESH_TOKEN_KEY + userTokenDTO.getId(), userAgent) == null) {
-                response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证错误，登录设备有误！")));
+                response.getWriter().write(JacksonUtil.toJSON(Result.fail(Result.TOKEN_ERR,"登录已过期，请重新登陆！")));
                 log.info("身份已全过期！");
                 return false;
             }
@@ -108,12 +108,12 @@ public class Interceptor implements HandlerInterceptor {
             return true;
         } catch (TokenExpiredException e1) {
             log.info("身份已过期 {}", e1.getMessage());
-            response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份已过期，请重新登陆！")));
+            response.getWriter().write(JacksonUtil.toJSON(Result.fail(Result.TOKEN_ERR,"登录已过期，请重新登陆！")));
             return false;
         } catch (IOException e) {
-            // 3、身份错误
+            // 3、登录错误
             log.info("身份错误 {}", e.getMessage());
-            response.getWriter().write(JacksonUtil.toJSON(Result.fail("身份验证失败！")));
+            response.getWriter().write(JacksonUtil.toJSON(Result.fail(Result.TOKEN_ERR,"身份验证失败！")));
             return false;
         }
     }
